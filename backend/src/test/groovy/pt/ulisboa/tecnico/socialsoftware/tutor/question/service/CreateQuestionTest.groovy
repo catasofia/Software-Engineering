@@ -396,6 +396,38 @@ class CreateQuestionTest extends SpockTest {
         exception.getErrorMessage() == ErrorMessage.AT_LEAST_THREE_SLOTS_NEEDED
     }
 
+    def "cannot create an Item Combination Question without elements in A group"() {
+        expect: false
+    }
+
+    def "cannot create an Item Combination Question without elements in B group"() {
+        expect: false
+    }
+
+    def "cannot create an Item Combination Question with more than the limit number of elements in A group"() {
+        expect: false
+    }
+
+    def "cannot create an Item Combination Question with more than the limit number of elements in B group"() {
+        expect: false
+    }
+
+    def "Create an Item Combination Question with one to one relation between the two groups of 3 elements each"() {
+        expect: false
+    }
+
+    def "Create an Item Combination Question with no relation between the groups of 2 elements each"() {
+        expect: false
+    }
+
+    def "Create an Item Combination Question where one element of A group linked to 2 elements of B group"() {
+        expect: false
+    }
+
+    def "Create an Item Combination Question where all the elements of A group linked to all the elements of B group and two groups have different number of elements"() {
+        expect: false
+    }
+
 
     @Unroll
     def "fail to create any question for invalid/non-existent course (#nonExistentId)"(Integer nonExistentId) {
