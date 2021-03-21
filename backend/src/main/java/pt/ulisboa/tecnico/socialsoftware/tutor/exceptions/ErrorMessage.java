@@ -10,6 +10,7 @@ public enum ErrorMessage {
     INVALID_ACRONYM_FOR_COURSE_EXECUTION("Invalid acronym for course execution"),
     INVALID_CONTENT_FOR_OPTION("Invalid content for option"),
     INVALID_CONTENT_FOR_QUESTION("Invalid content for question"),
+    INVALID_CONTENT_FOR_SUGGESTION("Invalid content for suggestion"),
     INVALID_NAME_FOR_COURSE("Invalid name for course"),
     INVALID_NAME_FOR_TOPIC("Invalid name for topic"),
     INVALID_SEQUENCE_FOR_OPTION("Invalid sequence for option"),
