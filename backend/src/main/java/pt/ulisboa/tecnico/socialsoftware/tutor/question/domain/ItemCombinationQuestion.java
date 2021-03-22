@@ -1,22 +1,19 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.*;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.Updator;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.CodeOrderQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ItemCombinationQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ItemCombinationSlotDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDetailsDto;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -26,24 +23,27 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 public class ItemCombinationQuestion extends QuestionDetails{
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.EAGER, orphanRemoval = true)
-    private final List<ItemCombinationSlot> listOne = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.EAGER, orphanRemoval = true)
-    private final List<ItemCombinationSlot> listTwo = new ArrayList<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private final Set<ItemCombinationSlot> listOne = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.EAGER, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private final Set<ItemCombinationSlot> listTwo = new HashSet<>();
 
     public ItemCombinationQuestion(){ super(); }
 
     public ItemCombinationQuestion(Question question, ItemCombinationQuestionDto itemCombinationQuestionDto){
         super(question);
-        //setItemCombinationSlots(itemCombinationQuestionDto.getColumnOne(), itemCombinationQuestionDto.getColumnTwo());
+        setItemCombinationSlots(itemCombinationQuestionDto.getColumnOne(), itemCombinationQuestionDto.getColumnTwo());
     }
 
-    public List<ItemCombinationSlot> getColumnOne(){ return listOne; }
+    public Set<ItemCombinationSlot> getColumnOne(){ return listOne; }
 
-    public List<ItemCombinationSlot> getColumnTwo(){ return listTwo; }
+    public Set<ItemCombinationSlot> getColumnTwo(){ return listTwo; }
 
-    public void setItemCombinationSlots(List<ItemCombinationSlotDto> columnOne, List<ItemCombinationSlotDto> columnTwo){
+    public void setItemCombinationSlots(Set<ItemCombinationSlotDto> columnOne, Set<ItemCombinationSlotDto> columnTwo){
         if(columnOne.isEmpty() || columnTwo.isEmpty()){
             throw new TutorException(AT_LEAST_ONE_SLOT_NEEDED_FOR_EACH_COLUMN);
         }
@@ -81,24 +81,18 @@ public class ItemCombinationQuestion extends QuestionDetails{
         }
 
         if(allEmpty == 1){
-            throw new TutorException(ONE_COMBINATION_NEEDED);
+            throw new TutorException(AT_LEAST_ONE_ITEM_COMBINATION_NEEDED);
         }
 
         if(sameSet == 0){
             throw new TutorException(COMBINATION_IN_SAME_SET);
         }
 
-        Collections.shuffle(columnOne);
-        Collections.shuffle(columnTwo);
-
-        int sequence1 = getColumnOne().size();
 
         for(var itemCombinationSlotDto : columnOne){
-            int newSequence = itemCombinationSlotDto.getSequence() != null ? itemCombinationSlotDto.getSequence() : sequence1++;
             if(itemCombinationSlotDto.getId() == null){
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
-                itemCombinationSlot.setSequence(newSequence);
                 this.listOne.add(itemCombinationSlot);
 
             } else{
@@ -106,23 +100,19 @@ public class ItemCombinationQuestion extends QuestionDetails{
                         .stream()
                         .filter(op -> op.getId().equals(itemCombinationSlotDto.getId()))
                         .findFirst()
-                        .orElseThrow(() -> new TutorException(ORDER_SLOT_NOT_FOUND, itemCombinationSlotDto.getId()));
+                        .orElseThrow(() -> new TutorException(ITEM_COMBINATION_SLOT_NOT_FOUND, itemCombinationSlotDto.getId()));
 
-                        itemCombinationSlot.setContent(itemCombinationSlotDto.getContent());
-                        itemCombinationSlot.setCorrectCombinations(itemCombinationSlotDto.getCorrectCombination());
-                        itemCombinationSlot.setSequence(newSequence);
+                itemCombinationSlot.setContent(itemCombinationSlotDto.getContent());
+                itemCombinationSlot.setCorrectCombinations(itemCombinationSlotDto.getCorrectCombination());
             }
 
         }
 
-        int sequence2 = getColumnTwo().size();
 
         for(var itemCombinationSlotDto : columnTwo) {
-            int newSequence = itemCombinationSlotDto.getSequence() != null ? itemCombinationSlotDto.getSequence() : sequence2++;
             if (itemCombinationSlotDto.getId() == null) {
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
-                itemCombinationSlot.setSequence(newSequence);
                 this.listTwo.add(itemCombinationSlot);
 
             } else {
@@ -130,11 +120,10 @@ public class ItemCombinationQuestion extends QuestionDetails{
                         .stream()
                         .filter(op -> op.getId().equals(itemCombinationSlotDto.getId()))
                         .findFirst()
-                        .orElseThrow(() -> new TutorException(ORDER_SLOT_NOT_FOUND, itemCombinationSlotDto.getId()));
+                        .orElseThrow(() -> new TutorException(ITEM_COMBINATION_SLOT_NOT_FOUND, itemCombinationSlotDto.getId()));
 
                 itemCombinationSlot.setContent(itemCombinationSlotDto.getContent());
                 itemCombinationSlot.setCorrectCombinations(itemCombinationSlotDto.getCorrectCombination());
-                itemCombinationSlot.setSequence(newSequence);
             }
         }
     }

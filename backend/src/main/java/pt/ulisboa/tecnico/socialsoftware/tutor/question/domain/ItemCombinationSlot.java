@@ -1,14 +1,17 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ItemCombinationSlotDto;
 
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import javax.persistence.Column;
+
 @Entity
 @Table(name = "item_combination_slot")
 public class ItemCombinationSlot implements DomainEntity{
@@ -16,13 +19,11 @@ public class ItemCombinationSlot implements DomainEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Integer sequence;
-
-    //receives id from slot from other column that combines correctly
-    //can be empty if it doesn't connect with none
     @ElementCollection
-    private List<Integer> correctCombinations = new ArrayList<Integer>();
+    @CollectionTable(name = "correctCombinations", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "item_combination_question_id")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<Integer> correctCombinations = new HashSet<>();
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -46,19 +47,11 @@ public class ItemCombinationSlot implements DomainEntity{
         this.id = id;
     }
 
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
-    }
-
-    public List<Integer> getCorrectCombinations() {
+    public Set<Integer> getCorrectCombinations() {
         return correctCombinations;
     }
 
-    public void setCorrectCombinations(List<Integer> correctCombinations) {
+    public void setCorrectCombinations(Set<Integer> correctCombinations) {
         this.correctCombinations = correctCombinations;
     }
 

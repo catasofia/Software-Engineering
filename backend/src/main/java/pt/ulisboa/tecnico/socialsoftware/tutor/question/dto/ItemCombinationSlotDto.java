@@ -4,21 +4,20 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.ItemCombinationSl
 
 import java.io.Serializable;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ItemCombinationSlotDto implements Serializable{
     private Integer id;
     private String content;
-    private Integer sequence;
-    private List<Integer> correctCombinations = new ArrayList<Integer>();
+    //private Integer sequence;
+    private Set<Integer> correctCombinations = new HashSet<>();
 
     public ItemCombinationSlotDto(){}
 
     public ItemCombinationSlotDto(ItemCombinationSlot itemCombinationSlot){
         this.id = itemCombinationSlot.getId();
         this.content = itemCombinationSlot.getContent();
-        this.sequence = itemCombinationSlot.getSequence();
         this.correctCombinations = itemCombinationSlot.getCorrectCombinations();
     }
 
@@ -38,20 +37,12 @@ public class ItemCombinationSlotDto implements Serializable{
         this.content = content;
     }
 
-    public List<Integer> getCorrectCombination() {
+    public Set<Integer> getCorrectCombination() {
         return correctCombinations;
     }
 
-    public void setCorrectCombination(List<Integer> correctCombinations) {
+    public void setCorrectCombinations(Set<Integer> correctCombinations) {
         this.correctCombinations = correctCombinations;
-    }
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
     }
 
     @Override
@@ -60,7 +51,6 @@ public class ItemCombinationSlotDto implements Serializable{
                 "id=" + id +
                 ", content='" + content + '\'' +
                 ", combines_with=" + correctCombinations +
-                ", sequence=" + sequence +
                 '}';
     }
 }

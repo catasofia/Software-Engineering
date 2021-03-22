@@ -2,28 +2,28 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.question.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ItemCombinationQuestionDto extends QuestionDetailsDto{
-    private List<ItemCombinationSlotDto> listOne = new ArrayList<>();
-    private List<ItemCombinationSlotDto> listTwo = new ArrayList<>();
+    private Set<ItemCombinationSlotDto> listOne = new HashSet<>();
+    private Set<ItemCombinationSlotDto> listTwo = new HashSet<>();
 
     public ItemCombinationQuestionDto(){}
 
     public ItemCombinationQuestionDto(ItemCombinationQuestion question){
-        this.listOne = question.getColumnOne().stream().map(ItemCombinationSlotDto::new).collect(Collectors.toList());
-        this.listTwo = question.getColumnTwo().stream().map(ItemCombinationSlotDto::new).collect(Collectors.toList());
+        this.listOne = question.getColumnOne().stream().map(ItemCombinationSlotDto::new).collect(Collectors.toSet());
+        this.listTwo = question.getColumnTwo().stream().map(ItemCombinationSlotDto::new).collect(Collectors.toSet());
     }
 
-    public List<ItemCombinationSlotDto> getColumnOne(){ return listOne;}
+    public Set<ItemCombinationSlotDto> getColumnOne(){ return listOne;}
 
-    public List<ItemCombinationSlotDto> getColumnTwo(){ return listTwo;}
+    public Set<ItemCombinationSlotDto> getColumnTwo(){ return listTwo;}
 
-    public void setColumnOne(List<ItemCombinationSlotDto> columnOne){ this.listOne = columnOne;}
-
-    public void setColumnTwo(List<ItemCombinationSlotDto> columnTwo){ this.listOne = columnTwo;}
+    public void setItemCombinationSlots(Set<ItemCombinationSlotDto> columnOne, Set<ItemCombinationSlotDto> columnTwo){
+        this.listOne = columnOne;
+        this.listTwo = columnTwo;
+    }
 
     @Override
     public String toString() {
