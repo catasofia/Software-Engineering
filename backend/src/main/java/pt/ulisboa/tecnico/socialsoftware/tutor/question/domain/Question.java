@@ -270,6 +270,7 @@ public class Question implements DomainEntity {
 
         setTitle(questionDto.getTitle());
         setContent(questionDto.getContent());
+        setNumberOfCorrect(questionDto.getNumberOfCorrect());
 
         getQuestionDetails().update(questionDto.getQuestionDetailsDto());
     }
