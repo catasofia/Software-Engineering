@@ -128,6 +128,10 @@ public class ItemCombinationQuestion extends QuestionDetails{
         }
     }
 
+    public void update(ItemCombinationQuestionDto questionDetails) {
+        setItemCombinationSlots(questionDetails.getColumnOne(), questionDetails.getColumnTwo());
+    }
+
     @Override
     public CorrectAnswerDetailsDto getCorrectAnswerDetailsDto() {
         return null;
@@ -174,7 +178,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public void update(Updator updator) {
-        //TODO
+        updator.update(this);
     }
 
     @Override
