@@ -67,9 +67,13 @@ public class OpenAnswerQuestion extends QuestionDetails {
         return new OpenAnswerQuestionDto(this);
     }
 
+    public void update(OpenAnswerQuestionDto questionDetails) {
+        setSuggestion(questionDetails.getSuggestion());
+    }
+
     @Override
     public void update(Updator updator) {
-
+        updator.update(this);
     }
 
     @Override
