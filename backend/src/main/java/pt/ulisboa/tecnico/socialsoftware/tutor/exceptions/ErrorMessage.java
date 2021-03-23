@@ -104,7 +104,7 @@ public enum ErrorMessage {
     AT_LEAST_ONE_OPTION_NEEDED("Questions need to have at least one option."),
     AT_LEAST_ONE_ITEM_COMBINATION_NEEDED("Questions need to have at least one correct item combination"),
     AT_LEAST_ONE_SLOT_NEEDED_FOR_EACH_COLUMN("Questions need to have at least one slot needed for each column"),
-    COMBINATION_IN_SAME_SET("cannot have combinations in same set"),
+    COMBINATION_IN_SAME_SET("Cannot have combinations in same set"),
     AT_LEAST_THREE_SLOTS_NEEDED("Order questions need to have at least 3 used slots."),
     ONE_CORRECT_OPTION_NEEDED("Questions need to have 1 and only 1 correct option"),
     CANNOT_CHANGE_ANSWERED_QUESTION("Can not change answered question"),

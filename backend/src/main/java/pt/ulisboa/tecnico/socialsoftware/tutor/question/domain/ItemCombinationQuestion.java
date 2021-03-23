@@ -48,18 +48,18 @@ public class ItemCombinationQuestion extends QuestionDetails{
             throw new TutorException(AT_LEAST_ONE_SLOT_NEEDED_FOR_EACH_COLUMN);
         }
 
-        int allEmpty = 1;
-        int sameSet = 1;
+        boolean allEmpty = true;
+        boolean sameSet = true;
         for(ItemCombinationSlotDto item: columnOne){
             //checks if there are no combinations
             if (!(item.getCorrectCombination().isEmpty())){
-                allEmpty = 0;
+                allEmpty = false;
             }
             //checks if combination is in the same set
             for (Integer combination: item.getCorrectCombination()){
                 for(ItemCombinationSlotDto item2: columnOne){
                     if(combination == item2.getId()){
-                        sameSet = 0;
+                        sameSet = false;
                     }
                 }
             }
@@ -68,23 +68,23 @@ public class ItemCombinationQuestion extends QuestionDetails{
         for(ItemCombinationSlotDto item: columnTwo){
             //checks if there are no combinations
             if (!(item.getCorrectCombination().isEmpty())){
-                allEmpty = 0;
+                allEmpty = false;
             }
             //checks if combination is in the same set
             for (Integer combination: item.getCorrectCombination()){
                 for(ItemCombinationSlotDto item2: columnTwo){
                     if(combination == item2.getId()){
-                        sameSet = 0;
+                        sameSet = false;
                     }
                 }
             }
         }
 
-        if(allEmpty == 1){
+        if(allEmpty){
             throw new TutorException(AT_LEAST_ONE_ITEM_COMBINATION_NEEDED);
         }
 
-        if(sameSet == 0){
+        if(!sameSet){
             throw new TutorException(COMBINATION_IN_SAME_SET);
         }
 
