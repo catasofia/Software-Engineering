@@ -118,11 +118,24 @@ class SpockTest extends Specification {
 
     public static final String OPTION_1_CONTENT = "Option 1 Content"
     public static final String OPTION_2_CONTENT = "Option 2 Content"
+    public static final String OPTION_3_CONTENT = "Option 3 Content"
+    public static final String OPTION_4_CONTENT = "Option 4 Content"
+
+
 
     public static final String SUGGESTION_1_CONTENT = "Suggestion 1 content";
     public static final String SUGGESTION_2_CONTENT = "Suggestion 2 content";
     public static final String SUGGESTION_EMPTY_CONTENT = "";
 
+
+    public static final String ITEM_1_CONTENT = "Item 1 Content"
+    public static final String ITEM_2_CONTENT = "Item 2 Content"
+    public static final String ITEM_3_CONTENT = "Item 3 Content"
+    public static final String ITEM_4_CONTENT = "Item 4 Content"
+    public static final String ITEM_5_CONTENT = "Item 5 Content"
+    public static final String ITEM_6_CONTENT = "Item 6 Content"
+    public static final String ITEM_7_CONTENT = "Item 7 Content"
+    public static final String ITEM_8_CONTENT = "Item 8 Content"
 
     public static final String ROLE_STUDENT = "ROLE_STUDENT"
     public static final String ROLE_TEACHER = "ROLE_TEACHER"
