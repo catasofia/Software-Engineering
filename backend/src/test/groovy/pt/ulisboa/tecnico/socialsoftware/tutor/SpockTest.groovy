@@ -128,6 +128,15 @@ class SpockTest extends Specification {
     public static final String SUGGESTION_EMPTY_CONTENT = "";
 
 
+    public static final String ITEM_1_CONTENT = "Item 1 Content"
+    public static final String ITEM_2_CONTENT = "Item 2 Content"
+    public static final String ITEM_3_CONTENT = "Item 3 Content"
+    public static final String ITEM_4_CONTENT = "Item 4 Content"
+    public static final String ITEM_5_CONTENT = "Item 5 Content"
+    public static final String ITEM_6_CONTENT = "Item 6 Content"
+    public static final String ITEM_7_CONTENT = "Item 7 Content"
+    public static final String ITEM_8_CONTENT = "Item 8 Content"
+
     public static final String ROLE_STUDENT = "ROLE_STUDENT"
     public static final String ROLE_TEACHER = "ROLE_TEACHER"
     public static final String ROLE_ADMIN = "ROLE_ADMIN"
