@@ -12,7 +12,7 @@ public class MultipleChoiceCorrectAnswerDto extends CorrectAnswerDetailsDto {
         this.correctOptionId = question.getCorrectOptionsId();
     }
 
-    public List<Integer> getCorrectOptionId() {
+    public List<Integer> getCorrectOptionsId() {
         return correctOptionId;
     }
 

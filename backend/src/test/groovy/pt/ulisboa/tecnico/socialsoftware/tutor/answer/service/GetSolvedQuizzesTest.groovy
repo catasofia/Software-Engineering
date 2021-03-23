@@ -103,7 +103,7 @@ class GetSolvedQuizzesTest extends SpockTest {
         solvedQuizDto.getCorrectAnswers().size() == 1
         def correct = solvedQuizDto.getCorrectAnswers().get(0)
         correct.getSequence() == 0
-        correct.getCorrectAnswerDetails().getCorrectOptionId() == option.getId()
+        correct.getCorrectAnswerDetails().getCorrectOptionsId().get(0) == option.getId()
 
         where:
         quizType                 | conclusionDate    | resultsDate
