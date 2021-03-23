@@ -37,8 +37,8 @@ public class MultipleChoiceQuestion extends QuestionDetails {
     }
 
     public void setOptions(List<OptionDto> options) {
-        if (options.stream().filter(OptionDto::isCorrect).count() != 1) {
-            throw new TutorException(ONE_CORRECT_OPTION_NEEDED);
+        if (options.stream().filter(OptionDto::isCorrect).count() < 1) {
+            throw new TutorException(NO_CORRECT_OPTION);
         }
 
         int index = 0;
@@ -63,12 +63,14 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         options.add(option);
     }
 
-    public Integer getCorrectOptionId() {
-        return this.getOptions().stream()
+    public List<Integer> getCorrectOptionsId() {
+        List<Integer> correctOptions =
+                this.getOptions().stream()
                 .filter(Option::isCorrect)
-                .findAny()
                 .map(Option::getId)
-                .orElse(null);
+                .collect(Collectors.toList());
+        if (correctOptions.isEmpty()){ return  null; }
+        return correctOptions;
     }
 
     public void update(MultipleChoiceQuestionDto questionDetails) {
@@ -82,7 +84,14 @@ public class MultipleChoiceQuestion extends QuestionDetails {
 
     @Override
     public String getCorrectAnswerRepresentation() {
-        return convertSequenceToLetter(this.getCorrectAnswer());
+        String correctAnswersRep = "";
+        List<Integer> correctAnswers = this.getCorrectAnswer();
+        for (Integer correctAnswer: correctAnswers){
+            correctAnswersRep += convertSequenceToLetter(correctAnswer);
+            correctAnswersRep += "\n";
+        }
+        return correctAnswersRep.replaceAll("[\n\r]$", ""); //remove last /n
+
     }
 
     @Override
@@ -121,12 +130,16 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         return new MultipleChoiceQuestionDto(this);
     }
 
-    public Integer getCorrectAnswer() {
-        return this.getOptions()
-                .stream()
+    public List<Integer> getCorrectAnswer() {
+        List<Integer> correctAnswers = new ArrayList<Integer>();
+
+        this.getOptions().stream()
                 .filter(Option::isCorrect)
-                .findAny().orElseThrow(() -> new TutorException(NO_CORRECT_OPTION))
-                .getSequence();
+                .forEach(x -> correctAnswers.add(x.getSequence()));
+
+        if (correctAnswers.isEmpty()){ throw new TutorException(NO_CORRECT_OPTION); }
+        return correctAnswers;
+
     }
 
     @Override
