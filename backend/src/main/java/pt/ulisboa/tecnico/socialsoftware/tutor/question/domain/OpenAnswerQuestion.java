@@ -39,7 +39,7 @@ public class OpenAnswerQuestion extends QuestionDetails {
 
     @Override
     public void accept(Visitor visitor) {
-
+        visitor.visitQuestionDetails(this);
     }
 
     @Override
