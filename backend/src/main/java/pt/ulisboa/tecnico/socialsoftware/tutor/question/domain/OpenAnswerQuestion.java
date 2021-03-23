@@ -38,6 +38,12 @@ public class OpenAnswerQuestion extends QuestionDetails {
     }
 
     @Override
+    public void delete() {
+        super.delete();
+        this.suggestion = null;
+    }
+
+    @Override
     public void accept(Visitor visitor) {
         visitor.visitQuestionDetails(this);
     }
