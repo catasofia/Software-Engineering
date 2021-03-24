@@ -168,7 +168,15 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public void delete() {
-        //TODO
+        super.delete();
+        for (var item : this.listOne) {
+            item.delete();
+        }
+        for (var item : this.listTwo) {
+            item.delete();
+        }
+        this.listOne.clear();
+        this.listTwo.clear();
     }
 
     @Override
