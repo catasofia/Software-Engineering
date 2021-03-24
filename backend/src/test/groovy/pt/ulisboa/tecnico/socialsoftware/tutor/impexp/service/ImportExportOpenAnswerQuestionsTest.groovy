@@ -33,6 +33,13 @@ class ImportExportOpenAnswerQuestionsTest extends SpockTest {
 
     }
 
+    def 'export questions to LaTex'() {
+        given: 'a LaTex with questions'
+        def questionsLaTex = questionService.exportQuestionsToLatex()
+        print questionsLaTex
+        questionsLaTex != null
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }

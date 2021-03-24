@@ -150,4 +150,12 @@ public abstract class LatexVisitor implements Visitor {
         return result;
     }
 
+    @Override
+    public void visitQuestionDetails(OpenAnswerQuestion question) {
+        this.result += String.format("\n\tSuggestion : %s", question.getSuggestion()) + "\n\n";
+
+        this.result = this.result + "\\end{ClosedQuestion}\n}\n\n";
+    }
+
+
 }
