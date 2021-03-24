@@ -26,6 +26,7 @@ class UpdateQuestionTest extends SpockTest {
     def question
     def optionOK
     def optionKO
+    def optionKK
     def user
 
     def setup() {
@@ -46,7 +47,7 @@ class UpdateQuestionTest extends SpockTest {
         question.setTitle(QUESTION_1_TITLE)
         question.setContent(QUESTION_1_CONTENT)
         question.setStatus(Question.Status.AVAILABLE)
-        question.setNumberOfAnswers(2)
+        question.setNumberOfAnswers(3)
         question.setNumberOfCorrect(1)
         question.setImage(image)
         def questionDetails = new MultipleChoiceQuestion()
@@ -54,7 +55,7 @@ class UpdateQuestionTest extends SpockTest {
         questionDetailsRepository.save(questionDetails)
         questionRepository.save(question)
 
-        and: 'two options'
+        and: 'three options'
         optionOK = new Option()
         optionOK.setContent(OPTION_1_CONTENT)
         optionOK.setCorrect(true)
@@ -68,6 +69,12 @@ class UpdateQuestionTest extends SpockTest {
         optionKO.setSequence(1)
         optionKO.setQuestionDetails(questionDetails)
         optionRepository.save(optionKO)
+        optionKK = new Option()
+        optionKK.setContent(OPTION_1_CONTENT)
+        optionKK.setCorrect(false)
+        optionKK.setSequence(1)
+        optionKK.setQuestionDetails(questionDetails)
+        optionRepository.save(optionKK)
     }
 
     def "update a question"() {
@@ -85,6 +92,10 @@ class UpdateQuestionTest extends SpockTest {
         optionDto = new OptionDto(optionKO)
         optionDto.setCorrect(true)
         options.add(optionDto)
+        optionDto = new OptionDto(optionKK)
+        optionDto.setCorrect(false)
+        options.add(optionDto)
+        questionDto.setNumberOfCorrect(1)
         questionDto.getQuestionDetailsDto().setOptions(options)
 
         when:
@@ -98,18 +109,21 @@ class UpdateQuestionTest extends SpockTest {
         result.getContent() == QUESTION_2_CONTENT
         and: 'are not changed'
         result.getStatus() == Question.Status.AVAILABLE
-        result.getNumberOfAnswers() == 2
+        result.getNumberOfAnswers() == 3
         result.getNumberOfCorrect() == 1
-        result.getDifficulty() == 50
+        result.getDifficulty() == 33
         result.getImage() != null
         and: 'an option is changed'
-        result.getQuestionDetails().getOptions().size() == 2
+        result.getQuestionDetails().getOptions().size() == 3
         def resOptionOne = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
         resOptionOne.getContent() == OPTION_2_CONTENT
         !resOptionOne.isCorrect()
         def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
         resOptionTwo.getContent() == OPTION_1_CONTENT
         resOptionTwo.isCorrect()
+        def resOptionThree = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKK.getId()}).findAny().orElse(null)
+        resOptionThree.getContent() == OPTION_1_CONTENT
+        !resOptionThree.isCorrect()
     }
 
     def "update question with missing data"() {
@@ -139,14 +153,38 @@ class UpdateQuestionTest extends SpockTest {
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
         options.add(optionDto)
+        optionDto = new OptionDto(optionKK)
+        optionDto.setCorrect(false)
+        options.add(optionDto)
+        questionDto.setNumberOfCorrect(2)
         questionDto.getQuestionDetailsDto().setOptions(options)
 
         when:
         questionService.updateQuestion(question.getId(), questionDto)
 
-        then: "the question an exception is thrown"
-        def exception = thrown(TutorException)
-        exception.getErrorMessage() == ErrorMessage.ONE_CORRECT_OPTION_NEEDED
+        then: "the question is changed"
+        questionRepository.count() == 1L
+        def result = questionRepository.findAll().get(0)
+        result.getId() == question.getId()
+        result.getTitle() == QUESTION_1_TITLE
+        result.getContent() == QUESTION_1_CONTENT
+        and: 'are changed'
+        result.getStatus() == Question.Status.AVAILABLE
+        result.getNumberOfAnswers() == 3
+        result.getNumberOfCorrect() == 2
+        result.getDifficulty() == 66
+        result.getImage() != null
+        and: 'an option is changed'
+        result.getQuestionDetails().getOptions().size() == 3
+        def resOptionOne = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
+        resOptionOne.getContent() == OPTION_2_CONTENT
+        resOptionOne.isCorrect()
+        def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
+        resOptionTwo.getContent() == OPTION_1_CONTENT
+        resOptionTwo.isCorrect()
+        def resOptionThree = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKK.getId()}).findAny().orElse(null)
+        resOptionThree.getContent() == OPTION_1_CONTENT
+        !resOptionThree.isCorrect()
     }
 
     def "update correct option in a question with answers"() {
@@ -212,6 +250,84 @@ class UpdateQuestionTest extends SpockTest {
         then: "the question an exception is thrown"
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.CANNOT_CHANGE_ANSWERED_QUESTION
+    }
+
+    def "update question with no options true"() {
+        given: "a changed question"
+        def questionDto = new QuestionDto(question)
+        questionDto.setTitle(QUESTION_2_TITLE)
+        questionDto.setContent(QUESTION_2_CONTENT)
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+        and: '2 changed options'
+        def options = new ArrayList<OptionDto>()
+        def optionDto = new OptionDto(optionOK)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(false)
+        options.add(optionDto)
+        optionDto = new OptionDto(optionKO)
+        optionDto.setCorrect(false)
+        options.add(optionDto)
+        optionDto = new OptionDto(optionKK)
+        optionDto.setCorrect(false)
+        options.add(optionDto)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+        questionDto.setNumberOfCorrect(0)
+
+        when:
+        questionService.updateQuestion(question.getId(), questionDto)
+
+        then: "the question an exception is thrown"
+        def exception = thrown(TutorException)
+        exception.getErrorMessage() == ErrorMessage.NO_CORRECT_OPTION
+    }
+
+    def "update question with different options true"(){
+        given: 'a question'
+        def questionDto = new QuestionDto(question)
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+
+        def optionDto = new OptionDto(optionOK)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(false)
+        def options = new ArrayList<OptionDto>()
+        options.add(optionDto)
+        optionDto = new OptionDto(optionKO)
+        optionDto.setContent(OPTION_1_CONTENT)
+        optionDto.setCorrect(true)
+        options.add(optionDto)
+        optionDto = new OptionDto(optionKK)
+        optionDto.setContent(OPTION_1_CONTENT)
+        optionDto.setCorrect(true)
+        options.add(optionDto)
+        questionDto.setNumberOfCorrect(1)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+
+        when:
+        questionService.updateQuestion(question.getId(), questionDto)
+
+        then: "the question is changed"
+        questionRepository.count() == 1L
+        def result = questionRepository.findAll().get(0)
+        result.getId() == question.getId()
+        result.getTitle() == QUESTION_1_TITLE
+        result.getContent() == QUESTION_1_CONTENT
+        and: 'are changed'
+        result.getStatus() == Question.Status.AVAILABLE
+        result.getNumberOfAnswers() == 3
+        result.getNumberOfCorrect() == 1
+        result.getDifficulty() == 33
+        result.getImage() != null
+        and: 'an option is changed'
+        result.getQuestionDetails().getOptions().size() == 3
+        def resOptionOne = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
+        resOptionOne.getContent() == OPTION_2_CONTENT
+        !resOptionOne.isCorrect()
+        def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
+        resOptionTwo.getContent() == OPTION_1_CONTENT
+        resOptionTwo.isCorrect()
+        def resOptionThree = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKK.getId()}).findAny().orElse(null)
+        resOptionThree.getContent() == OPTION_1_CONTENT
+        resOptionThree.isCorrect()
     }
 
     @TestConfiguration

@@ -38,8 +38,14 @@ public class OpenAnswerQuestion extends QuestionDetails {
     }
 
     @Override
-    public void accept(Visitor visitor) {
+    public void delete() {
+        super.delete();
+        this.suggestion = null;
+    }
 
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visitQuestionDetails(this);
     }
 
     @Override
@@ -67,9 +73,13 @@ public class OpenAnswerQuestion extends QuestionDetails {
         return new OpenAnswerQuestionDto(this);
     }
 
+    public void update(OpenAnswerQuestionDto questionDetails) {
+        setSuggestion(questionDetails.getSuggestion());
+    }
+
     @Override
     public void update(Updator updator) {
-
+        updator.update(this);
     }
 
     @Override

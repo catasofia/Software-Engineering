@@ -21,4 +21,9 @@ public class OpenAnswerQuestionDto extends QuestionDetailsDto {
     public void setSuggestion(String suggestion) { this.suggestion = suggestion; }
     public String getSuggestion() { return this.suggestion; }
 
+    @Override
+    public void update(OpenAnswerQuestion question) {
+        question.update(this);
+    }
+
 }
