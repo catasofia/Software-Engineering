@@ -28,6 +28,9 @@ public class ItemCombinationSlot implements DomainEntity{
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false)
+    private Integer internId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_combination_id")
     private ItemCombinationQuestion questionDetails;
@@ -37,14 +40,24 @@ public class ItemCombinationSlot implements DomainEntity{
     public ItemCombinationSlot(ItemCombinationSlotDto itemCombinationSlotDto) {
         this.correctCombinations = itemCombinationSlotDto.getCorrectCombination();
         this.content = itemCombinationSlotDto.getContent();
+        this.internId = itemCombinationSlotDto.getInternId();
     }
 
     public Integer getId() {
         return id;
     }
 
+
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public void setInternId(Integer internId) {
+        this.internId = internId;
+    }
+
+    public Integer getInternId() {
+        return internId;
     }
 
     public Set<Integer> getCorrectCombinations() {
@@ -76,6 +89,8 @@ public class ItemCombinationSlot implements DomainEntity{
         visitor.visitItemCombinationSlot(this);
     }
 
-   // TODO public void delete(){}
+    public void delete() {
+        this.questionDetails = null;
+    }
 
 }

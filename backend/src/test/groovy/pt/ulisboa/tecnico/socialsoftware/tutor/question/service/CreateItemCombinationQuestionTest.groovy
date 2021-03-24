@@ -125,6 +125,53 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         exception.getErrorMessage() == ErrorMessage.AT_LEAST_ONE_ITEM_COMBINATION_NEEDED
     }
 
+    def "Cannot create question with combinations in the same group"() {
+        given: "a questionDto"
+        def questionDto = new QuestionDto()
+        questionDto.setKey(1)
+        questionDto.setTitle(QUESTION_1_TITLE)
+        questionDto.setContent(QUESTION_1_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setQuestionDetailsDto(new ItemCombinationQuestionDto())
+
+        and: 'an image'
+        def image = new ImageDto()
+        image.setUrl(IMAGE_1_URL)
+        image.setWidth(20)
+        questionDto.setImage(image)
+
+        and: 'three items with one relation in the same group'
+        def aItems = new HashSet<ItemCombinationSlotDto>()
+        def bItems = new HashSet<ItemCombinationSlotDto>()
+
+        def item1 = new ItemCombinationSlotDto()
+        item1.setContent(ITEM_1_CONTENT)
+        item1.setInternId(1)
+        aItems.add(item1)
+
+        def item2 = new ItemCombinationSlotDto()
+        item2.setContent(ITEM_2_CONTENT)
+        item2.setInternId(2)
+        aItems.add(item2)
+
+        def item3 = new ItemCombinationSlotDto()
+        item3.setContent(ITEM_3_CONTENT)
+        item3.setInternId(3)
+        bItems.add(item3)
+
+        def comb1 = new HashSet<Integer>()
+        comb1.add(2)
+        item1.setCorrectCombinations(comb1)
+
+        questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
+        when:
+        questionService.createQuestion(externalCourse.getId(), questionDto)
+
+        then: "exception is thrown"
+        def exception = thrown(TutorException)
+        exception.getErrorMessage() == ErrorMessage.COMBINATION_IN_SAME_SET
+    }
+
     def "Create an Item Combination Question with image and with one to one relation between the two groups of 3 elements each"() {
         given: "a questionDto"
         def questionDto = new QuestionDto()
@@ -146,27 +193,32 @@ class CreateItemCombinationQuestionTest extends SpockTest {
 
         def item1 = new ItemCombinationSlotDto()
         item1.setContent(ITEM_1_CONTENT)
+        item1.setInternId(1)
         aItems.add(item1)
 
         def item2 = new ItemCombinationSlotDto()
         item2.setContent(ITEM_2_CONTENT)
+        item2.setInternId(2)
         aItems.add(item2)
 
         def item3 = new ItemCombinationSlotDto()
         item3.setContent(ITEM_3_CONTENT)
+        item3.setInternId(3)
         aItems.add(item3)
 
         def item4 = new ItemCombinationSlotDto()
         item4.setContent(ITEM_4_CONTENT)
+        item4.setInternId(4)
         bItems.add(item4)
 
         def item5 = new ItemCombinationSlotDto()
-
         item5.setContent(ITEM_5_CONTENT)
+        item5.setInternId(5)
         bItems.add(item5)
 
         def item6 = new ItemCombinationSlotDto()
         item6.setContent(ITEM_6_CONTENT)
+        item6.setInternId(6)
         bItems.add(item6)
 
 
@@ -216,34 +268,42 @@ class CreateItemCombinationQuestionTest extends SpockTest {
 
         def item1 = new ItemCombinationSlotDto()
         item1.setContent(ITEM_1_CONTENT)
+        item1.setInternId(1)
         aItems.add(item1)
 
         def item2 = new ItemCombinationSlotDto()
         item2.setContent(ITEM_2_CONTENT)
+        item2.setInternId(2)
         aItems.add(item2)
 
         def item3 = new ItemCombinationSlotDto()
         item3.setContent(ITEM_3_CONTENT)
+        item3.setInternId(3)
         aItems.add(item3)
 
         def item4 = new ItemCombinationSlotDto()
         item4.setContent(ITEM_4_CONTENT)
+        item4.setInternId(4)
         aItems.add(item4)
 
         def item5 = new ItemCombinationSlotDto()
         item5.setContent(ITEM_5_CONTENT)
+        item5.setInternId(5)
         bItems.add(item5)
 
         def item6 = new ItemCombinationSlotDto()
         item6.setContent(ITEM_6_CONTENT)
+        item6.setInternId(6)
         bItems.add(item6)
 
         def item7 = new ItemCombinationSlotDto()
         item7.setContent(ITEM_7_CONTENT)
+        item7.setInternId(7)
         bItems.add(item7)
 
         def item8 = new ItemCombinationSlotDto()
         item8.setContent(ITEM_8_CONTENT)
+        item8.setInternId(8)
         bItems.add(item8)
 
         def comb4 = new HashSet<Integer>()
@@ -288,22 +348,27 @@ class CreateItemCombinationQuestionTest extends SpockTest {
 
         def item1 = new ItemCombinationSlotDto()
         item1.setContent(ITEM_1_CONTENT)
+        item1.setInternId(1)
         aItems.add(item1)
 
         def item2 = new ItemCombinationSlotDto()
         item2.setContent(ITEM_2_CONTENT)
+        item2.setInternId(2)
         aItems.add(item2)
 
         def item3 = new ItemCombinationSlotDto()
         item3.setContent(ITEM_3_CONTENT)
+        item3.setInternId(3)
         bItems.add(item3)
 
         def item4 = new ItemCombinationSlotDto()
         item4.setContent(ITEM_4_CONTENT)
+        item4.setInternId(4)
         bItems.add(item4)
 
         def item5 = new ItemCombinationSlotDto()
         item5.setContent(ITEM_5_CONTENT)
+        item5.setInternId(5)
         bItems.add(item5)
 
         def comb6 = new HashSet<Integer>()
