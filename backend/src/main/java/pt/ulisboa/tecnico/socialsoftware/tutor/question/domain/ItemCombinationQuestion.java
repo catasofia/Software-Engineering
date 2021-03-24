@@ -58,7 +58,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
             //checks if combination is in the same set
             for (Integer combination: item.getCorrectCombination()){
                 for(ItemCombinationSlotDto item2: columnOne){
-                    if(combination == item2.getId()){
+                    if(combination == item2.getInternId()){
                         sameSet = false;
                     }
                 }
@@ -73,7 +73,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
             //checks if combination is in the same set
             for (Integer combination: item.getCorrectCombination()){
                 for(ItemCombinationSlotDto item2: columnTwo){
-                    if(combination == item2.getId()){
+                    if(combination == item2.getInternId()){
                         sameSet = false;
                     }
                 }
@@ -128,6 +128,19 @@ public class ItemCombinationQuestion extends QuestionDetails{
         }
     }
 
+    public void update(ItemCombinationQuestionDto questionDetails) {
+        for (var item : this.listOne) {
+            item.delete();
+        }
+        for (var item : this.listTwo) {
+            item.delete();
+        }
+        this.listOne.clear();
+        this.listTwo.clear();
+
+        setItemCombinationSlots(questionDetails.getColumnOne(), questionDetails.getColumnTwo());
+    }
+
     @Override
     public CorrectAnswerDetailsDto getCorrectAnswerDetailsDto() {
         return null;
@@ -174,7 +187,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public void update(Updator updator) {
-        //TODO
+        updator.update(this);
     }
 
     @Override
