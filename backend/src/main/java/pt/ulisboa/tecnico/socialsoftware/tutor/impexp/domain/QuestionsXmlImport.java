@@ -110,6 +110,9 @@ public class QuestionsXmlImport {
             case Question.QuestionTypes.CODE_ORDER_QUESTION:
                 questionDetailsDto = importCodeOrderQuestion(questionElement);
                 break;
+            case Question.QuestionTypes.OPEN_ANSWER_QUESTION:
+                questionDetailsDto = importOpenAnswerQuestion(questionElement);
+                break;
             default:
                 throw new TutorException(QUESTION_TYPE_NOT_IMPLEMENTED, type);
         }
@@ -118,6 +121,13 @@ public class QuestionsXmlImport {
 
         Course course = courseRepository.findByNameType(courseName, courseType).orElseThrow(() -> new TutorException(COURSE_NOT_FOUND, courseName));
         questionService.createQuestion(course.getId(), questionDto);
+    }
+
+    private QuestionDetailsDto importOpenAnswerQuestion(Element questionElement) {
+        OpenAnswerQuestionDto openAnswerQuestionDto = new OpenAnswerQuestionDto();
+        openAnswerQuestionDto.setSuggestion(questionElement.getChild("suggestion").getAttributeValue("suggestion"));
+
+        return openAnswerQuestionDto;
     }
 
     private QuestionDetailsDto importMultipleChoiceQuestion(Element questionElement) {
