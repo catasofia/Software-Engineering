@@ -65,6 +65,8 @@ public class XMLQuestionExportVisitor implements Visitor {
     @Override
     public void visitQuestionDetails(MultipleChoiceQuestion question) {
         this.currentElement.setAttribute("type", Question.QuestionTypes.MULTIPLE_CHOICE_QUESTION);
+        this.currentElement.setAttribute("numberOfOptions", String.valueOf(question.getOptions().size()));
+        this.currentElement.setAttribute("numberOfCorrectOptions", String.valueOf(question.getQuestion().getNumberOfCorrect()));
 
         Element optionsElement = new Element("options");
         this.currentElement.addContent(optionsElement);

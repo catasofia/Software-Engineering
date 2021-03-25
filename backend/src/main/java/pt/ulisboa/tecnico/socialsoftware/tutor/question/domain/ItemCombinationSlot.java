@@ -31,12 +31,11 @@ public class ItemCombinationSlot implements DomainEntity{
     @Column(nullable = false)
     private Integer internId;
 
+
     @Column(nullable = false)
     private char column;
 
-    //@Column(columnDefinition = "TEXT")
-    //private char column;
-
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_combination_id")
     private ItemCombinationQuestion questionDetails;
@@ -53,6 +52,7 @@ public class ItemCombinationSlot implements DomainEntity{
     public Integer getId() {
         return id;
     }
+
 
     public void setId(Integer id) {
         this.id = id;
@@ -73,14 +73,6 @@ public class ItemCombinationSlot implements DomainEntity{
     public Integer getInternId() {
         return internId;
     }
-
-    /*public char getColumn() {
-        return column;
-    }*/
-
-   /* public void setColumn(char column) {
-        this.column = column;
-    }*/
 
     public Set<Integer> getCorrectCombinations() {
         return correctCombinations;

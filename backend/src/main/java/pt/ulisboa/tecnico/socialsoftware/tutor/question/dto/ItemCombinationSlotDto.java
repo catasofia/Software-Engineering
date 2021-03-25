@@ -13,6 +13,7 @@ public class ItemCombinationSlotDto implements Serializable{
     private String content;
     private Integer internId;
     private char column;
+
     private Set<Integer> correctCombinations = new HashSet<>();
 
     public ItemCombinationSlotDto(){}
@@ -41,6 +42,7 @@ public class ItemCombinationSlotDto implements Serializable{
         return internId;
     }
 
+
     public void setColumn(char column) {
         this.column = column;
     }
@@ -48,10 +50,6 @@ public class ItemCombinationSlotDto implements Serializable{
     public char getColumn() {
         return column;
     }
-
-    /*public char getColumn() {
-        return column;
-    }*/
 
     public String getContent() {
         return content;
