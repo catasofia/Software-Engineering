@@ -60,8 +60,27 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         print questionsXml
     }
 
-    def "export and import Item Combination Question to xml" () {
-        expect: false
+    def 'export and import Item Combination Questions to xml'() {
+        given: 'a xml with questions'
+        def questionsXml = questionService.exportQuestionsToXml()
+        questionsXml != null
+        print questionsXml
+
+        and: 'a clean database'
+        questionService.removeQuestion(questionId)
+
+        when:
+        questionService.importQuestionsFromXml(questionsXml)
+
+        then:
+        questionRepository.findQuestions(externalCourse.getId()).size() == 1
+        def questionResult = questionService.findQuestions(externalCourse.getId()).get(0)
+        questionResult.getKey() == null
+        questionResult.getTitle() == QUESTION_1_TITLE
+        questionResult.getContent() == QUESTION_1_CONTENT
+        questionResult.getStatus() == Question.Status.AVAILABLE.name()
+        questionResult.getQuestionDetailsDto().getColumnOne().size() == 1
+        questionResult.getQuestionDetailsDto().getColumnTwo().size() == 1
     }
 
     @TestConfiguration
