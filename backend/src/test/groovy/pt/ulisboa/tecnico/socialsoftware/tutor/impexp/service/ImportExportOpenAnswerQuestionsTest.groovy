@@ -25,12 +25,26 @@ class ImportExportOpenAnswerQuestionsTest extends SpockTest {
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
     }
 
-    def 'export question to xml'() {
+    def 'export and import question to xml'() {
         given: 'a xml with questions'
         def questionsXml = questionService.exportQuestionsToXml()
         questionsXml != null
         print questionsXml
 
+        and: 'a clean database'
+        questionService.removeQuestion(questionId)
+
+        when:
+        questionService.importQuestionsFromXml(questionsXml)
+
+        then:
+        questionRepository.findQuestions(externalCourse.getId()).size() == 1
+        def questionResult = questionService.findQuestions(externalCourse.getId()).get(0)
+        questionResult.getKey() == null
+        questionResult.getTitle() == QUESTION_1_TITLE
+        questionResult.getContent() == QUESTION_1_CONTENT
+        questionResult.getStatus() == Question.Status.AVAILABLE.name()
+        questionResult.getQuestionDetailsDto().getSuggestion() == SUGGESTION_1_CONTENT
     }
 
     def 'export questions to LaTex'() {
