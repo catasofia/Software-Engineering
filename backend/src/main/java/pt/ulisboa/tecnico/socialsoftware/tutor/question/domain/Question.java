@@ -98,6 +98,7 @@ public class Question implements DomainEntity {
         setStatus(Status.valueOf(questionDto.getStatus()));
         setCreationDate(DateHandler.toLocalDateTime(questionDto.getCreationDate()));
         setCourse(course);
+        setNumberOfCorrect(questionDto.getNumberOfCorrect());
 
         if (questionDto.getImage() != null)
             setImage(new Image(questionDto.getImage()));

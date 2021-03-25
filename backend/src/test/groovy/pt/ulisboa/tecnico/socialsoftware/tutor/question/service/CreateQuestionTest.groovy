@@ -409,6 +409,7 @@ class CreateQuestionTest extends SpockTest {
         def optionDto = new OptionDto()
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
 
@@ -420,6 +421,7 @@ class CreateQuestionTest extends SpockTest {
         optionDto = new OptionDto()
         optionDto.setContent(OPTION_3_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         options.add(optionDto)
 
         optionDto = new OptionDto()
@@ -448,10 +450,12 @@ class CreateQuestionTest extends SpockTest {
         def resOption = result.getQuestionDetails().getOptions().get(0)
         resOption.getContent() == OPTION_1_CONTENT
         resOption.isCorrect()
+        resOption.getRelevance() == 2
 
         def resOptionTwo = result.getQuestionDetails().getOptions().get(2)
         resOptionTwo.getContent() == OPTION_3_CONTENT
         resOptionTwo.isCorrect()
+        resOption.getRelevance() == 2
     }
 
     def "create a multiple choice question with no image and three correct option"() {
@@ -467,6 +471,7 @@ class CreateQuestionTest extends SpockTest {
         def optionDto = new OptionDto()
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
 
@@ -478,11 +483,13 @@ class CreateQuestionTest extends SpockTest {
         optionDto = new OptionDto()
         optionDto.setContent(OPTION_3_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         options.add(optionDto)
 
         optionDto = new OptionDto()
         optionDto.setContent(OPTION_4_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         options.add(optionDto)
 
         questionDto.getQuestionDetailsDto().setOptions(options)
@@ -506,14 +513,17 @@ class CreateQuestionTest extends SpockTest {
         def resOption = result.getQuestionDetails().getOptions().get(0)
         resOption.getContent() == OPTION_1_CONTENT
         resOption.isCorrect()
+        resOption.getRelevance() == 2
 
         def resOptionTwo = result.getQuestionDetails().getOptions().get(2)
         resOptionTwo.getContent() == OPTION_3_CONTENT
         resOptionTwo.isCorrect()
+        resOptionTwo.getRelevance() == 2
 
         def resOptionThree = result.getQuestionDetails().getOptions().get(3)
         resOptionThree.getContent() == OPTION_4_CONTENT
         resOptionThree.isCorrect()
+        resOptionThree.getRelevance() == 2
     }
 
     def "create a multiple choice question with an image and two correct option"() {
@@ -535,6 +545,7 @@ class CreateQuestionTest extends SpockTest {
         def optionDto = new OptionDto()
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
 
@@ -546,6 +557,7 @@ class CreateQuestionTest extends SpockTest {
         optionDto = new OptionDto()
         optionDto.setContent(OPTION_3_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         options.add(optionDto)
 
         optionDto = new OptionDto()
@@ -576,10 +588,12 @@ class CreateQuestionTest extends SpockTest {
         def resOption = result.getQuestionDetails().getOptions().get(0)
         resOption.getContent() == OPTION_1_CONTENT
         resOption.isCorrect()
+        resOption.getRelevance() == 2
 
         def resOptionTwo = result.getQuestionDetails().getOptions().get(2)
         resOptionTwo.getContent() == OPTION_3_CONTENT
         resOptionTwo.isCorrect()
+        resOptionTwo.getRelevance() == 2
     }
 
     def "create a multiple choice question with an image and three correct option"() {
@@ -601,6 +615,7 @@ class CreateQuestionTest extends SpockTest {
         def optionDto = new OptionDto()
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
 
@@ -612,11 +627,13 @@ class CreateQuestionTest extends SpockTest {
         optionDto = new OptionDto()
         optionDto.setContent(OPTION_3_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         options.add(optionDto)
 
         optionDto = new OptionDto()
         optionDto.setContent(OPTION_4_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         options.add(optionDto)
 
         questionDto.getQuestionDetailsDto().setOptions(options)
@@ -642,14 +659,17 @@ class CreateQuestionTest extends SpockTest {
         def resOption = result.getQuestionDetails().getOptions().get(0)
         resOption.getContent() == OPTION_1_CONTENT
         resOption.isCorrect()
+        resOption.getRelevance() == 2
 
         def resOptionTwo = result.getQuestionDetails().getOptions().get(2)
         resOptionTwo.getContent() == OPTION_3_CONTENT
         resOptionTwo.isCorrect()
+        resOptionTwo.getRelevance() == 2
 
         def resOptionThree = result.getQuestionDetails().getOptions().get(3)
         resOptionThree.getContent() == OPTION_4_CONTENT
         resOptionThree.isCorrect()
+        resOptionThree.getRelevance() == 2
     }
 
     def "create a multiple choice question with no image and no correct options"(){

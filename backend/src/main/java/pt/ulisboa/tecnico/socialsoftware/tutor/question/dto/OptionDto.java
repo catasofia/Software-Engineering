@@ -10,6 +10,7 @@ public class OptionDto implements Serializable {
     private Integer sequence;
     private boolean correct;
     private String content;
+    private Integer relevance;
 
     public OptionDto() {
     }
@@ -19,6 +20,7 @@ public class OptionDto implements Serializable {
         this.sequence = option.getSequence();
         this.content = option.getContent();
         this.correct = option.isCorrect();
+        this.relevance = option.getRelevance();
     }
 
     public OptionDto(CodeFillInOption option) {
@@ -56,12 +58,21 @@ public class OptionDto implements Serializable {
         this.content = content;
     }
 
+    public Integer getRelevance() {
+        return (relevance==null)? -1 : relevance;
+    }
+
+    public void setRelevance(Integer relevance) {
+        this.relevance = relevance;
+    }
+
     @Override
     public String toString() {
         return "OptionDto{" +
                 "id=" + id +
                 ", correct=" + correct +
                 ", content='" + content + '\'' +
+                ", relevance=" + relevance +
                 '}';
     }
 }

@@ -84,23 +84,25 @@ public class QuestionsXmlImport {
         questionDto.setTitle(title);
         questionDto.setStatus(status);
         questionDto.setCreationDate(creationDate);
-
+        
         Element imageElement = questionElement.getChild("image");
         if (imageElement != null) {
             Integer width = imageElement.getAttributeValue("width") != null ?
-                    Integer.valueOf(imageElement.getAttributeValue("width")) : null;
+            Integer.valueOf(imageElement.getAttributeValue("width")) : null;
             String url = imageElement.getAttributeValue("url");
-
+            
             ImageDto imageDto = new ImageDto();
             imageDto.setWidth(width);
             imageDto.setUrl(url);
-
+            
             questionDto.setImage(imageDto);
         }
-
+        
         QuestionDetailsDto questionDetailsDto;
         switch (type) {
             case Question.QuestionTypes.MULTIPLE_CHOICE_QUESTION:
+                Integer numberOfCorrectOptions = Integer.valueOf(questionElement.getAttributeValue("numberOfCorrectOptions"));
+                questionDto.setNumberOfCorrect(numberOfCorrectOptions);
                 questionDetailsDto = importMultipleChoiceQuestion(questionElement);
                 break;
             case Question.QuestionTypes.CODE_FILL_IN_QUESTION:
@@ -138,11 +140,13 @@ public class QuestionsXmlImport {
             Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue("sequence"));
             String optionContent = optionElement.getAttributeValue("content");
             boolean correct = Boolean.parseBoolean(optionElement.getAttributeValue("correct"));
+            Integer relevance = Integer.valueOf(optionElement.getAttributeValue("relevance"));
 
             OptionDto optionDto = new OptionDto();
             optionDto.setSequence(optionSequence);
             optionDto.setContent(optionContent);
             optionDto.setCorrect(correct);
+            optionDto.setRelevance(relevance);
 
             optionDtos.add(optionDto);
         }

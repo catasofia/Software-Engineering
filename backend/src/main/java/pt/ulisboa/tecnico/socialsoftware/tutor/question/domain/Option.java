@@ -24,6 +24,9 @@ public class Option implements DomainEntity {
     @Column(nullable = false)
     private Integer sequence;
 
+    @Column(nullable = true)
+    private Integer relevance;
+
     @Column(columnDefinition = "boolean default false", nullable = false)
     private boolean correct;
 
@@ -44,6 +47,7 @@ public class Option implements DomainEntity {
         setSequence(option.getSequence());
         setContent(option.getContent());
         setCorrect(option.isCorrect());
+        setRelevance(option.getRelevance());
     }
 
     @Override
@@ -72,6 +76,14 @@ public class Option implements DomainEntity {
 
     public void setCorrect(boolean correct) {
         this.correct = correct;
+    }
+
+    public Integer getRelevance() {
+        return (relevance==null)? -1 : relevance;
+    }
+
+    public void setRelevance(Integer relevance) {
+        this.relevance = relevance;
     }
 
     public String getContent() {

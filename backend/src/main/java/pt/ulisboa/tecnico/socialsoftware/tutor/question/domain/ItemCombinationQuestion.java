@@ -191,7 +191,6 @@ public class ItemCombinationQuestion extends QuestionDetails{
             correctOptions = correctOptions + " \n ";
         }
         return correctOptions;
-
     }
 
     @Override
