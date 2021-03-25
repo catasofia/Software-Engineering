@@ -58,7 +58,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
             //checks if combination is in the same set
             for (Integer combination: item.getCorrectCombination()){
                 for(ItemCombinationSlotDto item2: columnOne){
-                    if(combination == item2.getId()){
+                    if(combination == item2.getInternId()){
                         sameSet = false;
                     }
                 }
@@ -73,7 +73,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
             //checks if combination is in the same set
             for (Integer combination: item.getCorrectCombination()){
                 for(ItemCombinationSlotDto item2: columnTwo){
-                    if(combination == item2.getId()){
+                    if(combination == item2.getInternId()){
                         sameSet = false;
                     }
                 }
@@ -90,6 +90,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
 
         for(var itemCombinationSlotDto : columnOne){
+            itemCombinationSlotDto.setColumn('a');
             if(itemCombinationSlotDto.getId() == null){
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
@@ -110,6 +111,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
 
         for(var itemCombinationSlotDto : columnTwo) {
+            itemCombinationSlotDto.setColumn('b');
             if (itemCombinationSlotDto.getId() == null) {
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
@@ -126,6 +128,19 @@ public class ItemCombinationQuestion extends QuestionDetails{
                 itemCombinationSlot.setCorrectCombinations(itemCombinationSlotDto.getCorrectCombination());
             }
         }
+    }
+
+    public void update(ItemCombinationQuestionDto questionDetails) {
+        for (var item : this.listOne) {
+            item.delete();
+        }
+        for (var item : this.listTwo) {
+            item.delete();
+        }
+        this.listOne.clear();
+        this.listTwo.clear();
+
+        setItemCombinationSlots(questionDetails.getColumnOne(), questionDetails.getColumnTwo());
     }
 
     @Override
@@ -155,7 +170,15 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public void delete() {
-        //TODO
+        super.delete();
+        for (var item : this.listOne) {
+            item.delete();
+        }
+        for (var item : this.listTwo) {
+            item.delete();
+        }
+        this.listOne.clear();
+        this.listTwo.clear();
     }
 
     @Override
@@ -174,11 +197,21 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public void update(Updator updator) {
-        //TODO
+        updator.update(this);
     }
 
     @Override
     public void accept(Visitor visitor) {
+        visitor.visitQuestionDetails(this);
+    }
+
+    public void visitItemCombinationSlot(Visitor visitor) {
+        for (var slot: this.getColumnOne()) {
+            slot.accept(visitor);
+        }
+        for (var slot: this.getColumnTwo()) {
+            slot.accept(visitor);
+        }
 
     }
 

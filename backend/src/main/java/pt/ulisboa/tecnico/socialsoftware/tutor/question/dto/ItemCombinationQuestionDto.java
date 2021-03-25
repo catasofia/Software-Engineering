@@ -38,7 +38,7 @@ public class ItemCombinationQuestionDto extends QuestionDetailsDto{
     }
 
     @Override
-    public void update(CodeOrderQuestion question) {
-    //TODO
+    public void update(ItemCombinationQuestion question) {
+        question.update(this);
     }
 }
