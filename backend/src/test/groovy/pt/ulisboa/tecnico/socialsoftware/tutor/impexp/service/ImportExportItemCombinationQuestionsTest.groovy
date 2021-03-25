@@ -81,6 +81,10 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         questionResult.getQuestionDetailsDto().getColumnTwo().size() == 1
     }
 
+    def "export to latex"(){
+        expect:false
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
