@@ -33,6 +33,7 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         optionDto.setSequence(0)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(2)
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
         optionDto = new OptionDto()
@@ -79,9 +80,10 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
     def 'export questions with more than one correct option to xml'() {
         given: 'two additional correct options'
         def optionDto = new OptionDto()
-        optionDto.setSequence(2)
+        optionDto.setSequence(3)
         optionDto.setContent(OPTION_2_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(1)
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
 
@@ -89,6 +91,7 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         optionDto.setSequence(3)
         optionDto.setContent(OPTION_2_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(1)
         options.add(optionDto)
         
         questionDto.setNumberOfCorrect(3)
@@ -104,6 +107,71 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
 
     }
 
+    def 'export and import questions with more than one correct option to xml'() {
+        given: 'two additional correct options'
+        def optionDto = new OptionDto()
+        optionDto.setSequence(2)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(true)
+        optionDto.setRelevance(3)
+        def options = new ArrayList<OptionDto>()
+        options.add(optionDto)
+
+        optionDto = new OptionDto()
+        optionDto.setSequence(3)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(true)
+        optionDto.setRelevance(1)
+        options.add(optionDto)
+
+        questionDto.setNumberOfCorrect(3)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+        questionService.updateQuestion(questionId, questionDto)
+
+        and : 'a xml with questions'
+        def questionsXml = questionService.exportQuestionsToXml()
+        and: 'a clean database'
+        questionService.removeQuestion(questionId)
+
+        when:
+        questionService.importQuestionsFromXml(questionsXml)
+
+        then:
+        questionRepository.findQuestions(externalCourse.getId()).size() == 1
+        def questionResult = questionService.findQuestions(externalCourse.getId()).get(0)
+        questionResult.getKey() == null
+        questionResult.getTitle() == QUESTION_1_TITLE
+        questionResult.getContent() == QUESTION_1_CONTENT
+        questionResult.getStatus() == Question.Status.AVAILABLE.name()
+        questionResult.getNumberOfCorrect() == 3
+        def imageResult = questionResult.getImage()
+        imageResult.getWidth() == 20
+        imageResult.getUrl() == IMAGE_1_URL
+        questionResult.getQuestionDetailsDto().getOptions().size() == 4
+        def optionOneResult = questionResult.getQuestionDetailsDto().getOptions().get(0)
+        def optionTwoResult = questionResult.getQuestionDetailsDto().getOptions().get(1)
+        def optionThreeResult = questionResult.getQuestionDetailsDto().getOptions().get(2)
+        def optionFourResult = questionResult.getQuestionDetailsDto().getOptions().get(3)
+
+        optionOneResult.getSequence() + optionTwoResult.getSequence() == 1
+        optionThreeResult.getSequence() + optionFourResult.getSequence() == 5
+
+        optionOneResult.getContent() == OPTION_1_CONTENT
+        optionTwoResult.getContent() == OPTION_1_CONTENT
+        optionThreeResult.getContent() == OPTION_2_CONTENT
+        optionFourResult.getContent() == OPTION_2_CONTENT
+
+        optionOneResult.isCorrect()
+        !optionTwoResult.isCorrect()
+        optionThreeResult.isCorrect()
+        optionFourResult.isCorrect()
+
+        optionOneResult.getRelevance() == 2
+        optionTwoResult.getRelevance() == -1
+        optionThreeResult.getRelevance() == 3
+        optionFourResult.getRelevance()== 1
+    }
+    
     def 'export to latex'() {
         when:
         def questionsLatex = questionService.exportQuestionsToLatex()

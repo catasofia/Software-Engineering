@@ -294,10 +294,12 @@ class UpdateQuestionTest extends SpockTest {
         optionDto = new OptionDto(optionKO)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(1)
         options.add(optionDto)
         optionDto = new OptionDto(optionKK)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
+        optionDto.setRelevance(4)
         options.add(optionDto)
         questionDto.setNumberOfCorrect(1)
         questionDto.getQuestionDetailsDto().setOptions(options)
@@ -325,9 +327,11 @@ class UpdateQuestionTest extends SpockTest {
         def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
         resOptionTwo.getContent() == OPTION_1_CONTENT
         resOptionTwo.isCorrect()
+        resOptionTwo.getRelevance() == 1
         def resOptionThree = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKK.getId()}).findAny().orElse(null)
         resOptionThree.getContent() == OPTION_1_CONTENT
         resOptionThree.isCorrect()
+        resOptionThree.getRelevance() == 4
     }
 
     @TestConfiguration

@@ -12,6 +12,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -43,10 +44,14 @@ public class MultipleChoiceQuestion extends QuestionDetails {
 
         int index = 0;
         for (OptionDto optionDto : options) {
+            if (optionDto.isCorrect() && optionDto.getRelevance() == null)
+                optionDto.setRelevance(-1);
+            
             if (optionDto.getId() == null) {
                 optionDto.setSequence(index++);
                 new Option(optionDto).setQuestionDetails(this);
-            } else {
+            }
+            else {
                 Option option = getOptions()
                         .stream()
                         .filter(op -> op.getId().equals(optionDto.getId()))
@@ -55,6 +60,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
 
                 option.setContent(optionDto.getContent());
                 option.setCorrect(optionDto.isCorrect());
+                option.setRelevance(optionDto.getRelevance());
             }
         }
     }
@@ -71,6 +77,17 @@ public class MultipleChoiceQuestion extends QuestionDetails {
                 .collect(Collectors.toList());
         if (correctOptions.isEmpty()){ return  null; }
         return correctOptions;
+    }
+
+    public List<Integer> getCorrectOptionsByRelevance() {
+        List<Integer> correctOptionsOrdered =
+                this.getOptions().stream()
+                        .filter(Option::isCorrect)
+                        .sorted(Comparator.comparingInt(Option::getRelevance))
+                        .map(Option::getId)
+                        .collect(Collectors.toList());
+        if (correctOptionsOrdered.isEmpty()){ return  null; }
+        return correctOptionsOrdered;
     }
 
     public void update(MultipleChoiceQuestionDto questionDetails) {
@@ -90,7 +107,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
             correctAnswersRep += convertSequenceToLetter(correctAnswer);
             correctAnswersRep += "\n";
         }
-        return correctAnswersRep.replaceAll("[\n\r]$", ""); //remove last /n
+        return correctAnswersRep.replaceAll("[\n\r]$", ""); //remove last \n
 
     }
 
