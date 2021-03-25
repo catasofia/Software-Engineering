@@ -60,6 +60,10 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         print questionsXml
     }
 
+    def "export and import Item Combination Question to xml" () {
+        expect: false
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
