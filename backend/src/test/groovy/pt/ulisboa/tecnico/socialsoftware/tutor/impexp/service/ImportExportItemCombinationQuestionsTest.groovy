@@ -51,8 +51,8 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
     }
 
-    def 'export question to xml'() {
-        given: 'a question'
+    def "export item combination questions to xml" () {
+        given: "a question"
         def questionsXml = questionService.exportQuestionsToXml()
         questionsXml != null
         print questionsXml
