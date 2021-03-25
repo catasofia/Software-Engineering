@@ -19,6 +19,9 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.*;
+
+
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -113,6 +116,9 @@ public class QuestionsXmlImport {
             case Question.QuestionTypes.OPEN_ANSWER_QUESTION:
                 questionDetailsDto = importOpenAnswerQuestion(questionElement);
                 break;
+            case Question.QuestionTypes.ITEM_COMBINATION_QUESTION:
+                questionDetailsDto = importItemCombinationQuestion(questionElement);
+                break;
             default:
                 throw new TutorException(QUESTION_TYPE_NOT_IMPLEMENTED, type);
         }
@@ -193,5 +199,42 @@ public class QuestionsXmlImport {
         questionDto.setCodeOrderSlots(slots);
         return questionDto;
     }
+
+    private QuestionDetailsDto importItemCombinationQuestion(Element questionElement){
+        ItemCombinationQuestionDto questionDto = new ItemCombinationQuestionDto();
+        var columnOne = new HashSet<ItemCombinationSlotDto>();
+        var columnTwo = new HashSet<ItemCombinationSlotDto>();
+
+        for (Element slotElement : questionElement.getChild("items").getChildren("item")) {
+            var item = new ItemCombinationSlotDto();
+            item.setInternId(Integer.valueOf(slotElement.getAttributeValue("internId")));
+            var combinations = new HashSet<Integer>();
+
+            String aux1 = slotElement.getAttributeValue("correctCombinations").substring(1, slotElement.getAttributeValue("correctCombinations").length() -1);
+            String[] aux = aux1.split(",");
+            List<String> parts = Arrays.asList(aux);
+
+            for (String s : parts) {
+                if(!(s.equals(""))) {
+                    Integer a = Integer.parseInt(s);
+                    combinations.add(a);
+                }
+            }
+
+            item.setCorrectCombinations(combinations);
+            item.setContent(slotElement.getValue());
+
+            if(slotElement.getAttributeValue("column").equals(("a"))){
+                columnOne.add(item);
+            }
+            else{
+                columnTwo.add(item);
+            }
+        }
+
+        questionDto.setItemCombinationSlots(columnOne, columnTwo);
+        return questionDto;
+    }
+
 
 }
