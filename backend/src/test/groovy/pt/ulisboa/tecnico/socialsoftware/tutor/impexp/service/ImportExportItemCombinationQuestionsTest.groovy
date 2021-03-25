@@ -82,7 +82,12 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
     }
 
     def "export to latex"(){
-        expect:false
+        when:
+        def questionsLatex = questionService.exportQuestionsToLatex()
+
+        then:
+        questionsLatex != null
+        print questionsLatex
     }
 
     @TestConfiguration
