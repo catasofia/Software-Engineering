@@ -29,13 +29,11 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         def item1 = new ItemCombinationSlotDto()
         item1.setContent(ITEM_1_CONTENT)
         item1.setInternId(1)
-        //item1.setColumn("a")
         aItems.add(item1)
 
         def item2 = new ItemCombinationSlotDto()
         item2.setContent(ITEM_2_CONTENT)
         item2.setInternId(2)
-        //item2.setColumn("b")
         bItems.add(item2)
 
         def comb1 = new HashSet<Integer>()
@@ -53,14 +51,14 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
     }
 
-    def "export item combination questions to xml" () {
-        given: "a question"
+    def 'export question to xml'() {
+        given: 'a question'
         def questionsXml = questionService.exportQuestionsToXml()
         questionsXml != null
         print questionsXml
     }
 
-    def 'export and import Item Combination Questions to xml'() {
+    def 'export and import Item Combination Question to xml'() {
         given: 'a xml with questions'
         def questionsXml = questionService.exportQuestionsToXml()
         questionsXml != null
@@ -86,4 +84,3 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
-

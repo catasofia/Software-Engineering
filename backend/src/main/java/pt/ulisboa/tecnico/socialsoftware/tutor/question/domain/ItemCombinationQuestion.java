@@ -20,7 +20,6 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Entity
 @DiscriminatorValue(Question.QuestionTypes.ITEM_COMBINATION_QUESTION)
-
 public class ItemCombinationQuestion extends QuestionDetails{
 
 
@@ -88,7 +87,6 @@ public class ItemCombinationQuestion extends QuestionDetails{
             throw new TutorException(COMBINATION_IN_SAME_SET);
         }
 
-
         for(var itemCombinationSlotDto : columnOne){
             itemCombinationSlotDto.setColumn('a');
             if(itemCombinationSlotDto.getId() == null){
@@ -96,7 +94,8 @@ public class ItemCombinationQuestion extends QuestionDetails{
                 itemCombinationSlot.setQuestionDetails(this);
                 this.listOne.add(itemCombinationSlot);
 
-            } else{
+            }
+            else{
                 ItemCombinationSlot itemCombinationSlot = getColumnOne()
                         .stream()
                         .filter(op -> op.getId().equals(itemCombinationSlotDto.getId()))
@@ -116,8 +115,8 @@ public class ItemCombinationQuestion extends QuestionDetails{
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
                 this.listTwo.add(itemCombinationSlot);
-
-            } else {
+            }
+            else {
                 ItemCombinationSlot itemCombinationSlot = getColumnTwo()
                         .stream()
                         .filter(op -> op.getId().equals(itemCombinationSlotDto.getId()))
@@ -192,7 +191,6 @@ public class ItemCombinationQuestion extends QuestionDetails{
             correctOptions = correctOptions + " | ";
         }
         return correctOptions;
-
     }
 
     @Override
@@ -212,15 +210,12 @@ public class ItemCombinationQuestion extends QuestionDetails{
         for (var slot: this.getColumnTwo()) {
             slot.accept(visitor);
         }
-
     }
 
     @Override
     public String getAnswerRepresentation(List<Integer> selectedIds) {
         return null;
     }
-
-
 }
 
 
