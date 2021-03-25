@@ -67,6 +67,8 @@ public interface Visitor {
 
     default void visitQuestionDetails(OpenAnswerQuestion question) {}
 
+    default void visitQuestionDetails(ItemCombinationQuestion question) {}
+
     default void visitItemCombinationSlot(ItemCombinationSlot itemCombinationSlot) {}
 
 }
