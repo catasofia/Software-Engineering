@@ -14,10 +14,11 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User
 @DataJpaTest
 class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
     def questionId
+    def questionDto
     def teacher
 
     def setup() {
-        def questionDto = new QuestionDto()
+        questionDto = new QuestionDto()
         questionDto.setTitle(QUESTION_1_TITLE)
         questionDto.setContent(QUESTION_1_CONTENT)
         questionDto.setStatus(Question.Status.AVAILABLE.name())
@@ -40,6 +41,7 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         optionDto.setCorrect(false)
         options.add(optionDto)
         questionDto.getQuestionDetailsDto().setOptions(options)
+        questionDto.setNumberOfCorrect(1)
 
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
     }
@@ -72,6 +74,34 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         optionTwoResult.getContent() == OPTION_1_CONTENT
         !(optionOneResult.isCorrect() && optionTwoResult.isCorrect())
         optionOneResult.isCorrect() || optionTwoResult.isCorrect()
+    }
+
+    def 'export questions with more than one correct option to xml'() {
+        given: 'two additional correct options'
+        def optionDto = new OptionDto()
+        optionDto.setSequence(2)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(true)
+        def options = new ArrayList<OptionDto>()
+        options.add(optionDto)
+
+        optionDto = new OptionDto()
+        optionDto.setSequence(3)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(true)
+        options.add(optionDto)
+        
+        questionDto.setNumberOfCorrect(3)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+        questionService.updateQuestion(questionId, questionDto)
+
+        when:
+        def questionsXml = questionService.exportQuestionsToXml()
+
+        then:
+        questionsXml != null
+        print questionsXml
+
     }
 
     def 'export to latex'() {
