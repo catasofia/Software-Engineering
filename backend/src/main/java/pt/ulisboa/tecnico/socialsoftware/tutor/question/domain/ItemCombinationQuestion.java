@@ -90,6 +90,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
 
         for(var itemCombinationSlotDto : columnOne){
+            itemCombinationSlotDto.setColumn('a');
             if(itemCombinationSlotDto.getId() == null){
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
@@ -110,6 +111,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
 
         for(var itemCombinationSlotDto : columnTwo) {
+            itemCombinationSlotDto.setColumn('b');
             if (itemCombinationSlotDto.getId() == null) {
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
@@ -200,6 +202,16 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public void accept(Visitor visitor) {
+        visitor.visitQuestionDetails(this);
+    }
+
+    public void visitItemCombinationSlot(Visitor visitor) {
+        for (var slot: this.getColumnOne()) {
+            slot.accept(visitor);
+        }
+        for (var slot: this.getColumnTwo()) {
+            slot.accept(visitor);
+        }
 
     }
 
