@@ -15,6 +15,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 
 @DataJpaTest
 class CreateMultipleAnswerQuestionTest extends SpockTest {
+    def setup() {
+        createExternalCourseAndExecution()
+    }
+
     def "create a multiple choice question with no image and two correct option"() {
         given: "a questionDto"
         def questionDto = new QuestionDto()

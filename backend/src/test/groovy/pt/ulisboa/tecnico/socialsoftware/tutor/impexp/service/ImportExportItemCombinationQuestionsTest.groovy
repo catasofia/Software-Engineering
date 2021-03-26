@@ -16,6 +16,8 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
     def questionId
 
     def setup() {
+        createExternalCourseAndExecution()
+        
         given: "a question and one item for each group with one to one relation"
         def questionDto = new QuestionDto()
         questionDto.setTitle(QUESTION_1_TITLE)
