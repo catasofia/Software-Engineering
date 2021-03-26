@@ -29,13 +29,11 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         def item1 = new ItemCombinationSlotDto()
         item1.setContent(ITEM_1_CONTENT)
         item1.setInternId(1)
-        //item1.setColumn("a")
         aItems.add(item1)
 
         def item2 = new ItemCombinationSlotDto()
         item2.setContent(ITEM_2_CONTENT)
         item2.setInternId(2)
-        //item2.setColumn("b")
         bItems.add(item2)
 
         def comb1 = new HashSet<Integer>()
@@ -60,7 +58,29 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         print questionsXml
     }
 
+    def 'export and import Item Combination Question to xml'() {
+        given: 'a xml with questions'
+        def questionsXml = questionService.exportQuestionsToXml()
+        questionsXml != null
+        print questionsXml
+
+        and: 'a clean database'
+        questionService.removeQuestion(questionId)
+
+        when:
+        questionService.importQuestionsFromXml(questionsXml)
+
+        then:
+        questionRepository.findQuestions(externalCourse.getId()).size() == 1
+        def questionResult = questionService.findQuestions(externalCourse.getId()).get(0)
+        questionResult.getKey() == null
+        questionResult.getTitle() == QUESTION_1_TITLE
+        questionResult.getContent() == QUESTION_1_CONTENT
+        questionResult.getStatus() == Question.Status.AVAILABLE.name()
+        questionResult.getQuestionDetailsDto().getColumnOne().size() == 1
+        questionResult.getQuestionDetailsDto().getColumnTwo().size() == 1
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
-
