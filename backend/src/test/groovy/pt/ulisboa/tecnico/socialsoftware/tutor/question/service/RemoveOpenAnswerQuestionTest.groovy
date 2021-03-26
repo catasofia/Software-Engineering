@@ -26,6 +26,8 @@ class RemoveOpenAnswerQuestionTest extends SpockTest {
 
     def setup() {
 
+        createExternalCourseAndExecution()
+
         question = new Question()
         question.setKey(1)
         question.setTitle(QUESTION_1_TITLE)

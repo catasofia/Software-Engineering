@@ -21,6 +21,8 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
     def comb1
 
     def setup(){
+        createExternalCourseAndExecution()
+        
         given: "a question and one item for each group with one to one relation"
         question = new Question()
         question.setCourse(externalCourse)

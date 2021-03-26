@@ -15,6 +15,8 @@ class CreateOpenAnswerQuestionTest extends SpockTest {
     def questionDto
 
     def setup() {
+        createExternalCourseAndExecution()
+        
         given: "a questionDto"
         questionDto = new QuestionDto()
         questionDto.setKey(1)
