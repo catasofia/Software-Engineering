@@ -157,5 +157,22 @@ public abstract class LatexVisitor implements Visitor {
         this.result = this.result + "\\end{ClosedQuestion}\n}\n\n";
     }
 
+    @Override
+    public void visitQuestionDetails(ItemCombinationQuestion question) {
+
+        this.result += "\\begin{lstlisting}\n";
+        question.visitItemCombinationSlot(this);
+        this.result += "\\end{lstlisting}\n";
+
+        this.result = this.result + "% Answer: " + question.getCorrectAnswerRepresentation() + "\n";
+
+        this.result = this.result + "\\end{ClosedQuestion}\n}\n\n";
+    }
+
+    @Override
+    public void visitItemCombinationSlot(ItemCombinationSlot itemCombinationSlot) {
+        this.result += String.format("%s\n", "numero " + itemCombinationSlot.getInternId() + "\t " + itemCombinationSlot.getContent() + "\t column " + itemCombinationSlot.getColumn());
+    }
+
 
 }
