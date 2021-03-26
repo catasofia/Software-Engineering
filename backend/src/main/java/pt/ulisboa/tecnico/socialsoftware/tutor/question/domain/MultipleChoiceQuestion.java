@@ -46,7 +46,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         for (OptionDto optionDto : options) {
             if (optionDto.isCorrect() && optionDto.getRelevance() == null)
                 optionDto.setRelevance(-1);
-            
+
             if (optionDto.getId() == null) {
                 optionDto.setSequence(index++);
                 new Option(optionDto).setQuestionDetails(this);
@@ -72,9 +72,9 @@ public class MultipleChoiceQuestion extends QuestionDetails {
     public List<Integer> getCorrectOptionsId() {
         List<Integer> correctOptions =
                 this.getOptions().stream()
-                .filter(Option::isCorrect)
-                .map(Option::getId)
-                .collect(Collectors.toList());
+                        .filter(Option::isCorrect)
+                        .map(Option::getId)
+                        .collect(Collectors.toList());
         if (correctOptions.isEmpty()){ return  null; }
         return correctOptions;
     }
@@ -84,7 +84,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
                 this.getOptions().stream()
                         .filter(Option::isCorrect)
                         .sorted(Comparator.comparingInt(Option::getRelevance))
-                        .map(Option::getId)
+                        .map(Option::getSequence)
                         .collect(Collectors.toList());
         if (correctOptionsOrdered.isEmpty()){ return  null; }
         return correctOptionsOrdered;
@@ -105,10 +105,27 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         List<Integer> correctAnswers = this.getCorrectAnswer();
         for (Integer correctAnswer: correctAnswers){
             correctAnswersRep += convertSequenceToLetter(correctAnswer);
-            correctAnswersRep += "\n";
+            correctAnswersRep += " | ";
         }
-        return correctAnswersRep.replaceAll("[\n\r]$", ""); //remove last \n
+        correctAnswersRep = correctAnswersRep.substring(0, correctAnswersRep.length() -3);
+        return correctAnswersRep;
 
+    }
+
+    public String getCorrectOrderRepresentation(){
+        String correctOrderRep = "";
+        List<Integer> correctOrder = this.getCorrectOptionsByRelevance();
+        for (Integer correctAnswer: correctOrder){
+            Integer relevance = this.getOptions().stream()
+                    .filter(x -> x.getSequence().equals(correctAnswer))
+                    .findAny()
+                    .map(Option::getRelevance)
+                    .orElse(null);
+            correctOrderRep += convertSequenceToLetter(correctAnswer);
+            correctOrderRep += "("+String.valueOf(relevance)+") | ";
+        }
+        correctOrderRep = correctOrderRep.substring(0, correctOrderRep.length() -3);
+        return correctOrderRep;
     }
 
     @Override

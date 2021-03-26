@@ -58,7 +58,11 @@ public abstract class LatexVisitor implements Visitor {
 
         this.result = this.result + "\\putOptions\n";
 
-        this.result = this.result + "% Answer: " + question.getCorrectAnswerRepresentation() + "\n";
+        this.result = this.result + "% Number of Options: " + question.getOptions().size() + "\n";
+        this.result = this.result + "% Total Of Correct Options: " + question.getCorrectOptionsId().size() + "\n\n";
+
+        this.result = this.result + "% Correct Options: " + question.getCorrectAnswerRepresentation() + "\n";
+        this.result = this.result + "% Correct Options Ordered By Relevance [ Option(Relevance) ]: " + question.getCorrectOrderRepresentation() + "\n\n";
 
         this.result = this.result + "\\end{ClosedQuestion}\n}\n\n";
     }

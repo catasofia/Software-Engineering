@@ -15,6 +15,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User
 class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
     def questionId
     def questionDto
+    def options
     def teacher
 
     def setup() {
@@ -28,27 +29,27 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         image.setUrl(IMAGE_1_URL)
         image.setWidth(20)
         questionDto.setImage(image)
-
+        
         def optionDto = new OptionDto()
         optionDto.setSequence(0)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
         optionDto.setRelevance(2)
-        def options = new ArrayList<OptionDto>()
+        options = new ArrayList<OptionDto>()
         options.add(optionDto)
         optionDto = new OptionDto()
         optionDto.setSequence(1)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(false)
         options.add(optionDto)
-        questionDto.getQuestionDetailsDto().setOptions(options)
         questionDto.setNumberOfCorrect(1)
-
-        questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
     }
 
     def 'export and import questions to xml'() {
         given: 'a xml with questions'
+        questionDto.getQuestionDetailsDto().setOptions(options)
+        questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
+
         def questionsXml = questionService.exportQuestionsToXml()
         print questionsXml
         and: 'a clean database'
@@ -84,7 +85,6 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         optionDto.setContent(OPTION_2_CONTENT)
         optionDto.setCorrect(true)
         optionDto.setRelevance(1)
-        def options = new ArrayList<OptionDto>()
         options.add(optionDto)
 
         optionDto = new OptionDto()
@@ -96,7 +96,8 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         
         questionDto.setNumberOfCorrect(3)
         questionDto.getQuestionDetailsDto().setOptions(options)
-        questionService.updateQuestion(questionId, questionDto)
+        questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
+
 
         when:
         def questionsXml = questionService.exportQuestionsToXml()
@@ -114,7 +115,6 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         optionDto.setContent(OPTION_2_CONTENT)
         optionDto.setCorrect(true)
         optionDto.setRelevance(3)
-        def options = new ArrayList<OptionDto>()
         options.add(optionDto)
 
         optionDto = new OptionDto()
@@ -126,7 +126,7 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
 
         questionDto.setNumberOfCorrect(3)
         questionDto.getQuestionDetailsDto().setOptions(options)
-        questionService.updateQuestion(questionId, questionDto)
+        questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
 
         and : 'a xml with questions'
         def questionsXml = questionService.exportQuestionsToXml()
@@ -178,6 +178,34 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
 
         then:
         questionsLatex != null
+    }
+
+    def 'export to latex with more than one correct option'() {
+        given: 'two additional correct options'
+        def optionDto = new OptionDto()
+        optionDto.setSequence(2)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(true)
+        optionDto.setRelevance(3)
+        options.add(optionDto)
+
+        optionDto = new OptionDto()
+        optionDto.setSequence(3)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(true)
+        optionDto.setRelevance(1)
+        options.add(optionDto)
+
+        questionDto.setNumberOfCorrect(3)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+        questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
+
+        when:
+        def questionsLatex = questionService.exportQuestionsToLatex()
+
+        then:
+        questionsLatex != null
+        print questionsLatex
     }
 
     @TestConfiguration
