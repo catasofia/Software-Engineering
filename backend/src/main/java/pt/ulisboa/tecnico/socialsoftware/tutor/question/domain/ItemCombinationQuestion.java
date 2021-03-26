@@ -182,13 +182,13 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public String getCorrectAnswerRepresentation() {
-       String correctOptions = "";
+        String correctOptions = "";
 
         for(ItemCombinationSlot item: listOne){
             for (Integer combination: item.getCorrectCombinations()){
-                correctOptions = correctOptions + item.getId().toString() + ", " + combination.toString();
+                correctOptions = correctOptions + item.getInternId().toString() + " combines with " + combination.toString();
             }
-            correctOptions = correctOptions + " | ";
+            correctOptions = correctOptions + " \n ";
         }
         return correctOptions;
     }
