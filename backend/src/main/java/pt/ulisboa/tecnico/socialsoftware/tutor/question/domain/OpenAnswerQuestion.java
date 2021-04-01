@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue(Question.QuestionTypes.OPEN_ANSWER_QUESTION)
 public class OpenAnswerQuestion extends QuestionDetails {
-    private String suggestion;
+    private String suggestion; //Without collumDefinition and Type = "TEXT" this is limited to 255 chars
 
     public OpenAnswerQuestion(){ super(); }
 
@@ -85,7 +85,7 @@ public class OpenAnswerQuestion extends QuestionDetails {
     @Override
     public String getCorrectAnswerRepresentation() {
         return null;
-    }
+    } // shold return sugestion;
 
     @Override
     public String getAnswerRepresentation(List<Integer> selectedIds) {

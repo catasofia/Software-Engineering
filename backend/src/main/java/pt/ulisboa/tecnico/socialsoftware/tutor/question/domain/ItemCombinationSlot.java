@@ -23,6 +23,8 @@ public class ItemCombinationSlot implements DomainEntity{
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Integer> correctCombinations = new HashSet<>();
 
+    //would be simpler with a Set<Item> and a ManyToMany relation.
+
     @Column(columnDefinition = "TEXT")
     private String content;
 
@@ -30,7 +32,7 @@ public class ItemCombinationSlot implements DomainEntity{
     private Integer internId;
 
 
-    @Column(nullable = false)
+    @Column(nullable = false) //enum would be more clear
     private char column;
 
     

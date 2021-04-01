@@ -21,6 +21,9 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 @Entity
 @DiscriminatorValue(Question.QuestionTypes.ITEM_COMBINATION_QUESTION)
 public class ItemCombinationQuestion extends QuestionDetails{
+    //This implementation is very complicated and hard to read (but by the tests I think it works).
+    //simpler implementation is to have only one list of ItemCombinationslots (instead of two representing each group)
+
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.EAGER, orphanRemoval = true)
@@ -43,6 +46,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
     public Set<ItemCombinationSlot> getColumnTwo(){ return listTwo; }
 
     public void setItemCombinationSlots(Set<ItemCombinationSlotDto> columnOne, Set<ItemCombinationSlotDto> columnTwo){
+        //very long methods are hard to read.
         if(columnOne.isEmpty() || columnTwo.isEmpty()){
             throw new TutorException(AT_LEAST_ONE_SLOT_NEEDED_FOR_EACH_COLUMN);
         }
@@ -51,6 +55,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
         boolean sameSet = true;
         for(ItemCombinationSlotDto item: columnOne){
             //checks if there are no combinations
+            //this comment is unnecessary since the code is clear on this
             if (!(item.getCorrectCombination().isEmpty())){
                 allEmpty = false;
             }

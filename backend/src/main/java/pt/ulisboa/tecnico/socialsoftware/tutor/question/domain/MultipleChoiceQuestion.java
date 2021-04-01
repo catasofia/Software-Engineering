@@ -45,7 +45,8 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         int index = 0;
         for (OptionDto optionDto : options) {
             if (optionDto.isCorrect() && optionDto.getRelevance() == null)
-                optionDto.setRelevance(-1);
+                optionDto.setRelevance(-1); //maybe have a flag saying if the question is of type ordering and if so throw an exception.
+            // This may cause errors later on when ordering the correct questions if two have the same relevance their order when sorted is arbitraru
 
             if (optionDto.getId() == null) {
                 optionDto.setSequence(index++);
@@ -75,7 +76,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
                         .filter(Option::isCorrect)
                         .map(Option::getId)
                         .collect(Collectors.toList());
-        if (correctOptions.isEmpty()){ return  null; }
+        if (correctOptions.isEmpty()){ return  null; } //should just return an empty list
         return correctOptions;
     }
 
@@ -86,7 +87,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
                         .sorted(Comparator.comparingInt(Option::getRelevance))
                         .map(Option::getSequence)
                         .collect(Collectors.toList());
-        if (correctOptionsOrdered.isEmpty()){ return  null; }
+        if (correctOptionsOrdered.isEmpty()){ return  null; } //should just return an empty list
         return correctOptionsOrdered;
     }
 
@@ -111,7 +112,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         return correctAnswersRep;
 
     }
-
+    //see above comment about flag indication ordering.
     public String getCorrectOrderRepresentation(){
         String correctOrderRep = "";
         List<Integer> correctOrder = this.getCorrectOptionsByRelevance();
@@ -122,7 +123,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
                     .map(Option::getRelevance)
                     .orElse(null);
             correctOrderRep += convertSequenceToLetter(correctAnswer);
-            correctOrderRep += "("+String.valueOf(relevance)+") | ";
+            correctOrderRep += "("+String.valueOf(relevance)+") | "; //install sonarlint plugin for intellij to detect errors like this
         }
         correctOrderRep = correctOrderRep.substring(0, correctOrderRep.length() -3);
         return correctOrderRep;
@@ -171,7 +172,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
                 .filter(Option::isCorrect)
                 .forEach(x -> correctAnswers.add(x.getSequence()));
 
-        if (correctAnswers.isEmpty()){ throw new TutorException(NO_CORRECT_OPTION); }
+        if (correctAnswers.isEmpty()){ throw new TutorException(NO_CORRECT_OPTION); } //Doesn't your code prevent this from happening?
         return correctAnswers;
 
     }

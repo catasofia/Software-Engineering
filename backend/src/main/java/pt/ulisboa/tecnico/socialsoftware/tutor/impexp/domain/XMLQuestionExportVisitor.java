@@ -135,7 +135,7 @@ public class XMLQuestionExportVisitor implements Visitor {
         optionElement.setAttribute("content", option.getContent());
         optionElement.setAttribute("correct", String.valueOf(option.isCorrect()));
         //if (option.getRelevance() == null)
-        //    optionElement.setAttribute("relevance", "-1");
+        //    optionElement.setAttribute("relevance", "-1"); //code should not have comments
         //else
             optionElement.setAttribute("relevance", String.valueOf(option.getRelevance()));
 
@@ -195,6 +195,7 @@ public class XMLQuestionExportVisitor implements Visitor {
         itemElement.setAttribute("internId", String.valueOf(item.getInternId()));
         itemElement.setAttribute("column", String.valueOf(item.getColumn()));
         itemElement.setAttribute("correctCombinations", String.valueOf(item.getCorrectCombinations()));
+        //unclear if combinations are correctly handled in the export code since the test doesn't check it
 
         this.currentElement.addContent(itemElement);
     }

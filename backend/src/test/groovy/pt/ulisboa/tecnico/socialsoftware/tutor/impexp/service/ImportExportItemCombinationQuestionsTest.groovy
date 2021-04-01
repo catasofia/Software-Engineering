@@ -56,6 +56,7 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         def questionsXml = questionService.exportQuestionsToXml()
         questionsXml != null
         print questionsXml
+        //This should not exist
     }
 
     def 'export and import Item Combination Question to xml'() {
@@ -79,6 +80,8 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         questionResult.getStatus() == Question.Status.AVAILABLE.name()
         questionResult.getQuestionDetailsDto().getColumnOne().size() == 1
         questionResult.getQuestionDetailsDto().getColumnTwo().size() == 1
+        //unclear if combinations are correctly handled in the export code since the test doesn't check it
+        //missing assertions to verify content of the items
     }
 
     def "export to latex"(){

@@ -156,7 +156,7 @@ public abstract class LatexVisitor implements Visitor {
 
     @Override
     public void visitQuestionDetails(OpenAnswerQuestion question) {
-        this.result += String.format("\n\tSuggestion : %s", question.getSuggestion()) + "\n\n";
+        this.result += String.format("\n\tSuggestion : %s", question.getSuggestion()) + "\n\n"; // should be getCorrectAnswerRepresentation
 
         this.result = this.result + "\\end{ClosedQuestion}\n}\n\n";
     }
