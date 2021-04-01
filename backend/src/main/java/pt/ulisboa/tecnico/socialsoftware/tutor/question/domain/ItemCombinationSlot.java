@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
 import javax.persistence.Column;
-
+//Has no repository
 @Entity
 @Table(name = "item_combination_slot")
 public class ItemCombinationSlot implements DomainEntity{
