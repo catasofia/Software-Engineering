@@ -23,6 +23,8 @@ import java.util.*;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 public class QuestionsXmlImport {
+    public static final String CONTENT = "content";
+    public static final String SEQUENCE = "sequence";
     private QuestionService questionService;
     private CourseRepository courseRepository;
     private CourseExecution loadCourseExecution;
@@ -100,7 +102,7 @@ public class QuestionsXmlImport {
                 // OK it does not exist
             }
         }
-        String content = questionElement.getAttributeValue("content");
+        String content = questionElement.getAttributeValue(CONTENT);
         String title = questionElement.getAttributeValue("title");
         String status = questionElement.getAttributeValue("status");
         String creationDate = questionElement.getAttributeValue("creationDate");
@@ -164,8 +166,8 @@ public class QuestionsXmlImport {
     private QuestionDetailsDto importMultipleChoiceQuestion(Element questionElement) {
         List<OptionDto> optionDtos = new ArrayList<>();
         for (Element optionElement : questionElement.getChild("options").getChildren("option")) {
-            Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue("sequence"));
-            String optionContent = optionElement.getAttributeValue("content");
+            Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue(SEQUENCE));
+            String optionContent = optionElement.getAttributeValue(CONTENT);
             boolean correct = Boolean.parseBoolean(optionElement.getAttributeValue("correct"));
             Integer relevance = Integer.valueOf(optionElement.getAttributeValue("relevance"));
 
@@ -189,11 +191,11 @@ public class QuestionsXmlImport {
         var spots = new ArrayList<CodeFillInSpotDto>();
         for (Element spotElement : questionElement.getChild("fillInSpots").getChildren("fillInSpot")) {
             var spot = new CodeFillInSpotDto();
-            spot.setSequence(Integer.valueOf(spotElement.getAttributeValue("sequence")));
+            spot.setSequence(Integer.valueOf(spotElement.getAttributeValue(SEQUENCE)));
             var options = new ArrayList<OptionDto>();
             for (Element optionElement : spotElement.getChildren("fillInOption")) {
-                Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue("sequence"));
-                String optionContent = optionElement.getAttributeValue("content");
+                Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue(SEQUENCE));
+                String optionContent = optionElement.getAttributeValue(CONTENT);
                 boolean correct = Boolean.parseBoolean(optionElement.getAttributeValue("correct"));
 
                 OptionDto optionDto = new OptionDto();
@@ -217,8 +219,10 @@ public class QuestionsXmlImport {
         var slots = new ArrayList<CodeOrderSlotDto>();
         for (Element slotElement : questionElement.getChild("orderSlots").getChildren("slot")) {
             var slot = new CodeOrderSlotDto();
-            slot.setOrder(Integer.valueOf(slotElement.getAttributeValue("order")));
-            slot.setSequence(Integer.valueOf(slotElement.getAttributeValue("sequence")));
+
+            Integer order = slotElement.getAttributeValue("order").equals("null") ? null : Integer.valueOf(slotElement.getAttributeValue("order"));
+            slot.setOrder(order);
+            slot.setSequence(Integer.valueOf(slotElement.getAttributeValue(SEQUENCE)));
             slot.setContent(slotElement.getValue());
 
             slots.add(slot);
