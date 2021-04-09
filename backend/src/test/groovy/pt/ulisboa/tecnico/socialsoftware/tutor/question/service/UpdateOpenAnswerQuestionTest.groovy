@@ -29,7 +29,8 @@ class UpdateOpenAnswerQuestionTest extends SpockTest {
     def question
 
     def setup() {
-
+        createExternalCourseAndExecution()
+        
         given: "create a question"
         question = new Question()
         question.setCourse(externalCourse)

@@ -12,6 +12,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.*
 @DataJpaTest
 class CreateItemCombinationQuestionTest extends SpockTest {
 
+    def setup() {
+        createExternalCourseAndExecution()
+    }
+
     def "cannot create an Item Combination Question with no image without elements in A group"() {
         given: "a questionDto"
         def questionDto = new QuestionDto()
