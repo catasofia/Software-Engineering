@@ -4,7 +4,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.ItemCombinationSl
 
 import javax.persistence.Column;
 import java.io.Serializable;
-
+import java.util.stream.Collectors;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,14 +14,14 @@ public class ItemCombinationSlotDto implements Serializable{
     private Integer internId;
     private char column;
 
-    private Set<Integer> correctCombinations = new HashSet<>();
+    private Set<ItemCombinationSlotDto> correctCombinations = new HashSet<>();
 
     public ItemCombinationSlotDto(){}
 
     public ItemCombinationSlotDto(ItemCombinationSlot itemCombinationSlot){
         this.id = itemCombinationSlot.getId();
         this.content = itemCombinationSlot.getContent();
-        this.correctCombinations = itemCombinationSlot.getCorrectCombinations();
+        this.correctCombinations = itemCombinationSlot.getCorrectCombinations().stream().map(s -> new ItemCombinationSlotDto()).collect(Collectors.toSet());
         this.internId = itemCombinationSlot.getInternId();
         this.column = itemCombinationSlot.getColumn();
     }
@@ -42,7 +42,6 @@ public class ItemCombinationSlotDto implements Serializable{
         return internId;
     }
 
-
     public void setColumn(char column) {
         this.column = column;
     }
@@ -59,13 +58,14 @@ public class ItemCombinationSlotDto implements Serializable{
         this.content = content;
     }
 
-    public Set<Integer> getCorrectCombination() {
+    public Set<ItemCombinationSlotDto> getCorrectCombination() {
         return correctCombinations;
     }
 
-    public void setCorrectCombinations(Set<Integer> correctCombinations) {
+    public void setCorrectCombinations(Set<ItemCombinationSlotDto> correctCombinations) {
         this.correctCombinations = correctCombinations;
     }
+
 
     @Override
     public String toString() {

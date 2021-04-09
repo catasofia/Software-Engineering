@@ -239,21 +239,11 @@ public class QuestionsXmlImport {
         for (Element slotElement : questionElement.getChild("items").getChildren("item")) {
             var item = new ItemCombinationSlotDto();
             item.setInternId(Integer.valueOf(slotElement.getAttributeValue("internId")));
-            var combinations = new HashSet<Integer>();
+            var combinations = new HashSet<ItemCombinationSlotDto>();
 
             String aux1 = slotElement.getAttributeValue("correctCombinations").substring(1, slotElement.getAttributeValue("correctCombinations").length() -1);
             String[] aux = aux1.split(",");
             List<String> parts = Arrays.asList(aux);
-
-            for (String s : parts) {
-                if(!(s.equals(""))) {
-                    Integer a = Integer.parseInt(s);
-                    combinations.add(a);
-                }
-            }
-
-            item.setCorrectCombinations(combinations);
-            item.setContent(slotElement.getValue());
 
             if(slotElement.getAttributeValue("column").equals(("a"))){
                 columnOne.add(item);
@@ -261,6 +251,24 @@ public class QuestionsXmlImport {
             else{
                 columnTwo.add(item);
             }
+
+            for (String s : parts) {
+                if(!(s.equals(""))) {
+                    Integer a = Integer.parseInt(s);
+
+                    for(ItemCombinationSlotDto slot: columnTwo) {
+                        if (a == slot.getInternId()) {
+                            combinations.add(slot);
+                        }
+                    }
+
+                }
+            }
+
+            item.setCorrectCombinations(combinations);
+            item.setContent(slotElement.getValue());
+
+
         }
 
         questionDto.setItemCombinationSlots(columnOne, columnTwo);

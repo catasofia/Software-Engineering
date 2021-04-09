@@ -210,7 +210,7 @@ public class XMLQuestionExportVisitor implements Visitor {
         itemElement.setAttribute("content", item.getContent());
         itemElement.setAttribute("internId", String.valueOf(item.getInternId()));
         itemElement.setAttribute("column", String.valueOf(item.getColumn()));
-        itemElement.setAttribute("correctCombinations", String.valueOf(item.getCorrectCombinations()));
+        itemElement.setAttribute("correctCombinations", item.getCorrectCombinationsContent());
 
         this.currentElement.addContent(itemElement);
     }

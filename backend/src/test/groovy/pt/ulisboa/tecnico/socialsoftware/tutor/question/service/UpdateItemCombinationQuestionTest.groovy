@@ -46,8 +46,8 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         item2.setInternId(2)
         bItems.add(item2)
 
-        comb1 = new HashSet<Integer>()
-        comb1.add(2)
+        comb1 = new HashSet<ItemCombinationSlotDto>()
+        comb1.add(item2)
         item1.setCorrectCombinations(comb1)
 
         questionDetails.setItemCombinationSlots(aItems, bItems)
@@ -67,8 +67,8 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         item3.setInternId(3)
         aItems.add(item3)
 
-        def comb3 = new HashSet<Integer>()
-        comb3.add(2)
+        def comb3 = new HashSet<ItemCombinationSlotDto>()
+        comb3.add(item2)
         item3.setCorrectCombinations(comb3)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
@@ -93,7 +93,7 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         item3.setContent(ITEM_3_CONTENT)
         item3.setInternId(3)
         bItems.add(item3)
-        comb1.add(3)
+        comb1.add(item3)
         item1.setCorrectCombinations(comb1)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
@@ -120,15 +120,15 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         item3.setInternId(3)
         aItems.add(item3)
 
-        def comb3 = new HashSet<Integer>()
-        comb3.add(2)
+        def comb3 = new HashSet<ItemCombinationSlotDto>()
+        comb3.add(item2)
         item3.setCorrectCombinations(comb3)
 
         def item4 = new ItemCombinationSlotDto()
         item4.setContent(ITEM_4_CONTENT)
         item4.setInternId(4)
         bItems.add(item4)
-        comb1.add(4)
+        comb1.add(item4)
         item1.setCorrectCombinations(comb1)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
@@ -150,7 +150,7 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         questionDto.setQuestionDetailsDto(new ItemCombinationQuestionDto())
 
         and: "change to zero combinations"
-        def comb3 = new HashSet<Integer>()
+        def comb3 = new HashSet<ItemCombinationSlotDto>()
         item1.setCorrectCombinations(comb3)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
