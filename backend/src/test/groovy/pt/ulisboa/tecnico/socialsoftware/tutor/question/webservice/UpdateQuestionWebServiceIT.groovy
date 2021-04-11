@@ -23,8 +23,6 @@ class UpdateQuestionWebServiceIT extends SpockTest {
     @LocalServerPort
     private int port
 
-    def course
-    def courseExecution
     def teacher
     def response
     def question
@@ -35,92 +33,94 @@ class UpdateQuestionWebServiceIT extends SpockTest {
     def setup() {
         restClient = new RESTClient("http://localhost:" + port)
 
-        course = new Course(COURSE_1_NAME, Course.Type.EXTERNAL)
-        courseRepository.save(course)
-        courseExecution = new CourseExecution(course, COURSE_1_ACRONYM, COURSE_1_ACADEMIC_TERM, Course.Type.EXTERNAL, LOCAL_DATE_TOMORROW)
-        courseExecutionRepository.save(courseExecution)
+        createExternalCourseAndExecution()
 
         teacher = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
                 User.Role.TEACHER, false, AuthUser.Type.TECNICO)
         teacher.authUser.setPassword(passwordEncoder.encode(USER_1_PASSWORD))
-        teacher.addCourse(courseExecution)
-        courseExecution.addUser(teacher)
+        teacher.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(teacher)
         userRepository.save(teacher)
 
         createdUserLogin(USER_1_EMAIL, USER_1_PASSWORD)
-
+        
+        and: "a question"
         question = new Question()
-        question.setCourse(course)
+        question.setCourse(externalCourse)
         question.setKey(1)
         question.setTitle(QUESTION_1_TITLE)
         question.setContent(QUESTION_1_CONTENT)
         question.setStatus(Question.Status.AVAILABLE)
         question.setNumberOfAnswers(3)
         question.setNumberOfCorrect(1)
-        def questionDetails = new MultipleChoiceQuestion()
-        question.setQuestionDetails(questionDetails)
-        questionDetailsRepository.save(questionDetails)
+        question.setQuestionDetails(new MultipleChoiceQuestion())
+        questionDetailsRepository.save(question.getQuestionDetails())
         questionRepository.save(question)
 
-        and: 'three options'
+        and: "three options"
         optionOK = new Option()
         optionOK.setContent(OPTION_1_CONTENT)
         optionOK.setCorrect(true)
         optionOK.setSequence(0)
-        optionOK.setQuestionDetails(questionDetails)
+        optionOK.setQuestionDetails(question.getQuestionDetails())
         optionRepository.save(optionOK)
 
         optionKO = new Option()
         optionKO.setContent(OPTION_1_CONTENT)
         optionKO.setCorrect(false)
         optionKO.setSequence(1)
-        optionKO.setQuestionDetails(questionDetails)
+        optionKO.setQuestionDetails(question.getQuestionDetails())
         optionRepository.save(optionKO)
+        
         optionKK = new Option()
         optionKK.setContent(OPTION_1_CONTENT)
         optionKK.setCorrect(false)
-        optionKK.setSequence(1)
-        optionKK.setQuestionDetails(questionDetails)
+        optionKK.setSequence(2)
+        optionKK.setQuestionDetails(question.getQuestionDetails())
         optionRepository.save(optionKK)
     }
 
     def "update question to different correct options for course execution"() {
-        given: 'a changed question'
-        def questionDto = new QuestionDto(question)
-        questionDto.setTitle(QUESTION_2_TITLE)
-        questionDto.setContent(QUESTION_2_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+        given: "different options"
+        def options = new ArrayList<OptionDto>()
 
-        and: 'different options'
         def optionDto = new OptionDto(optionOK)
         optionDto.setContent(OPTION_2_CONTENT)
         optionDto.setCorrect(false)
-        def options = new ArrayList<OptionDto>()
         options.add(optionDto)
+        
         optionDto = new OptionDto(optionKO)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
         optionDto.setRelevance(1)
         options.add(optionDto)
         optionDto = new OptionDto(optionKK)
+        
         optionDto.setContent(OPTION_3_CONTENT)
         optionDto.setCorrect(true)
         optionDto.setRelevance(4)
         options.add(optionDto)
-        questionDto.setNumberOfCorrect(2)
+
+        and: "a changed questionDto"
+        def questionDto = new QuestionDto(question)
+        questionDto.setTitle(QUESTION_2_TITLE)
+        questionDto.setContent(QUESTION_2_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
         questionDto.getQuestionDetailsDto().setOptions(options)
+        questionDto.setNumberOfCorrect(2)
 
         when:
         response = restClient.put(
-                path: '/questions/' + question.getId(),
-                body: JsonOutput.toJson(questionDto),
-                requestContentType: 'application/json'
+            path: '/questions/' + question.getId(),
+            body: JsonOutput.toJson(questionDto),
+            requestContentType: 'application/json'
         )
 
         then: "check the response status"
         response != null
         response.status == 200
+        
         and: "if it responds with the correct question"
         def question = response.data
         question.id != null
@@ -151,41 +151,46 @@ class UpdateQuestionWebServiceIT extends SpockTest {
         def student = new User(USER_2_NAME, USER_2_EMAIL, USER_2_EMAIL,
                 User.Role.STUDENT, false, AuthUser.Type.TECNICO)
         student.authUser.setPassword(passwordEncoder.encode(USER_2_PASSWORD))
-        student.addCourse(courseExecution)
-        courseExecution.addUser(student)
+        student.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(student)
         userRepository.save(student)
+        
         createdUserLogin(USER_2_EMAIL, USER_2_PASSWORD)
 
-        def questionDto = new QuestionDto(question)
-        questionDto.setTitle(QUESTION_1_TITLE)
-        questionDto.setContent(QUESTION_1_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
-
-        and: 'different options'
+        and: "different options"
+        def options = new ArrayList<OptionDto>()
+        
         def optionDto = new OptionDto(optionOK)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(false)
-        def options = new ArrayList<OptionDto>()
         options.add(optionDto)
+        
         optionDto = new OptionDto(optionKO)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
         optionDto.setRelevance(1)
         options.add(optionDto)
+        
         optionDto = new OptionDto(optionKK)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
         optionDto.setRelevance(4)
         options.add(optionDto)
-        questionDto.setNumberOfCorrect(2)
+
+        and: "a changed questionDto"
+        def questionDto = new QuestionDto(question)
+        questionDto.setTitle(QUESTION_1_TITLE)
+        questionDto.setContent(QUESTION_1_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())        
         questionDto.getQuestionDetailsDto().setOptions(options)
+        questionDto.setNumberOfCorrect(2)
 
         when:
         response = restClient.put(
-                path: '/questions/' + question.getId(),
-                body: JsonOutput.toJson(questionDto),
-                requestContentType: 'application/json'
+            path: '/questions/' + question.getId(),
+            body: JsonOutput.toJson(questionDto),
+            requestContentType: 'application/json'
         )
 
         then: "expect a error"
@@ -200,9 +205,7 @@ class UpdateQuestionWebServiceIT extends SpockTest {
 
     def cleanup() {
         userRepository.deleteById(teacher.getId())
-        courseExecutionRepository.deleteById(courseExecution.getId())
-
-        courseRepository.deleteById(course.getId())
+        courseExecutionRepository.deleteById(externalCourseExecution.getId())
+        courseRepository.deleteById(externalCourse.getId())
     }
 }
-
