@@ -108,7 +108,7 @@ class CreateItemCombinationQuestionIT extends SpockTest {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter()
 
         restClient.post(
-                path: "/questions/" + questionDto.getId(),
+                path: "/courses/" + externalCourse.getId() + "/questions",
                 body: ow.writeValueAsString(questionDto),
                 requestContentType: "application/json"
         )
