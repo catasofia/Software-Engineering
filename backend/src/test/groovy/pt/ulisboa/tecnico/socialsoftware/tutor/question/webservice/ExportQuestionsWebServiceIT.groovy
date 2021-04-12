@@ -22,37 +22,25 @@ class ExportQuestionsWebServiceIT extends SpockTest {
     @LocalServerPort
     private int port
 
-    def course
-    def courseExecution
     def teacher
-    def question
+    def questionDto
     def response
 
     def setup() {
         restClient = new RESTClient("http://localhost:" + port)
         
-        course = new Course(COURSE_1_NAME, Course.Type.EXTERNAL)
-        courseRepository.save(course)
-        courseExecution = new CourseExecution(course, COURSE_1_ACRONYM, COURSE_1_ACADEMIC_TERM, Course.Type.EXTERNAL, LOCAL_DATE_TOMORROW)
-        courseExecutionRepository.save(courseExecution)
+        createExternalCourseAndExecution()
 
         teacher = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
                 User.Role.TEACHER, false, AuthUser.Type.TECNICO)
         teacher.authUser.setPassword(passwordEncoder.encode(USER_1_PASSWORD))
-        teacher.addCourse(courseExecution)
-        courseExecution.addUser(teacher)
+        teacher.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(teacher)
         userRepository.save(teacher)
 
         createdUserLogin(USER_1_EMAIL, USER_1_PASSWORD)
-
-        and: "a questiondto"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1);
-        questionDto.setTitle(QUESTION_1_TITLE)
-        questionDto.setContent(QUESTION_1_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
         
+        and: "four options"
         def options = new ArrayList<OptionDto>()
 
         def optionDto = new OptionDto()
@@ -78,18 +66,22 @@ class ExportQuestionsWebServiceIT extends SpockTest {
         optionDto.setRelevance(3)
         options.add(optionDto)
 
-        and: "a question"
+        and: "a questionDto"
+        questionDto = new QuestionDto()
+        questionDto.setKey(1);
+        questionDto.setTitle(QUESTION_1_TITLE)
+        questionDto.setContent(QUESTION_1_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
         questionDto.getQuestionDetailsDto().setOptions(options)
         questionDto.setNumberOfCorrect(3)
+        questionDto.setNumberOfAnswers(4)
 
-        question = new Question(course, questionDto)
-        question.setNumberOfAnswers(4)
-
-        questionRepository.save(question)
-        questionDetailsRepository.save(question.getQuestionDetails())
+        questionDto = questionService.createQuestion(externalCourse.getId(), questionDto)
     }
 
     def "export questions with multiple correct options for course execution"() {
+        
         given: "prepare request response"
         restClient.handler.failure = { resp, reader ->
             [response:resp, reader:reader]
@@ -100,7 +92,7 @@ class ExportQuestionsWebServiceIT extends SpockTest {
 
         when: "the web service is invoked"
         def map = restClient.get(
-            path: '/courses/' + courseExecution.getId() + '/questions/export',
+            path: '/courses/' + externalCourseExecution.getId() + '/questions/export',
             requestContentType: 'application/json'
         )
 
@@ -114,9 +106,9 @@ class ExportQuestionsWebServiceIT extends SpockTest {
         def student = new User(USER_2_NAME, USER_2_EMAIL, USER_2_EMAIL,
             User.Role.STUDENT, false, AuthUser.Type.TECNICO)
         student.authUser.setPassword(passwordEncoder.encode(USER_2_PASSWORD))
-        student.addCourse(courseExecution)
+        student.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(student)
         userRepository.save(student)
-        courseExecution.addUser(student)
         
         createdUserLogin(USER_2_EMAIL, USER_2_PASSWORD)
 
@@ -130,13 +122,12 @@ class ExportQuestionsWebServiceIT extends SpockTest {
 
         when: "the web service is invoked"
         def map = restClient.get(
-            path: '/courses/' + courseExecution.getId() + '/questions/export',
+            path: '/courses/' + externalCourseExecution.getId() + '/questions/export',
             requestContentType: 'application/json'
         )
 
         then: "the response status is forbidden"
         assert map['response'].status == 403
-        assert map['reader'] != null
 
         cleanup:
         userRepository.deleteById(student.getId())  
@@ -144,9 +135,7 @@ class ExportQuestionsWebServiceIT extends SpockTest {
 
     def cleanup() {
         userRepository.deleteById(teacher.getId())
-        courseExecutionRepository.deleteById(courseExecution.getId())
-
-        courseRepository.deleteById(course.getId())
+        courseExecutionRepository.deleteById(externalCourseExecution.getId())
+        courseRepository.deleteById(externalCourse.getId())
     }
 }
-

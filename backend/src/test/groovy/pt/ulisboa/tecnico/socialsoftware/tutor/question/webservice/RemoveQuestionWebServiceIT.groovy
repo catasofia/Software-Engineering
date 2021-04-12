@@ -22,54 +22,31 @@ class RemoveQuestionWebServiceIT extends SpockTest {
     @LocalServerPort
     private int port
 
-    def course
-    def courseExecution
     def teacher
-    def question
+    def questionDto
     def response
 
     def setup() {
         restClient = new RESTClient("http://localhost:" + port)
         
-        course = new Course(COURSE_1_NAME, Course.Type.EXTERNAL)
-        courseRepository.save(course)
-        courseExecution = new CourseExecution(course, COURSE_1_ACRONYM, COURSE_1_ACADEMIC_TERM, Course.Type.EXTERNAL, LOCAL_DATE_TOMORROW)
-        courseExecutionRepository.save(courseExecution)
-
+        createExternalCourseAndExecution()
+        
         teacher = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
                 User.Role.TEACHER, false, AuthUser.Type.TECNICO)
         teacher.authUser.setPassword(passwordEncoder.encode(USER_1_PASSWORD))
-        teacher.addCourse(courseExecution)
-        courseExecution.addUser(teacher)
+        teacher.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(teacher)
         userRepository.save(teacher)
 
         createdUserLogin(USER_1_EMAIL, USER_1_PASSWORD)
 
-        question = new Question()
-        question.setCourse(course)
-        question.setKey(1)
-        question.setTitle(QUESTION_1_TITLE)
-        question.setContent(QUESTION_1_CONTENT)
-        question.setStatus(Question.Status.AVAILABLE)
-        question.setNumberOfAnswers(4)
-        question.setNumberOfCorrect(3)
-        def questionDetails = new MultipleChoiceQuestion()
-        question.setQuestionDetails(questionDetails)
-        questionDetailsRepository.save(questionDetails)
-        questionRepository.save(question)
+        and: "four options"
+        def options = new ArrayList<OptionDto>()
 
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1);
-        questionDto.setTitle(QUESTION_1_TITLE)
-        questionDto.setContent(QUESTION_1_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
-        
         def optionDto = new OptionDto()
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
         optionDto.setRelevance(1)
-        def options = new ArrayList<OptionDto>()
         options.add(optionDto)
 
         optionDto = new OptionDto()
@@ -89,13 +66,23 @@ class RemoveQuestionWebServiceIT extends SpockTest {
         optionDto.setRelevance(3)
         options.add(optionDto)
 
+        and: "a questionDto"
+        questionDto = new QuestionDto()
+        questionDto.setKey(1);
+        questionDto.setTitle(QUESTION_1_TITLE)
+        questionDto.setContent(QUESTION_1_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
         questionDto.getQuestionDetailsDto().setOptions(options)
+        questionDto.setNumberOfCorrect(3)
+        questionDto.setNumberOfAnswers(4)
+        questionDto = questionService.createQuestion(externalCourse.getId(), questionDto)
     }
 
-    def "remove question with multiple correct options for course execution"() {
+    def "remove a question with multiple correct options for course execution"() {
         when:
         response = restClient.delete(
-            path: '/questions/' + question.getId(),
+            path: '/questions/' + questionDto.getId(),
             requestContentType: 'application/json'
         )
 
@@ -103,7 +90,7 @@ class RemoveQuestionWebServiceIT extends SpockTest {
         response != null
         response.status == 200
         
-        and: "check if there are no question in repository"
+        and: "check if the repositories are empty"
         questionRepository.count()==0
         optionRepository.count()==0
     }
@@ -113,19 +100,21 @@ class RemoveQuestionWebServiceIT extends SpockTest {
         def student = new User(USER_2_NAME, USER_2_EMAIL, USER_2_EMAIL,
             User.Role.STUDENT, false, AuthUser.Type.TECNICO)
         student.authUser.setPassword(passwordEncoder.encode(USER_2_PASSWORD))
-        student.addCourse(courseExecution)
-        courseExecution.addUser(student)
+        student.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(student)
         userRepository.save(student)
+        
         createdUserLogin(USER_2_EMAIL, USER_2_PASSWORD)
 
         when:
         response = restClient.delete(
-            path: '/questions/' + question.getId(),
+            path: '/questions/' + questionDto.getId(),
             requestContentType: 'application/json'
         )
 
         then: "expect a error"
         response == null
+        
         and: "check exception"
         def error = thrown(HttpResponseException)
         error.response.status == HttpStatus.SC_FORBIDDEN
@@ -136,9 +125,7 @@ class RemoveQuestionWebServiceIT extends SpockTest {
 
     def cleanup() {
         userRepository.deleteById(teacher.getId())
-        courseExecutionRepository.deleteById(courseExecution.getId())
-
-        courseRepository.deleteById(course.getId())
+        courseExecutionRepository.deleteById(externalCourseExecution.getId())
+        courseRepository.deleteById(externalCourse.getId())
     }
 }
-
