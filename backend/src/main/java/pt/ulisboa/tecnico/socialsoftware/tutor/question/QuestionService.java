@@ -63,6 +63,9 @@ public class QuestionService {
     private OptionRepository optionRepository;
 
     @Autowired
+    private ItemCombinationSlotRepository itemCombinationSlotRepository;
+
+    @Autowired
     private QuestionSubmissionService questionSubmissionService;
 
     @Autowired

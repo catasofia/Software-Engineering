@@ -17,11 +17,8 @@ public class ItemCombinationSlot implements DomainEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ElementCollection
-    @CollectionTable(name = "correctCombinations", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "item_combination_question_id")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<Integer> correctCombinations = new HashSet<>();
+    @ManyToMany
+    private static Set<ItemCombinationSlotDto> correctCombinations = new HashSet<>();
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -29,13 +26,11 @@ public class ItemCombinationSlot implements DomainEntity{
     @Column(nullable = false)
     private Integer internId;
 
-
-    @Column(nullable = false)
-    private char column;
-
+    @Column(columnDefinition = "CHAR")
+    private char itemsColumn;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_combination_id")
+    @JoinColumn(name = "question_details_id")
     private ItemCombinationQuestion questionDetails;
 
     public ItemCombinationSlot(){}
@@ -44,13 +39,12 @@ public class ItemCombinationSlot implements DomainEntity{
         this.correctCombinations = itemCombinationSlotDto.getCorrectCombination();
         this.content = itemCombinationSlotDto.getContent();
         this.internId = itemCombinationSlotDto.getInternId();
-        this.column = itemCombinationSlotDto.getColumn();
+        this.itemsColumn = itemCombinationSlotDto.getColumn();
     }
 
     public Integer getId() {
         return id;
     }
-
 
     public void setId(Integer id) {
         this.id = id;
@@ -60,23 +54,32 @@ public class ItemCombinationSlot implements DomainEntity{
         this.internId = internId;
     }
 
-    public void setColumn(char column) {
-        this.column = column;
+    public void setColumn(char itemsColumn) {
+        this.itemsColumn = itemsColumn;
     }
 
     public char getColumn() {
-        return column;
+        return itemsColumn;
     }
 
     public Integer getInternId() {
         return internId;
     }
 
-    public Set<Integer> getCorrectCombinations() {
+    public Set<ItemCombinationSlotDto> getCorrectCombinations() {
         return correctCombinations;
     }
 
-    public void setCorrectCombinations(Set<Integer> correctCombinations) {
+    public String getCorrectCombinationsContent() {
+        String content = "";
+
+        for(ItemCombinationSlotDto item: correctCombinations){
+            content += item.getContent() + " | ";
+        }
+        return content;
+    }
+
+    public void setCorrectCombinations(Set<ItemCombinationSlotDto> correctCombinations) {
         this.correctCombinations = correctCombinations;
     }
 

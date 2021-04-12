@@ -51,8 +51,8 @@ class RemoveItemCombinationQuestionTest extends SpockTest {
         item2.setContent(ITEM_2_CONTENT)
         bItems.add(item2)
 
-        comb1 = new HashSet<Integer>()
-        comb1.add(2)
+        comb1 = new HashSet<ItemCombinationSlotDto>()
+        comb1.add(item2)
         item1.setCorrectCombinations(comb1)
 
         questionDetails.setItemCombinationSlots(aItems, bItems)

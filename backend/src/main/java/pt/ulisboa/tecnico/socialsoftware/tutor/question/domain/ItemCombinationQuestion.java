@@ -22,7 +22,6 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 @DiscriminatorValue(Question.QuestionTypes.ITEM_COMBINATION_QUESTION)
 public class ItemCombinationQuestion extends QuestionDetails{
 
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.EAGER, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<ItemCombinationSlot> listOne = new HashSet<>();
@@ -50,14 +49,12 @@ public class ItemCombinationQuestion extends QuestionDetails{
         boolean allEmpty = true;
         boolean sameSet = true;
         for(ItemCombinationSlotDto item: columnOne){
-            //checks if there are no combinations
             if (!(item.getCorrectCombination().isEmpty())){
                 allEmpty = false;
             }
-            //checks if combination is in the same set
-            for (Integer combination: item.getCorrectCombination()){
+            for (ItemCombinationSlotDto combination: item.getCorrectCombination()){
                 for(ItemCombinationSlotDto item2: columnOne){
-                    if(combination == item2.getInternId()){
+                    if(combination.getInternId() == item2.getInternId()){
                         sameSet = false;
                     }
                 }
@@ -65,14 +62,12 @@ public class ItemCombinationQuestion extends QuestionDetails{
         }
 
         for(ItemCombinationSlotDto item: columnTwo){
-            //checks if there are no combinations
             if (!(item.getCorrectCombination().isEmpty())){
                 allEmpty = false;
             }
-            //checks if combination is in the same set
-            for (Integer combination: item.getCorrectCombination()){
+            for (ItemCombinationSlotDto combination: item.getCorrectCombination()){
                 for(ItemCombinationSlotDto item2: columnTwo){
-                    if(combination == item2.getInternId()){
+                    if(combination.getInternId() == item2.getInternId()){
                         sameSet = false;
                     }
                 }
@@ -185,11 +180,12 @@ public class ItemCombinationQuestion extends QuestionDetails{
         String correctOptions = "";
 
         for(ItemCombinationSlot item: listOne){
-            for (Integer combination: item.getCorrectCombinations()){
+            for (ItemCombinationSlotDto combination: item.getCorrectCombinations()){
                 correctOptions = correctOptions + item.getInternId().toString() + " combines with " + combination.toString();
             }
             correctOptions = correctOptions + " \n ";
         }
+        System.out.println(correctOptions);
         return correctOptions;
     }
 

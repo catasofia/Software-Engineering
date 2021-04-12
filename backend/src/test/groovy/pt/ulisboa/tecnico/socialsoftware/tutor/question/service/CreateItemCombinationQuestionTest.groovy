@@ -163,8 +163,8 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         item3.setInternId(3)
         bItems.add(item3)
 
-        def comb1 = new HashSet<Integer>()
-        comb1.add(2)
+        def comb1 = new HashSet<ItemCombinationSlotDto>()
+        comb1.add(item2)
         item1.setCorrectCombinations(comb1)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
@@ -227,13 +227,13 @@ class CreateItemCombinationQuestionTest extends SpockTest {
 
 
         def comb1 = new HashSet<Integer>()
-        comb1.add(6)
+        comb1.add(item6)
         item1.setCorrectCombinations(comb1)
         def comb2 = new HashSet<Integer>()
-        comb2.add(4)
+        comb2.add(item4)
         item2.setCorrectCombinations(comb2)
         def comb3 = new HashSet<Integer>()
-        comb3.add(5)
+        comb3.add(item5)
         item3.setCorrectCombinations(comb3)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
@@ -311,11 +311,11 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         bItems.add(item8)
 
         def comb4 = new HashSet<Integer>()
-        comb4.add(5)
-        comb4.add(8)
+        comb4.add(item5)
+        comb4.add(item8)
         item2.setCorrectCombinations(comb4)
         def comb5 = new HashSet<Integer>()
-        comb5.add(7)
+        comb5.add(item7)
         item4.setCorrectCombinations(comb5)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
@@ -376,14 +376,14 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         bItems.add(item5)
 
         def comb6 = new HashSet<Integer>()
-        comb6.add(3)
-        comb6.add(4)
-        comb6.add(5)
+        comb6.add(item3)
+        comb6.add(item4)
+        comb6.add(item5)
         item1.setCorrectCombinations(comb6)
         def comb7 = new HashSet<Integer>()
-        comb7.add(3)
-        comb7.add(4)
-        comb7.add(5)
+        comb7.add(item3)
+        comb7.add(item4)
+        comb7.add(item5)
         item2.setCorrectCombinations(comb7)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
