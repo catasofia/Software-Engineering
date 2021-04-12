@@ -81,6 +81,18 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         def result = questionRepository.findAll().get(0)
         result.getQuestionDetails().getColumnOne().size() == 2
         result.getQuestionDetails().getColumnTwo().size() == 1
+
+        result.getQuestionDetails().getColumnOne().contains(item1)
+        item1.getContent() == ITEM_1_CONTENT
+        item1.getCorrectCombinations().size() == 1
+        item1.getCorrectCombinations().contains(item2)
+
+        result.getQuestionDetails().getColumnOne().contains(item3)
+        item3.getContent() == ITEM_3_CONTENT
+        item3.getCorrectCombinations().size() == 1
+        item3.getCorrectCombinations().contains(item2)
+
+        result.getQuestionDetails().getColumnTwo().contains(item2)
     }
 
     def "update an Item Combination Question by adding an item in B group and it's relations" () {
@@ -106,6 +118,15 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         def result = questionRepository.findAll().get(0)
         result.getQuestionDetails().getColumnOne().size() == 1
         result.getQuestionDetails().getColumnTwo().size() == 2
+
+        result.getQuestionDetails().getColumnOne().contains(item1)
+        item1.getContent() == ITEM_1_CONTENT
+        item1.getCorrectCombinations().size() == 2
+        item1.getCorrectCombinations().contains(item2)
+        item1.getCorrectCombinations().contains(item3)
+
+        result.getQuestionDetails().getColumnTwo().contains(item2)
+        result.getQuestionDetails().getColumnTwo().contains(item3)
     }
 
 
@@ -141,6 +162,20 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         def result = questionRepository.findAll().get(0)
         result.getQuestionDetails().getColumnOne().size() == 2
         result.getQuestionDetails().getColumnTwo().size() == 2
+
+        result.getQuestionDetails().getColumnOne().contains(item1)
+        item1.getContent() == ITEM_1_CONTENT
+        item1.getCorrectCombinations().size() == 2
+        item1.getCorrectCombinations().contains(item2)
+        item1.getCorrectCombinations().contains(item4)
+
+        result.getQuestionDetails().getColumnOne().contains(item3)
+        item3.getContent() == ITEM_3_CONTENT
+        item3.getCorrectCombinations().size() == 1
+        item3.getCorrectCombinations().contains(item2)
+
+        result.getQuestionDetails().getColumnTwo().contains(item2)
+        result.getQuestionDetails().getColumnTwo().contains(item4)
     }
 
 

@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class UpdateItemCombinationQuestionIT extends SpockTest {
+class ExportItemCombinationQuestionIT extends SpockTest {
     @LocalServerPort
     private int port
 
@@ -90,29 +90,10 @@ class UpdateItemCombinationQuestionIT extends SpockTest {
         item5.setCorrectCombinations(comb5)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
-        questionDto = questionService.createQuestion(externalCourse.getId(), questionDto)
     }
 
-    def "update an item combination question as teacher"() {
-        given: 'an item to insert in each group and its combinations'
-
-        def item6 = new ItemCombinationSlotDto()
-        item6.setContent(ITEM_6_CONTENT)
-        item6.setInternId(6)
-        aItems.add(item6)
-
-        def item7 = new ItemCombinationSlotDto()
-        item7.setContent(ITEM_7_CONTENT)
-        item7.setInternId(7)
-        bItems.add(item7)
-
-        def comb6 = new HashSet<ItemCombinationSlotDto>()
-        comb6.add(item4)
-        item6.setCorrectCombinations(comb6)
-
-        questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
-
-        and: 'a teacher'
+    def "export an item combination question as teacher"() {
+        given: 'a teacher'
         user = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
                 User.Role.TEACHER, false, AuthUser.Type.TECNICO)
         user.authUser.setPassword(passwordEncoder.encode(USER_1_PASSWORD))
@@ -122,75 +103,27 @@ class UpdateItemCombinationQuestionIT extends SpockTest {
 
         createdUserLogin(USER_1_EMAIL, USER_1_PASSWORD)
 
-        when: 'a request is posted'
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter()
+        and: 'prepare request response'
+        restClient.handler.failure = { resp, reader ->
+            [response:resp, reader:reader]
+        }
+        restClient.handler.success = { resp, reader ->
+            [response:resp, reader:reader]
+        }
 
-        def response = restClient.put(
-                path: "/questions/" + questionDto.getId(),
-                body: ow.writeValueAsString(questionDto),
+        when: 'a request is posted'
+        def map = restClient.get(
+                path: "/courses/" + externalCourse.getId() + "/questions/export",
                 requestContentType: "application/json"
         )
 
-        then: "check the response status"
-        response != null
-        response.status == 200
-
-        and: "the result"
-        def question = response.data
-        question.id != null
-        question.status == Question.Status.AVAILABLE.name()
-        question.title == QUESTION_1_TITLE
-        question.content == QUESTION_1_CONTENT
-        question.image == null
-        question.questionDetailsDto.columnOne.size() == 4
-        question.questionDetailsDto.columnTwo.size() == 3
-
-        question.questionDetailsDto.columnOne.contains(item1)
-        item1.content == ITEM_1_CONTENT
-        item1.correctCombinations.size() == 2
-        item1.correctCombinations.contains(item3)
-        item1.correctCombinations.contains(item4)
-
-        question.questionDetailsDto.columnOne.contains(item2)
-        item2.content == ITEM_2_CONTENT
-        item2.correctCombinations.size() == 1
-        item2.correctCombinations.contains(item3)
-
-        question.questionDetailsDto.columnOne.contains(item5)
-        item5.content == ITEM_5_CONTENT
-        item5.correctCombinations.size() == 1
-        item5.correctCombinations.contains(item4)
-
-        question.questionDetailsDto.columnOne.contains(item6)
-        item6.content == ITEM_6_CONTENT
-        item6.correctCombinations.size() == 1
-        item6.correctCombinations.contains(item4)
-
-        question.questionDetailsDto.columnTwo.contains(item3)
-        question.questionDetailsDto.columnTwo.contains(item4)
-        question.questionDetailsDto.columnTwo.contains(item7)
+        then: "the response status is OK"
+        assert map['response'].status == 200
+        assert map['reader'] != null
     }
 
-    def "cannot update an item combination question as student"() {
-        given: 'an item to insert in each group and its combinations'
-
-        def item6 = new ItemCombinationSlotDto()
-        item6.setContent(ITEM_6_CONTENT)
-        item6.setInternId(6)
-        aItems.add(item6)
-
-        def item7 = new ItemCombinationSlotDto()
-        item7.setContent(ITEM_7_CONTENT)
-        item7.setInternId(7)
-        bItems.add(item7)
-
-        def comb6 = new HashSet<ItemCombinationSlotDto>()
-        comb6.add(item4)
-        item6.setCorrectCombinations(comb6)
-
-        questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
-
-        and: 'a student'
+    def "cannot export an item combination question as student"() {
+        given: 'a student'
         user = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
                 User.Role.STUDENT, false, AuthUser.Type.TECNICO)
         user.authUser.setPassword(passwordEncoder.encode(USER_1_PASSWORD))
@@ -200,18 +133,23 @@ class UpdateItemCombinationQuestionIT extends SpockTest {
 
         createdUserLogin(USER_1_EMAIL, USER_1_PASSWORD)
 
-        when: 'a request is posted'
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter()
+        and: 'prepare request response'
+        restClient.handler.failure = { resp, reader ->
+            [response:resp, reader:reader]
+        }
+        restClient.handler.success = { resp, reader ->
+            [response:resp, reader:reader]
+        }
 
-        restClient.put(
-                path: "/questions/" + questionDto.getId(),
-                body: ow.writeValueAsString(questionDto),
+        when: 'a request is posted'
+
+        def map = restClient.get(
+                path: "/courses/" + externalCourse.getId() + "/questions/export",
                 requestContentType: "application/json"
         )
 
-        then: 'Access is forbidden'
-        def error = thrown(HttpResponseException)
-        error.response.status == HttpStatus.SC_FORBIDDEN
+        then: "the response status is FORBIDDEN"
+        assert map['response'].status == 403
     }
 
     def cleanup() {

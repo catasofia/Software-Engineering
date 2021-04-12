@@ -40,8 +40,6 @@ class CreateItemCombinationQuestionTest extends SpockTest {
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
 
-
-
         when:
         def result = QuestionService.createQuestion(externalCourse.getId(), questionDto)
 
@@ -78,7 +76,6 @@ class CreateItemCombinationQuestionTest extends SpockTest {
 
         def bItems = new HashSet<ItemCombinationSlotDto>()
 
-
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
 
         when:
@@ -87,7 +84,6 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         then: "exception is thrown"
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.AT_LEAST_ONE_SLOT_NEEDED_FOR_EACH_COLUMN
-
     }
 
     def "Cannot create an Item Combination Question with no relation between the groups of 2 elements each"() {
@@ -225,18 +221,20 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         item6.setInternId(6)
         bItems.add(item6)
 
-
-        def comb1 = new HashSet<Integer>()
+        def comb1 = new HashSet<ItemCombinationSlotDto>()
         comb1.add(item6)
         item1.setCorrectCombinations(comb1)
-        def comb2 = new HashSet<Integer>()
+
+        def comb2 = new HashSet<ItemCombinationSlotDto>()
         comb2.add(item4)
         item2.setCorrectCombinations(comb2)
-        def comb3 = new HashSet<Integer>()
+
+        def comb3 = new HashSet<ItemCombinationSlotDto>()
         comb3.add(item5)
         item3.setCorrectCombinations(comb3)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
+
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
@@ -248,13 +246,32 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         result.getStatus() == Question.Status.AVAILABLE
         result.getTitle() == QUESTION_1_TITLE
         result.getContent() == QUESTION_1_CONTENT
-        result.getQuestionDetails().getColumnOne().size() == 3
-        result.getQuestionDetails().getColumnTwo().size() == 3
         result.getImage().getId() != null
         result.getImage().getUrl() == IMAGE_1_URL
         result.getImage().getWidth() == 20
         result.getCourse().getName() == COURSE_1_NAME
+        result.getQuestionDetails().getColumnOne().size() == 3
+        result.getQuestionDetails().getColumnTwo().size() == 3
         externalCourse.getQuestions().contains(result)
+
+        result.getQuestionDetails().getColumnOne().contains(item1)
+        item1.getContent() == ITEM_1_CONTENT
+        item1.getCorrectCombinations().size() == 1
+        item1.getCorrectCombinations().contains(item6)
+
+        result.getQuestionDetails().getColumnOne().contains(item2)
+        item2.getContent() == ITEM_2_CONTENT
+        item2.getCorrectCombinations().size() == 1
+        item2.getCorrectCombinations().contains(item4)
+
+        result.getQuestionDetails().getColumnOne().contains(item3)
+        item3.getContent() == ITEM_3_CONTENT
+        item3.getCorrectCombinations().size() == 1
+        item3.getCorrectCombinations().contains(item5)
+
+        result.getQuestionDetails().getColumnTwo().contains(item4)
+        result.getQuestionDetails().getColumnTwo().contains(item5)
+        result.getQuestionDetails().getColumnTwo().contains(item6)
     }
 
     def "Create an Item Combination Question where one element of A group linked to 2 elements of B group and some items don't bind to any other"() {
@@ -310,13 +327,14 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         item8.setInternId(8)
         bItems.add(item8)
 
-        def comb4 = new HashSet<Integer>()
+        def comb4 = new HashSet<ItemCombinationSlotDto>()
         comb4.add(item5)
         comb4.add(item8)
-        item2.setCorrectCombinations(comb4)
-        def comb5 = new HashSet<Integer>()
-        comb5.add(item7)
-        item4.setCorrectCombinations(comb5)
+        item4.setCorrectCombinations(comb4)
+      
+        def comb3 = new HashSet<ItemCombinationSlotDto>()
+        comb3.add(item7)
+        item3.setCorrectCombinations(comb3)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
 
@@ -331,10 +349,34 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         result.getStatus() == Question.Status.AVAILABLE
         result.getTitle() == QUESTION_1_TITLE
         result.getContent() == QUESTION_1_CONTENT
-        result.getQuestionDetails().getColumnOne().size() == 4
-        result.getQuestionDetails().getColumnTwo().size() == 4
         result.getCourse().getName() == COURSE_1_NAME
         externalCourse.getQuestions().contains(result)
+        result.getQuestionDetails().getColumnOne().size() == 4
+        result.getQuestionDetails().getColumnTwo().size() == 4
+
+        result.getQuestionDetails().getColumnOne().contains(item1)
+        item1.getContent() == ITEM_1_CONTENT
+        item1.getCorrectCombinations().size() == 0
+
+        result.getQuestionDetails().getColumnOne().contains(item2)
+        item2.getContent() == ITEM_2_CONTENT
+        item2.getCorrectCombinations().size() == 0
+
+        result.getQuestionDetails().getColumnOne().contains(item3)
+        item3.getContent() == ITEM_3_CONTENT
+        item3.getCorrectCombinations().size() == 1
+        item3.getCorrectCombinations().contains(item7)
+
+        result.getQuestionDetails().getColumnOne().contains(item4)
+        item4.getContent() == ITEM_4_CONTENT
+        item4.getCorrectCombinations().size() == 2
+        item4.getCorrectCombinations().contains(item5)
+        item4.getCorrectCombinations().contains(item8)
+
+        result.getQuestionDetails().getColumnTwo().contains(item5)
+        result.getQuestionDetails().getColumnTwo().contains(item6)
+        result.getQuestionDetails().getColumnTwo().contains(item7)
+        result.getQuestionDetails().getColumnTwo().contains(item8)
     }
 
     def "Create an Item Combination Question where all the elements of A group linked to all the elements of B group and two groups have different number of elements"() {
@@ -375,16 +417,17 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         item5.setInternId(5)
         bItems.add(item5)
 
-        def comb6 = new HashSet<Integer>()
-        comb6.add(item3)
-        comb6.add(item4)
-        comb6.add(item5)
-        item1.setCorrectCombinations(comb6)
-        def comb7 = new HashSet<Integer>()
-        comb7.add(item3)
-        comb7.add(item4)
-        comb7.add(item5)
-        item2.setCorrectCombinations(comb7)
+        def comb1 = new HashSet<ItemCombinationSlotDto>()
+        comb1.add(item3)
+        comb1.add(item4)
+        comb1.add(item5)
+        item1.setCorrectCombinations(comb1)
+      
+        def comb2 = new HashSet<ItemCombinationSlotDto>()
+        comb2.add(item3)
+        comb2.add(item4)
+        comb2.add(item5)
+        item2.setCorrectCombinations(comb2)
 
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
 
@@ -399,13 +442,29 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         result.getStatus() == Question.Status.AVAILABLE
         result.getTitle() == QUESTION_1_TITLE
         result.getContent() == QUESTION_1_CONTENT
-        result.getQuestionDetails().getColumnOne().size() == 2
-        result.getQuestionDetails().getColumnTwo().size() == 3
         result.getCourse().getName() == COURSE_1_NAME
         externalCourse.getQuestions().contains(result)
+        result.getQuestionDetails().getColumnOne().size() == 2
+        result.getQuestionDetails().getColumnTwo().size() == 3
+
+        result.getQuestionDetails().getColumnOne().contains(item1)
+        item1.getContent() == ITEM_1_CONTENT
+        item1.getCorrectCombinations().size() == 3
+        item1.getCorrectCombinations().contains(item3)
+        item1.getCorrectCombinations().contains(item4)
+        item1.getCorrectCombinations().contains(item5)
+
+        result.getQuestionDetails().getColumnOne().contains(item2)
+        item2.getContent() == ITEM_2_CONTENT
+        item2.getCorrectCombinations().size() == 3
+        item2.getCorrectCombinations().contains(item3)
+        item2.getCorrectCombinations().contains(item4)
+        item2.getCorrectCombinations().contains(item5)
+
+        result.getQuestionDetails().getColumnTwo().contains(item3)
+        result.getQuestionDetails().getColumnTwo().contains(item4)
+        result.getQuestionDetails().getColumnTwo().contains(item5)
     }
-
-
 
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
