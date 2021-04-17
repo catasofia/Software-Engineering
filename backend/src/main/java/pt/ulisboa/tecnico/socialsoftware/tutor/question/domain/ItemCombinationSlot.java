@@ -17,8 +17,8 @@ public class ItemCombinationSlot implements DomainEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToMany
-    private static Set<ItemCombinationSlotDto> correctCombinations = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<ItemCombinationSlot> correctCombinations = new HashSet<ItemCombinationSlot>();
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -28,7 +28,7 @@ public class ItemCombinationSlot implements DomainEntity{
 
     @Column(columnDefinition = "CHAR")
     private char itemsColumn;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_details_id")
     private ItemCombinationQuestion questionDetails;
@@ -36,7 +36,6 @@ public class ItemCombinationSlot implements DomainEntity{
     public ItemCombinationSlot(){}
 
     public ItemCombinationSlot(ItemCombinationSlotDto itemCombinationSlotDto) {
-        this.correctCombinations = itemCombinationSlotDto.getCorrectCombination();
         this.content = itemCombinationSlotDto.getContent();
         this.internId = itemCombinationSlotDto.getInternId();
         this.itemsColumn = itemCombinationSlotDto.getColumn();
@@ -66,21 +65,21 @@ public class ItemCombinationSlot implements DomainEntity{
         return internId;
     }
 
-    public Set<ItemCombinationSlotDto> getCorrectCombinations() {
+    public Set<ItemCombinationSlot> getCorrectCombinations() {
         return correctCombinations;
     }
 
     public String getCorrectCombinationsContent() {
         String content = "";
 
-        for(ItemCombinationSlotDto item: correctCombinations){
-            content += item.getContent() + " | ";
+        for(ItemCombinationSlot item: correctCombinations){
+            content += item.getContent() + "!";
         }
         return content;
     }
 
-    public void setCorrectCombinations(Set<ItemCombinationSlotDto> correctCombinations) {
-        this.correctCombinations = correctCombinations;
+    public void setCorrectCombinations(ItemCombinationSlot comb) {
+        this.correctCombinations.add(comb);
     }
 
     public String getContent() {

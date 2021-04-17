@@ -53,7 +53,7 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
     }
 
-    /*def 'export and import Item Combination Question to xml'() {
+    def 'export and import Item Combination Question to xml'() {
         given: 'a xml with questions'
         def questionsXml = questionService.exportQuestionsToXml()
         questionsXml != null
@@ -72,9 +72,19 @@ class ImportExportItemCombinationQuestionsTest extends SpockTest {
         questionResult.getTitle() == QUESTION_1_TITLE
         questionResult.getContent() == QUESTION_1_CONTENT
         questionResult.getStatus() == Question.Status.AVAILABLE.name()
+
         questionResult.getQuestionDetailsDto().getColumnOne().size() == 1
         questionResult.getQuestionDetailsDto().getColumnTwo().size() == 1
-    }*/
+
+        questionResult.getQuestionDetailsDto().getColumnTwo().toArray()[0].getContent() == ITEM_2_CONTENT
+
+        questionResult.getQuestionDetailsDto().getColumnOne().toArray()[0].getContent() == ITEM_1_CONTENT
+
+        def result = questionRepository.findAll().get(0)
+
+        result.getQuestionDetails().getColumnOne().toArray()[0].getCorrectCombinations().toArray()[0].getContent() == ITEM_2_CONTENT
+
+    }
 
     def "export to latex"(){
         when:

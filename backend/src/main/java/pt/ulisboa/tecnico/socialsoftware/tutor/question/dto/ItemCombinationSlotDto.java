@@ -66,6 +66,10 @@ public class ItemCombinationSlotDto implements Serializable{
         this.correctCombinations = correctCombinations;
     }
 
+    public void addCombination(ItemCombinationSlotDto correctCombination) {
+        this.correctCombinations.add(correctCombination);
+    }
+
 
     @Override
     public String toString() {

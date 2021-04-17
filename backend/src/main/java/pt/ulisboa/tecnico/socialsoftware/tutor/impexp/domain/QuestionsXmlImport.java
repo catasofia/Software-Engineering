@@ -235,15 +235,20 @@ public class QuestionsXmlImport {
         ItemCombinationQuestionDto questionDto = new ItemCombinationQuestionDto();
         var columnOne = new HashSet<ItemCombinationSlotDto>();
         var columnTwo = new HashSet<ItemCombinationSlotDto>();
+        HashMap<String, List<String>> combinations= new HashMap<String, List<String>>();
+
 
         for (Element slotElement : questionElement.getChild("items").getChildren("item")) {
             var item = new ItemCombinationSlotDto();
             item.setInternId(Integer.valueOf(slotElement.getAttributeValue("internId")));
-            var combinations = new HashSet<ItemCombinationSlotDto>();
 
-            String aux1 = slotElement.getAttributeValue("correctCombinations").substring(1, slotElement.getAttributeValue("correctCombinations").length() -1);
-            String[] aux = aux1.split(",");
+            String aux1 = slotElement.getAttributeValue("correctCombinations");
+            String[] aux = aux1.split("!");
+            System.out.println(aux);
             List<String> parts = Arrays.asList(aux);
+            item.setContent(slotElement.getAttributeValue("content"));
+
+            combinations.put(item.getContent(), parts);
 
             if(slotElement.getAttributeValue("column").equals(("a"))){
                 columnOne.add(item);
@@ -251,23 +256,25 @@ public class QuestionsXmlImport {
             else{
                 columnTwo.add(item);
             }
+        }
 
-            for (String s : parts) {
-                if(!(s.equals(""))) {
-                    Integer a = Integer.parseInt(s);
+        for(String content: combinations.keySet()){
+            System.out.println(content);
+            for(var comb: combinations.get(content)){
+                System.out.println(comb);
+                for(ItemCombinationSlotDto item: columnOne){
+                    System.out.println(item);
+                    if(item.getContent().equals(content)){
+                        for(ItemCombinationSlotDto combination: columnTwo){
+                           System.out.println(combination);
 
-                    for(ItemCombinationSlotDto slot: columnTwo) {
-                        if (a == slot.getInternId()) {
-                            combinations.add(slot);
+                            if(comb.equals(combination.getContent())){
+                                item.addCombination(combination);
+                            }
                         }
                     }
-
                 }
             }
-
-            item.setCorrectCombinations(combinations);
-            item.setContent(slotElement.getValue());
-
 
         }
 
