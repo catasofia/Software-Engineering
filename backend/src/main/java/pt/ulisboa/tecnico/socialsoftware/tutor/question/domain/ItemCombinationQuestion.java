@@ -24,11 +24,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.EAGER, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private final Set<ItemCombinationSlot> listOne = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.EAGER, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private final Set<ItemCombinationSlot> listTwo = new HashSet<>();
+    private final Set<ItemCombinationSlot> items = new HashSet<>();
 
     public ItemCombinationQuestion(){ super(); }
 
@@ -37,9 +33,29 @@ public class ItemCombinationQuestion extends QuestionDetails{
         setItemCombinationSlots(itemCombinationQuestionDto.getColumnOne(), itemCombinationQuestionDto.getColumnTwo());
     }
 
-    public Set<ItemCombinationSlot> getColumnOne(){ return listOne; }
+    public Set<ItemCombinationSlot> getItems(){ return items; }
 
-    public Set<ItemCombinationSlot> getColumnTwo(){ return listTwo; }
+    public Set<ItemCombinationSlot> getColumnTwo(){
+        Set<ItemCombinationSlot> colTwo = new HashSet<ItemCombinationSlot>();
+
+        for(ItemCombinationSlot item: items){
+            if (item.getColumn() == 'b'){
+                colTwo.add(item);
+            }
+        }
+        return colTwo;
+    }
+
+    public Set<ItemCombinationSlot> getColumnOne(){
+        Set<ItemCombinationSlot> colOne = new HashSet<ItemCombinationSlot>();
+
+        for(ItemCombinationSlot item: items){
+            if (item.getColumn() == 'a'){
+                colOne.add(item);
+            }
+        }
+        return colOne;
+    }
 
     public void setItemCombinationSlots(Set<ItemCombinationSlotDto> columnOne, Set<ItemCombinationSlotDto> columnTwo){
         if(columnOne.isEmpty() || columnTwo.isEmpty()){
@@ -82,59 +98,75 @@ public class ItemCombinationQuestion extends QuestionDetails{
             throw new TutorException(COMBINATION_IN_SAME_SET);
         }
 
-        for(var itemCombinationSlotDto : columnOne){
-            itemCombinationSlotDto.setColumn('a');
-            if(itemCombinationSlotDto.getId() == null){
-                ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
-                itemCombinationSlot.setQuestionDetails(this);
-                this.listOne.add(itemCombinationSlot);
-
-            }
-            else{
-                ItemCombinationSlot itemCombinationSlot = getColumnOne()
-                        .stream()
-                        .filter(op -> op.getId().equals(itemCombinationSlotDto.getId()))
-                        .findFirst()
-                        .orElseThrow(() -> new TutorException(ITEM_COMBINATION_SLOT_NOT_FOUND, itemCombinationSlotDto.getId()));
-
-                itemCombinationSlot.setContent(itemCombinationSlotDto.getContent());
-                itemCombinationSlot.setCorrectCombinations(itemCombinationSlotDto.getCorrectCombination());
-            }
-
-        }
-
+        HashMap<String, Set<ItemCombinationSlotDto>> combinations= new HashMap<String, Set<ItemCombinationSlotDto>>();
 
         for(var itemCombinationSlotDto : columnTwo) {
             itemCombinationSlotDto.setColumn('b');
             if (itemCombinationSlotDto.getId() == null) {
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
-                this.listTwo.add(itemCombinationSlot);
+                this.items.add(itemCombinationSlot);
             }
             else {
-                ItemCombinationSlot itemCombinationSlot = getColumnTwo()
+                ItemCombinationSlot itemCombinationSlot = getItems()
                         .stream()
                         .filter(op -> op.getId().equals(itemCombinationSlotDto.getId()))
                         .findFirst()
                         .orElseThrow(() -> new TutorException(ITEM_COMBINATION_SLOT_NOT_FOUND, itemCombinationSlotDto.getId()));
 
                 itemCombinationSlot.setContent(itemCombinationSlotDto.getContent());
-                itemCombinationSlot.setCorrectCombinations(itemCombinationSlotDto.getCorrectCombination());
             }
+        }
+
+
+        for(var itemCombinationSlotDto : columnOne){
+            itemCombinationSlotDto.setColumn('a');
+            combinations.put(itemCombinationSlotDto.getContent(), itemCombinationSlotDto.getCorrectCombination());
+            if(itemCombinationSlotDto.getId() == null){
+                ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
+                itemCombinationSlot.setQuestionDetails(this);
+                this.items.add(itemCombinationSlot);
+
+            }
+            else{
+                ItemCombinationSlot itemCombinationSlot = getItems()
+                        .stream()
+                        .filter(op -> op.getId().equals(itemCombinationSlotDto.getId()))
+                        .findFirst()
+                        .orElseThrow(() -> new TutorException(ITEM_COMBINATION_SLOT_NOT_FOUND, itemCombinationSlotDto.getId()));
+
+                itemCombinationSlot.setContent(itemCombinationSlotDto.getContent());
+
+            }
+
+        }
+
+        for(String content: combinations.keySet()){
+            for(var comb: combinations.get(content)){
+                ItemCombinationSlot aux = getItem(comb.getContent());
+                getItem(content).setCorrectCombinations(aux);
+            }
+
         }
     }
 
     public void update(ItemCombinationQuestionDto questionDetails) {
-        for (var item : this.listOne) {
+        for (var item : this.items) {
             item.delete();
         }
-        for (var item : this.listTwo) {
-            item.delete();
-        }
-        this.listOne.clear();
-        this.listTwo.clear();
+        this.items.clear();
 
         setItemCombinationSlots(questionDetails.getColumnOne(), questionDetails.getColumnTwo());
+    }
+
+    public ItemCombinationSlot getItem(String content){
+        ItemCombinationSlot item_aux = new ItemCombinationSlot();
+        for(ItemCombinationSlot item: items){
+            if(item.getContent().equals(content)){
+                return item_aux = item;
+            }
+        }
+        return item_aux;
     }
 
     @Override
@@ -159,35 +191,32 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public QuestionDetailsDto getQuestionDetailsDto() {
-            return new ItemCombinationQuestionDto(this);
+        return new ItemCombinationQuestionDto(this);
     }
 
     @Override
     public void delete() {
         super.delete();
-        for (var item : this.listOne) {
+        for (var item : this.items) {
             item.delete();
         }
-        for (var item : this.listTwo) {
-            item.delete();
-        }
-        this.listOne.clear();
-        this.listTwo.clear();
+        this.items.clear();
     }
 
     @Override
     public String getCorrectAnswerRepresentation() {
         String correctOptions = "";
 
-        for(ItemCombinationSlot item: listOne){
-            for (ItemCombinationSlotDto combination: item.getCorrectCombinations()){
-                correctOptions = correctOptions + item.getInternId().toString() + " combines with " + combination.toString();
+        for(ItemCombinationSlot item: items){
+            for (ItemCombinationSlot combination: item.getCorrectCombinations()){
+                correctOptions = correctOptions + item.getContent().toString() + " combines with " + combination.getContent().toString();
             }
             correctOptions = correctOptions + " \n ";
         }
         System.out.println(correctOptions);
         return correctOptions;
     }
+
 
     @Override
     public void update(Updator updator) {
@@ -200,10 +229,8 @@ public class ItemCombinationQuestion extends QuestionDetails{
     }
 
     public void visitItemCombinationSlot(Visitor visitor) {
-        for (var slot: this.getColumnOne()) {
-            slot.accept(visitor);
-        }
-        for (var slot: this.getColumnTwo()) {
+
+        for (var slot: this.getItems()) {
             slot.accept(visitor);
         }
     }
@@ -213,25 +240,4 @@ public class ItemCombinationQuestion extends QuestionDetails{
         return null;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

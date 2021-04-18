@@ -81,6 +81,12 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         def result = questionRepository.findAll().get(0)
         result.getQuestionDetails().getColumnOne().size() == 2
         result.getQuestionDetails().getColumnTwo().size() == 1
+
+        (result.getQuestionDetails().getColumnOne().toArray()[1].getContent() == ITEM_3_CONTENT ||
+                result.getQuestionDetails().getColumnOne().toArray()[0].getContent() == ITEM_3_CONTENT)
+        (result.getQuestionDetails().getColumnOne().toArray()[1].getCorrectCombinations().toArray()[0].getContent() == ITEM_2_CONTENT ||
+                result.getQuestionDetails().getColumnOne().toArray()[0].getCorrectCombinations().toArray()[0].getContent() == ITEM_2_CONTENT)
+
     }
 
     def "update an Item Combination Question by adding an item in B group and it's relations" () {
@@ -106,6 +112,13 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         def result = questionRepository.findAll().get(0)
         result.getQuestionDetails().getColumnOne().size() == 1
         result.getQuestionDetails().getColumnTwo().size() == 2
+
+        result.getQuestionDetails().getColumnOne().toArray()[0].getContent() == ITEM_1_CONTENT
+        (result.getQuestionDetails().getColumnOne().toArray()[0].getCorrectCombinations().toArray()[1].getContent() == ITEM_3_CONTENT ||
+                result.getQuestionDetails().getColumnOne().toArray()[0].getCorrectCombinations().toArray()[0].getContent() == ITEM_3_CONTENT)
+        (result.getQuestionDetails().getColumnTwo().toArray()[1].getContent() == ITEM_3_CONTENT ||
+                result.getQuestionDetails().getColumnTwo().toArray()[0].getContent() == ITEM_3_CONTENT)
+
     }
 
 
@@ -141,6 +154,7 @@ class UpdateItemCombinationQuestionTest extends SpockTest {
         def result = questionRepository.findAll().get(0)
         result.getQuestionDetails().getColumnOne().size() == 2
         result.getQuestionDetails().getColumnTwo().size() == 2
+
     }
 
 

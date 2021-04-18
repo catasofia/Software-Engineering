@@ -92,7 +92,46 @@ class CreateItemCombinationQuestionIT extends SpockTest {
         questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
     }
 
-  
+   def "create an item combination question as teacher"() {
+        given: 'a teacher'
+        user = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
+                User.Role.TEACHER, false, AuthUser.Type.TECNICO)
+        user.authUser.setPassword(passwordEncoder.encode(USER_1_PASSWORD))
+        user.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(user)
+        userRepository.save(user)
+
+        createdUserLogin(USER_1_EMAIL, USER_1_PASSWORD)
+
+        when: 'a request is posted'
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter()
+
+        def response = restClient.post(
+                path: "/courses/" + externalCourse.getId() + "/questions",
+                body: ow.writeValueAsString(questionDto),
+                requestContentType: "application/json"
+        )
+
+        then: "check the response status"
+        response != null
+        response.status == 200
+
+        and: "the result"
+        def question = response.data
+        question.id != null
+        question.status == Question.Status.AVAILABLE.name()
+        question.title == QUESTION_1_TITLE
+        question.content == QUESTION_1_CONTENT
+        question.image == null
+        question.questionDetailsDto.columnOne.size() == 3
+        question.questionDetailsDto.columnTwo.size() == 2
+
+        def test = question.questionDetailsDto.columnOne.get(0)
+        test.content == ITEM_2_CONTENT || ITEM_1_CONTENT || ITEM_5_CONTENT
+
+    }
+
+
     def "cannot create an item combination question as student"() {
         given: 'a student'
         user = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,

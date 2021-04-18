@@ -93,7 +93,62 @@ class UpdateItemCombinationQuestionIT extends SpockTest {
         questionDto = questionService.createQuestion(externalCourse.getId(), questionDto)
     }
 
-    
+  
+    def "update an item combination question as teacher"() {
+        given: 'an item to insert in each group and its combinations'
+
+        def item6 = new ItemCombinationSlotDto()
+        item6.setContent(ITEM_6_CONTENT)
+        item6.setInternId(6)
+        aItems.add(item6)
+
+        def item7 = new ItemCombinationSlotDto()
+        item7.setContent(ITEM_7_CONTENT)
+        item7.setInternId(7)
+        bItems.add(item7)
+
+        def comb6 = new HashSet<ItemCombinationSlotDto>()
+        comb6.add(item4)
+        item6.setCorrectCombinations(comb6)
+
+        questionDto.getQuestionDetailsDto().setItemCombinationSlots(aItems, bItems)
+
+        and: 'a teacher'
+        user = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
+                User.Role.TEACHER, false, AuthUser.Type.TECNICO)
+        user.authUser.setPassword(passwordEncoder.encode(USER_1_PASSWORD))
+        user.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(user)
+        userRepository.save(user)
+
+        createdUserLogin(USER_1_EMAIL, USER_1_PASSWORD)
+
+        when: 'a request is posted'
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter()
+
+        def response = restClient.put(
+                path: "/questions/" + questionDto.getId(),
+                body: ow.writeValueAsString(questionDto),
+                requestContentType: "application/json"
+        )
+
+        then: "check the response status"
+        response != null
+        response.status == 200
+
+        and: "the result"
+        def question = response.data
+        question.id != null
+        question.status == Question.Status.AVAILABLE.name()
+        question.title == QUESTION_1_TITLE
+        question.content == QUESTION_1_CONTENT
+        question.image == null
+        question.questionDetailsDto.columnOne.size() == 4
+        question.questionDetailsDto.columnTwo.size() == 3
+
+        
+    }
+
     def "cannot update an item combination question as student"() {
         given: 'an item to insert in each group and its combinations'
 
@@ -145,3 +200,4 @@ class UpdateItemCombinationQuestionIT extends SpockTest {
         courseRepository.deleteAll()
     }
 }
+
