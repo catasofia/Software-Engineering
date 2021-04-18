@@ -93,6 +93,7 @@ class UpdateItemCombinationQuestionIT extends SpockTest {
         questionDto = questionService.createQuestion(externalCourse.getId(), questionDto)
     }
 
+  
     def "update an item combination question as teacher"() {
         given: 'an item to insert in each group and its combinations'
 
@@ -199,3 +200,4 @@ class UpdateItemCombinationQuestionIT extends SpockTest {
         courseRepository.deleteAll()
     }
 }
+
