@@ -1,19 +1,20 @@
 describe('Manage Open Answer Questions Walk-through', () => {
-  function validateQuestion(title, content) {
+  function validateQuestion(title, content, suggestion) {
     cy.get('[data-cy="showQuestionDialog"]')
       .should('be.visible')
       .within(($ls) => {
         cy.get('.headline').should('contain', title);
         cy.get('span > p').should('contain', content);
+        cy.get('div').should('contain', "Suggestion: " + suggestion);
       });
   }
 
-  function validateQuestionFull(title, content) {
+  function validateQuestionFull(title, content, suggestion) {
     cy.log('Validate question with show dialog.');
 
     cy.get('[data-cy="questionTitleGrid"]').first().click();
 
-    validateQuestion(title, content);
+    validateQuestion(title, content, suggestion);
 
     cy.get('button').contains('close').click();
   }
@@ -80,7 +81,36 @@ describe('Manage Open Answer Questions Walk-through', () => {
 
     validateQuestionFull(
       'Cypress Question Example - 01',
-      'Cypress Question Example - Content - 01'
+      'Cypress Question Example - Content - 01',
+      'Cypress Suggestion Example'
     );
+  });
+
+  it('Can view question (with button)', function () {
+    cy.get('tbody tr')
+      .first()
+      .within(($list) => {
+        cy.get('button').contains('visibility').click();
+      });
+
+    validateQuestion(
+      'Cypress Question Example - 01',
+      'Cypress Question Example - Content - 01',
+      'Cypress Suggestion Example'
+    );
+
+    cy.get('button').contains('close').click();
+  });
+
+  it('Can view question (with click)', function () {
+    cy.get('[data-cy="questionTitleGrid"]').first().click();
+
+    validateQuestion(
+      'Cypress Question Example - 01',
+      'Cypress Question Example - Content - 01',
+      'Cypress Suggestion Example'
+    );
+
+    cy.get('button').contains('close').click();
   });
 });
