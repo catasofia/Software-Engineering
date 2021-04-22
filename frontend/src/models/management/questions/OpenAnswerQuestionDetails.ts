@@ -11,7 +11,5 @@ export default class OpenAnswerQuestionDetails extends QuestionDetails {
     }
   }
 
-  setAsNew(): void {
-    this.suggestion = '';
-  }
+  setAsNew(): void {}
 }
