@@ -113,4 +113,67 @@ describe('Manage Open Answer Questions Walk-through', () => {
 
     cy.get('button').contains('close').click();
   });
+
+  it('Can update title (with right-click)', function () {
+    cy.route('PUT', '/questions/*').as('updateQuestion');
+
+    cy.get('[data-cy="questionTitleGrid"]').first().rightclick();
+
+    cy.get('[data-cy="createOrEditQuestionDialog"]')
+      .parent()
+      .should('be.visible')
+      .within(($list) => {
+        cy.get('span.headline').should('contain', 'Edit Question');
+
+        cy.get('[data-cy="questionTitleTextArea"]')
+          .clear({ force: true })
+          .type('Cypress Question Example - 01 - Edited', { force: true });
+
+        cy.get('button').contains('Save').click();
+      });
+
+    cy.wait('@updateQuestion').its('status').should('eq', 200);
+
+    cy.get('[data-cy="questionTitleGrid"]')
+      .first()
+      .should('contain', 'Cypress Question Example - 01 - Edited');
+
+    validateQuestionFull(
+      (title = 'Cypress Question Example - 01 - Edited'),
+      (content = 'Cypress Question Example - Content - 01'),
+      (suggestion = 'Cypress Suggestion Example')
+    );
+  });
+
+  it('Can update content (with button)', function () {
+    cy.route('PUT', '/questions/*').as('updateQuestion');
+
+    cy.get('tbody tr')
+      .first()
+      .within(($list) => {
+        cy.get('button').contains('edit').click();
+      });
+
+    cy.get('[data-cy="createOrEditQuestionDialog"]')
+      .parent()
+      .should('be.visible')
+      .within(($list) => {
+        cy.get('span.headline').should('contain', 'Edit Question');
+
+        cy.get('[data-cy="questionQuestionTextArea"]')
+          .clear({ force: true })
+          .type('Cypress New Content For Question!', { force: true });
+
+        cy.get('button').contains('Save').click();
+      });
+
+    cy.wait('@updateQuestion').its('status').should('eq', 200);
+
+    validateQuestionFull(
+      (title = 'Cypress Question Example - 01 - Edited'),
+      (content = 'Cypress New Content For Question!'),
+      (suggestion = 'Cypress Suggestion Example')
+    );
+  });
+
 });
