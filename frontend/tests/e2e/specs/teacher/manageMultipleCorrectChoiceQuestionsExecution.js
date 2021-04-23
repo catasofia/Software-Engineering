@@ -1,10 +1,10 @@
-describe('Manage Multiple Choice Questions Walk-through', () => {
+describe('Manage Multiple Correct Choice Questions Walk-through', () => {
   function validateQuestion(
     title,
     content,
     optionPrefix = 'Option ',
-    correctIndex1 = 2,
-    correctIndex2 = 4
+    correctIndex1 = 1,
+    correctIndex2 = 3
   ) {
     cy.get('[data-cy="showQuestionDialog"]')
       .should('be.visible')
@@ -13,8 +13,10 @@ describe('Manage Multiple Choice Questions Walk-through', () => {
         cy.get('span > p').should('contain', content);
         cy.get('li').each(($el, index, $list) => {
           cy.get($el).should('contain', optionPrefix + index);
-          if (index === correctIndex1 || index === correctIndex2) {
-            cy.get($el).should('contain', '[★]');
+          if (index === correctIndex1) {
+            cy.get($el).should('contain', '[★] [1]');
+          } else if (index === correctIndex2) {
+            cy.get($el).should('contain', '[★] [2]');
           } else {
             cy.get($el).should('not.contain', '[★]');
           }
@@ -26,8 +28,8 @@ describe('Manage Multiple Choice Questions Walk-through', () => {
     title,
     content,
     optionPrefix = 'Option ',
-    correctIndex1 = 2,
-    correctIndex2 = 4
+    correctIndex1 = 1,
+    correctIndex2 = 3
   ) {
     cy.log('Validate question with show dialog. ' + correctIndex1);
 
@@ -91,10 +93,10 @@ describe('Manage Multiple Choice Questions Walk-through', () => {
       .should('have.length', 4)
       .each(($el, index, $list) => {
         cy.get($el).within(($ls) => {
-          if (index === 2) {
+          if (index === 1) {
             cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
             cy.get(`[data-cy="optionRelevanceField"]`).type('1');
-          } else if (index === 4) {
+          } else if (index === 3) {
             cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
             cy.get(`[data-cy="optionRelevanceField"]`).type('2');
           }
@@ -116,6 +118,32 @@ describe('Manage Multiple Choice Questions Walk-through', () => {
       'Cypress Question Example - 01',
       'Cypress Question Example - Content - 01'
     );
+  });
+
+  it('Can view question (with button)', function () {
+    cy.get('tbody tr')
+      .first()
+      .within(($list) => {
+        cy.get('button').contains('visibility').click();
+      });
+
+    validateQuestion(
+      'Cypress Question Example - 01',
+      'Cypress Question Example - Content - 01'
+    );
+
+    cy.get('button').contains('close').click();
+  });
+
+  it('Can view question (with click)', function () {
+    cy.get('[data-cy="questionTitleGrid"]').first().click();
+
+    validateQuestion(
+      'Cypress Question Example - 01',
+      'Cypress Question Example - Content - 01'
+    );
+
+    cy.get('button').contains('close').click();
   });
 
   it('Can update title (with right-click)', function () {
@@ -208,12 +236,12 @@ describe('Manage Multiple Choice Questions Walk-through', () => {
       .should('have.length', 10)
       .each(($el, index, $list) => {
         cy.get($el).within(($ls) => {
-          if (index === 6) {
+          if (index === 5) {
+            cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
+            cy.get(`[data-cy="optionRelevanceField"]`).type('1');
+          } else if (index === 9) {
             cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
             cy.get(`[data-cy="optionRelevanceField"]`).type('2');
-          } else if (index === 10) {
-            cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
-            cy.get(`[data-cy="optionRelevanceField"]`).type('4');
           }
           cy.get(`[data-cy="Option${index + 1}"]`).type('Option10 ' + index);
         });
@@ -233,8 +261,8 @@ describe('Manage Multiple Choice Questions Walk-through', () => {
       'Cypress Question Example - 01 (10 Options)',
       'Cypress Question Example - Content - 01 (10 Options)',
       'Option10 ',
-      6,
-      10
+      5,
+      9
     );
   });
 });

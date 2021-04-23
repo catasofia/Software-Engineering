@@ -2,7 +2,19 @@
   <ul>
     <li v-for="option in questionDetails.options" :key="option.id">
       <span
-        v-if="option.correct"
+        v-if="option.correct && option.relevance > 0"
+        v-html="
+          convertMarkDown(
+            studentAnswered(option.id) +
+              '**[★]** **[' +
+              option.relevance +
+              ']** ' +
+              option.content
+          )
+        "
+      />
+      <span
+        v-else-if="option.correct && option.relevance <= 0"
         v-html="
           convertMarkDown(
             studentAnswered(option.id) + '**[★]** ' + option.content
