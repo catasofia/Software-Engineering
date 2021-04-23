@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.question
+package pt.ulisboa.tecnico.socialsoftware.tutor.question //package errada nos testes open-ended
 
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
@@ -25,7 +25,8 @@ class CreateOpenAnswerQuestionIT extends SpockTest {
     def setup() {
         restClient = new RESTClient("http://localhost:" + port)
 
-        createExternalCourseAndExecution()
+        createExternalCourseAndExecution() //o externalCouse não tem o id initializado, por isso quando fazem externalCourse.getId()
+        // o resultado é aleatório e os testes falham.
 
         given: "a questionDto"
         questionDto = new QuestionDto()
