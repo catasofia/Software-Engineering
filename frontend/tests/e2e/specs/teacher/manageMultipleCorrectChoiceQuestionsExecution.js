@@ -251,6 +251,17 @@ describe('Manage Multiple Correct Choice Questions Walk-through', () => {
     );
   });
 
+  it('Can delete created question', function () {
+    cy.route('DELETE', '/questions/*').as('deleteQuestion');
+    cy.get('tbody tr')
+      .first()
+      .within(($list) => {
+        cy.get('button').contains('delete').click();
+      });
+
+    cy.wait('@deleteQuestion').its('status').should('eq', 200);
+  });
+
   it('Creates a new multiple choice question with 10 options', function () {
     cy.get('button').contains('New Question').click();
 
