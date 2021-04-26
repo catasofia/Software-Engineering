@@ -18,7 +18,9 @@ export default class ItemCombinationAnswerDetails extends AnswerDetails {
     return false;
   }
 
-  answerRepresentation(questionDetails: ItemCombinationQuestionDetails): string {
+  answerRepresentation(
+    questionDetails: ItemCombinationQuestionDetails
+  ): string {
     return '';
   }
 }

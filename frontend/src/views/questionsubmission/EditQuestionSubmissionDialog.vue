@@ -125,7 +125,7 @@ import MultipleChoiceCreate from '@/components/multiple-choice/MultipleChoiceCre
 import CodeFillInCreate from '@/components/code-fill-in/CodeFillInCreate.vue';
 import CodeOrderCreate from '@/components/code-order/CodeOrderCreate.vue';
 import { QuestionTypes, QuestionFactory } from '@/services/QuestionHelpers';
-import ItemCombinationCreate from '@/components/item-combination/ItemCombinationCreate.vue'
+import ItemCombinationCreate from '@/components/item-combination/ItemCombinationCreate.vue';
 
 @Component({
   components: {

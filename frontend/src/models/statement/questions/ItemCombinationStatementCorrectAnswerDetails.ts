@@ -2,11 +2,9 @@ import StatementCorrectAnswerDetails from '@/models/statement/questions/Statemen
 import { QuestionTypes } from '@/services/QuestionHelpers';
 
 export default class ItemCombinationStatementCorrectAnswerDetails extends StatementCorrectAnswerDetails {
-
-    constructor(jsonObj?: ItemCombinationStatementCorrectAnswerDetails) {
-        super(QuestionTypes.ItemCombination);
-        if (jsonObj) {
-
-        }
+  constructor(jsonObj?: ItemCombinationStatementCorrectAnswerDetails) {
+    super(QuestionTypes.ItemCombination);
+    if (jsonObj) {
     }
+  }
 }
