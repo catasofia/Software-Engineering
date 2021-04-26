@@ -145,7 +145,6 @@ class CodeOrderQuestionFactory extends QuestionFactory {
   }
 }
 
-
 class ItemCombinationQuestionFactory extends QuestionFactory {
   createEmptyQuestionDetails(): QuestionDetails {
     return new ItemCombinationQuestionDetails();
@@ -162,11 +161,13 @@ class ItemCombinationQuestionFactory extends QuestionFactory {
   createStatementAnswerDetails(details: any): StatementAnswerDetails {
     return new ItemCombinationStatementAnswerDetails(details);
   }
-  createStatementCorrectAnswerDetails(details: any): StatementCorrectAnswerDetails {
+  createStatementCorrectAnswerDetails(
+    details: any
+  ): StatementCorrectAnswerDetails {
     return new ItemCombinationStatementCorrectAnswerDetails(details);
-   }
+  }
 }
-        
+
 class OpenAnswerQuestionFactory extends QuestionFactory {
   createEmptyQuestionDetails(): QuestionDetails {
     return new OpenAnswerQuestionDetails();
@@ -183,7 +184,9 @@ class OpenAnswerQuestionFactory extends QuestionFactory {
   createStatementAnswerDetails(details: any): StatementAnswerDetails {
     return new OpenAnswerStatementAnswerDetails(details);
   }
-  createStatementCorrectAnswerDetails(details: any): StatementCorrectAnswerDetails {
+  createStatementCorrectAnswerDetails(
+    details: any
+  ): StatementCorrectAnswerDetails {
     return new OpenAnswerStatementCorrectAnswerDetails(details);
   }
 }
