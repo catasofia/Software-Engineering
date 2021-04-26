@@ -86,6 +86,7 @@ import CodeFillInCreate from '@/components/code-fill-in/CodeFillInCreate.vue';
 import CodeOrderCreate from '@/components/code-order/CodeOrderCreate.vue';
 import { QuestionTypes, QuestionFactory } from '@/services/QuestionHelpers';
 import ItemCombinationCreate from '@/components/item-combination/ItemCombinationCreate.vue';
+import OpenAnswerCreate from '@/components/open-answer/OpenAnswerCreate.vue';
 
 @Component({
   components: {
@@ -93,6 +94,7 @@ import ItemCombinationCreate from '@/components/item-combination/ItemCombination
     code_fill_in: CodeFillInCreate,
     code_order: CodeOrderCreate,
     item_combination: ItemCombinationCreate,
+    open_answer: OpenAnswerCreate,
   },
 })
 export default class EditQuestionDialog extends Vue {

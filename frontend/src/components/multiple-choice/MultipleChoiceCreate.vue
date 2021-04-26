@@ -18,11 +18,18 @@
           auto-grow
         ></v-textarea>
       </v-col>
-      <v-col cols="1">
+      <v-col>
         <v-switch
           v-model="option.correct"
           inset
           :data-cy="`Switch${index + 1}`"
+        />
+      </v-col>
+      <v-col v-if="option.correct">
+        <v-text-field
+          v-model="option.relevance"
+          :label="`Relevance ${index + 1}`"
+          data-cy="optionRelevanceField"
         />
       </v-col>
       <v-col v-if="sQuestionDetails.options.length > 2">

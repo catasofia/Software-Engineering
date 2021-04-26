@@ -1,40 +1,64 @@
-describe('Manage Code Fill In Questions Walk-through', () => {
-  function validateQuestion(title, content) {
+describe('Manage Multiple Correct Choice Questions Walk-through', () => {
+  function validateQuestion(
+    title,
+    content,
+    optionPrefix = 'Option ',
+    correctIndex1 = 1,
+    correctIndex2 = 3
+  ) {
     cy.get('[data-cy="showQuestionDialog"]')
       .should('be.visible')
       .within(($ls) => {
         cy.get('.headline').should('contain', title);
         cy.get('span > p').should('contain', content);
+        cy.get('li').each(($el, index, $list) => {
+          cy.get($el).should('contain', optionPrefix + index);
+          if (index === correctIndex1) {
+            cy.get($el).should('contain', '[★] [1]');
+          } else if (index === correctIndex2) {
+            cy.get($el).should('contain', '[★] [2]');
+          } else {
+            cy.get($el).should('not.contain', '[★]');
+          }
+        });
       });
   }
 
-  function validateQuestionFull(title, content) {
-    cy.log('Validate question with show dialog.');
+  function validateQuestionFull(
+    title,
+    content,
+    optionPrefix = 'Option ',
+    correctIndex1 = 1,
+    correctIndex2 = 3
+  ) {
+    cy.log('Validate question with show dialog. ' + correctIndex1);
+
+    cy.log('Validate question with show dialog. ' + correctIndex2);
 
     cy.get('[data-cy="questionTitleGrid"]').first().click();
 
-    validateQuestion(title, content);
+    validateQuestion(
+      title,
+      content,
+      optionPrefix,
+      correctIndex1,
+      correctIndex2
+    );
 
-    cy.get('button').contains('close').should('be.visible').click();
-
-    Cypress.on('uncaught:exception', (err, runnable) => {
-      console.log(err);
-      // returning false here prevents Cypress from
-      // failing the test
-      return false;
-    });
+    cy.get('button').contains('close').click();
   }
 
   before(() => {
-    cy.cleanCodeFillInQuestionsByName('Cypress Question Example');
     cy.cleanMultipleChoiceQuestionsByName('Cypress Question Example');
+    cy.cleanCodeFillInQuestionsByName('Cypress Question Example');
   });
   after(() => {
-    cy.cleanCodeFillInQuestionsByName('Cypress Question Example');
+    cy.cleanMultipleChoiceQuestionsByName('Cypress Question Example');
   });
 
   beforeEach(() => {
     cy.demoTeacherLogin();
+    cy.server();
     cy.route('GET', '/courses/*/questions').as('getQuestions');
     cy.route('GET', '/courses/*/topics').as('getTopics');
     cy.get('[data-cy="managementMenuButton"]').click();
@@ -49,7 +73,7 @@ describe('Manage Code Fill In Questions Walk-through', () => {
     cy.logout();
   });
 
-  it('Creates a new code fill in question', function () {
+  it('Creates a new multiple choice question w/ two correct options', function () {
     cy.get('button').contains('New Question').click();
 
     cy.get('[data-cy="createOrEditQuestionDialog"]')
@@ -61,38 +85,24 @@ describe('Manage Code Fill In Questions Walk-through', () => {
     cy.get(
       '[data-cy="questionTitleTextArea"]'
     ).type('Cypress Question Example - 01', { force: true });
-    cy.get('[data-cy="questionQuestionTextArea"]').type(
-      'Cypress Question Example - Content - 01',
-      {
-        force: true,
-      }
-    );
+    cy.get(
+      '[data-cy="questionQuestionTextArea"]'
+    ).type('Cypress Question Example - Content - 01', { force: true });
 
-    cy.get('[data-cy="questionTypeInput"]')
-      .type('code_fill_in', { force: true })
-      .click({ force: true });
-
-    cy.wait(1000);
-
-    cy.get('.CodeMirror textarea').type('public class TestCypress {}', {
-      force: true,
-    });
-
-    cy.get('.CodeMirror textarea').type('{home}{selectall}', {
-      force: true,
-    });
-
-    // required because the select above is not working properly
-    cy.get('.CodeMirror')
-      .first()
-      .then((editor) => {
-        const codeMirror = editor[0].CodeMirror;
-        cy.stub(codeMirror, 'getSelection').returns('public');
+    cy.get('[data-cy="questionOptionsInput"')
+      .should('have.length', 4)
+      .each(($el, index, $list) => {
+        cy.get($el).within(($ls) => {
+          if (index === 1) {
+            cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
+            cy.get(`[data-cy="optionRelevanceField"]`).type('1');
+          } else if (index === 3) {
+            cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
+            cy.get(`[data-cy="optionRelevanceField"]`).type('2');
+          }
+          cy.get(`[data-cy="Option${index + 1}"]`).type('Option ' + index);
+        });
       });
-
-    cy.get('button')
-      .contains('answer slot', { matchCase: false })
-      .click({ force: true });
 
     cy.route('POST', '/courses/*/questions/').as('postQuestion');
 
@@ -117,8 +127,6 @@ describe('Manage Code Fill In Questions Walk-through', () => {
         cy.get('button').contains('visibility').click();
       });
 
-    cy.wait(1000);
-
     validateQuestion(
       'Cypress Question Example - 01',
       'Cypress Question Example - Content - 01'
@@ -129,8 +137,6 @@ describe('Manage Code Fill In Questions Walk-through', () => {
 
   it('Can view question (with click)', function () {
     cy.get('[data-cy="questionTitleGrid"]').first().click();
-
-    cy.wait(1000); //making sure codemirror loaded
 
     validateQuestion(
       'Cypress Question Example - 01',
@@ -144,8 +150,6 @@ describe('Manage Code Fill In Questions Walk-through', () => {
     cy.route('PUT', '/questions/*').as('updateQuestion');
 
     cy.get('[data-cy="questionTitleGrid"]').first().rightclick();
-
-    cy.wait(1000); //making sure codemirror loaded
 
     cy.get('[data-cy="createOrEditQuestionDialog"]')
       .parent()
@@ -181,8 +185,6 @@ describe('Manage Code Fill In Questions Walk-through', () => {
         cy.get('button').contains('edit').click();
       });
 
-    cy.wait(1000); //making sure codemirror loaded
-
     cy.get('[data-cy="createOrEditQuestionDialog"]')
       .parent()
       .should('be.visible')
@@ -204,16 +206,12 @@ describe('Manage Code Fill In Questions Walk-through', () => {
     );
   });
 
-  // missing update all with questions as well and change data. Should also be tested for errors :D
-
   it('Can duplicate question', function () {
     cy.get('tbody tr')
       .first()
       .within(($list) => {
         cy.get('button').contains('cached').click();
       });
-
-    cy.wait(1000); //making sure codemirror loaded
 
     cy.get('[data-cy="createOrEditQuestionDialog"]')
       .parent()
@@ -229,9 +227,15 @@ describe('Manage Code Fill In Questions Walk-through', () => {
       'Cypress New Content For Question!'
     );
 
-    cy.route('POST', '/courses/*/questions/').as('postQuestion');
+    cy.get('[data-cy="questionOptionsInput"')
+      .should('have.length', 4)
+      .each(($el, index, $list) => {
+        cy.get($el).within(($ls) => {
+          cy.get('textarea').should('have.value', 'Option ' + index);
+        });
+      });
 
-    cy.wait(1000);
+    cy.route('POST', '/courses/*/questions/').as('postQuestion');
 
     cy.get('button').contains('Save').click();
 
@@ -256,5 +260,65 @@ describe('Manage Code Fill In Questions Walk-through', () => {
       });
 
     cy.wait('@deleteQuestion').its('status').should('eq', 200);
+  });
+
+  it('Creates a new multiple choice question with 10 options', function () {
+    cy.get('button').contains('New Question').click();
+
+    cy.get('[data-cy="createOrEditQuestionDialog"]')
+      .parent()
+      .should('be.visible');
+
+    cy.get('span.headline').should('contain', 'New Question');
+
+    cy.get(
+      '[data-cy="questionTitleTextArea"]'
+    ).type('Cypress Question Example - 01 (10 Options)', { force: true });
+    cy.get('[data-cy="questionQuestionTextArea"]').type(
+      'Cypress Question Example - Content - 01 (10 Options)',
+      {
+        force: true,
+      }
+    );
+
+    cy.get('[data-cy="addOptionMultipleChoice"]').click({ force: true }); // 5
+    cy.get('[data-cy="addOptionMultipleChoice"]').click({ force: true }); // 6
+    cy.get('[data-cy="addOptionMultipleChoice"]').click({ force: true }); // 7
+    cy.get('[data-cy="addOptionMultipleChoice"]').click({ force: true }); // 8
+    cy.get('[data-cy="addOptionMultipleChoice"]').click({ force: true }); // 9
+    cy.get('[data-cy="addOptionMultipleChoice"]').click({ force: true }); // 10
+
+    cy.get('[data-cy="questionOptionsInput"')
+      .should('have.length', 10)
+      .each(($el, index, $list) => {
+        cy.get($el).within(($ls) => {
+          if (index === 5) {
+            cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
+            cy.get(`[data-cy="optionRelevanceField"]`).type('1');
+          } else if (index === 9) {
+            cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
+            cy.get(`[data-cy="optionRelevanceField"]`).type('2');
+          }
+          cy.get(`[data-cy="Option${index + 1}"]`).type('Option10 ' + index);
+        });
+      });
+
+    cy.route('POST', '/courses/*/questions/').as('postQuestion');
+
+    cy.get('button').contains('Save').click();
+
+    cy.wait('@postQuestion').its('status').should('eq', 200);
+
+    cy.get('[data-cy="questionTitleGrid"]')
+      .first()
+      .should('contain', 'Cypress Question Example - 01');
+
+    validateQuestionFull(
+      'Cypress Question Example - 01 (10 Options)',
+      'Cypress Question Example - Content - 01 (10 Options)',
+      'Option10 ',
+      5,
+      9
+    );
   });
 });

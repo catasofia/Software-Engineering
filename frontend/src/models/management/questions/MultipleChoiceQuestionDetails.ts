@@ -12,6 +12,11 @@ export default class MultipleChoiceQuestionDetails extends QuestionDetails {
         (option: Option) => new Option(option)
       );
     }
+    this.options.sort((a, b) => {
+      if (a.id == null) a.id = -1;
+      if (b.id == null) b.id = -1;
+      return a.id - b.id;
+    });
   }
 
   setAsNew(): void {

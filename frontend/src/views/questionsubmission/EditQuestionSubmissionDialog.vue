@@ -124,6 +124,7 @@ import QuestionSubmission from '../../models/management/QuestionSubmission';
 import MultipleChoiceCreate from '@/components/multiple-choice/MultipleChoiceCreate.vue';
 import CodeFillInCreate from '@/components/code-fill-in/CodeFillInCreate.vue';
 import CodeOrderCreate from '@/components/code-order/CodeOrderCreate.vue';
+import OpenAnswerCreate from '@/components/open-answer/OpenAnswerCreate.vue';
 import { QuestionTypes, QuestionFactory } from '@/services/QuestionHelpers';
 import ItemCombinationCreate from '@/components/item-combination/ItemCombinationCreate.vue';
 
@@ -133,6 +134,7 @@ import ItemCombinationCreate from '@/components/item-combination/ItemCombination
     code_fill_in: CodeFillInCreate,
     code_order: CodeOrderCreate,
     item_combination: ItemCombinationCreate,
+    open_answer: OpenAnswerCreate,
   },
 })
 export default class EditQuestionSubmissionDialog extends Vue {
