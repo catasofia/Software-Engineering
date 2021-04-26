@@ -126,12 +126,14 @@ import CodeFillInCreate from '@/components/code-fill-in/CodeFillInCreate.vue';
 import CodeOrderCreate from '@/components/code-order/CodeOrderCreate.vue';
 import OpenAnswerCreate from '@/components/open-answer/OpenAnswerCreate.vue';
 import { QuestionTypes, QuestionFactory } from '@/services/QuestionHelpers';
+import ItemCombinationCreate from '@/components/item-combination/ItemCombinationCreate.vue';
 
 @Component({
   components: {
     multiple_choice: MultipleChoiceCreate,
     code_fill_in: CodeFillInCreate,
     code_order: CodeOrderCreate,
+    item_combination: ItemCombinationCreate,
     open_answer: OpenAnswerCreate,
   },
 })

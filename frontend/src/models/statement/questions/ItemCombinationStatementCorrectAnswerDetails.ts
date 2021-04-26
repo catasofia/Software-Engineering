@@ -1,0 +1,10 @@
+import StatementCorrectAnswerDetails from '@/models/statement/questions/StatementCorrectAnswerDetails';
+import { QuestionTypes } from '@/services/QuestionHelpers';
+
+export default class ItemCombinationStatementCorrectAnswerDetails extends StatementCorrectAnswerDetails {
+  constructor(jsonObj?: ItemCombinationStatementCorrectAnswerDetails) {
+    super(QuestionTypes.ItemCombination);
+    if (jsonObj) {
+    }
+  }
+}
