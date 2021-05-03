@@ -28,7 +28,7 @@ class ExportQuestionsWebServiceIT extends SpockTest {
 
     def setup() {
         restClient = new RESTClient("http://localhost:" + port)
-        
+
         createExternalCourseAndExecution()
 
         teacher = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
@@ -39,7 +39,7 @@ class ExportQuestionsWebServiceIT extends SpockTest {
         userRepository.save(teacher)
 
         createdUserLogin(USER_1_EMAIL, USER_1_PASSWORD)
-        
+
         and: "four options"
         def options = new ArrayList<OptionDto>()
 
@@ -81,7 +81,7 @@ class ExportQuestionsWebServiceIT extends SpockTest {
     }
 
     def "export questions with multiple correct options for course execution"() {
-        
+
         given: "prepare request response"
         restClient.handler.failure = { resp, reader ->
             [response:resp, reader:reader]
@@ -92,7 +92,7 @@ class ExportQuestionsWebServiceIT extends SpockTest {
 
         when: "the web service is invoked"
         def map = restClient.get(
-            path: '/courses/' + externalCourseExecution.getId() + '/questions/export',
+            path: '/courses/' + externalCourse.getId() + '/questions/export',
             requestContentType: 'application/json'
         )
 
@@ -109,7 +109,7 @@ class ExportQuestionsWebServiceIT extends SpockTest {
         student.addCourse(externalCourseExecution)
         externalCourseExecution.addUser(student)
         userRepository.save(student)
-        
+
         createdUserLogin(USER_2_EMAIL, USER_2_PASSWORD)
 
         and: "prepare request response"
@@ -130,7 +130,7 @@ class ExportQuestionsWebServiceIT extends SpockTest {
         assert map['response'].status == 403
 
         cleanup:
-        userRepository.deleteById(student.getId())  
+        userRepository.deleteById(student.getId())
     }
 
     def cleanup() {
