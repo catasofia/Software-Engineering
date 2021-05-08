@@ -101,7 +101,7 @@ public class StatementAnswerDto implements Serializable {
                 ", questionAnswerId=" + questionAnswerId +
                 ", quizQuestionId=" + quizQuestionId +
                 ", timeToSubmission=" + timeToSubmission +
-                ", answerDetails=" + answerDetails +
+                ", answerDetails=" + answerDetails.toString() +
                 '}';
     }
 

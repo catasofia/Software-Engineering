@@ -172,7 +172,7 @@ class ConcludeQuizTest extends SpockTest {
         quizAnswer.getQuestionAnswers().contains(questionAnswer)
         questionAnswer.getQuizQuestion() == quizQuestion
         quizQuestion.getQuestionAnswers().contains(questionAnswer)
-        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOption() == optionOk
+        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOption().get(0) == optionOk
         optionOk.getQuestionAnswers().contains(questionAnswer.getAnswerDetails())
         and: 'the return value is OK'
         correctAnswers.size() == 1

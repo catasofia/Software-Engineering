@@ -7,19 +7,19 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.MultipleChoiceQue
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_OPTION_MISMATCH;
 
 @Entity
 @DiscriminatorValue(Question.QuestionTypes.MULTIPLE_CHOICE_QUESTION)
 public class MultipleChoiceAnswer extends AnswerDetails {
-    @ManyToOne
+    @ManyToMany
     @JoinColumn(name = "option_id")
-    private Option option;
+    private Set<Option> options;
 
     public MultipleChoiceAnswer() {
         super();
@@ -27,6 +27,7 @@ public class MultipleChoiceAnswer extends AnswerDetails {
 
     public MultipleChoiceAnswer(QuestionAnswer questionAnswer){
         super(questionAnswer);
+        this.options = new HashSet<>();
     }
 
     public MultipleChoiceAnswer(QuestionAnswer questionAnswer, Option option){
@@ -34,29 +35,29 @@ public class MultipleChoiceAnswer extends AnswerDetails {
         this.setOption(option);
     }
 
-    public Option getOption() {
-        return option;
+    public List<Option> getOption() {
+        return options.stream().sorted(Comparator.comparingInt(Option::getSequence)).collect(Collectors.toList());
     }
 
     public void setOption(Option option) {
-        this.option = option;
+        if (this.options == null) this.options = new HashSet<>();
+        this.options.add(option);
 
         if (option != null)
             option.addQuestionAnswer(this);
     }
 
     public void setOption(MultipleChoiceQuestion question, MultipleChoiceStatementAnswerDetailsDto multipleChoiceStatementAnswerDetailsDto) {
-        if (multipleChoiceStatementAnswerDetailsDto.getOptionId() != null) {
-            Option opt = question.getOptions().stream()
-                    .filter(option1 -> option1.getId().equals(multipleChoiceStatementAnswerDetailsDto.getOptionId()))
-                    .findAny()
-                    .orElseThrow(() -> new TutorException(QUESTION_OPTION_MISMATCH, multipleChoiceStatementAnswerDetailsDto.getOptionId()));
+        if (multipleChoiceStatementAnswerDetailsDto.getOptionsId() != null) {
+            List<Option> opt = question.getOptions().stream()
+                    .filter(option1 -> multipleChoiceStatementAnswerDetailsDto.getOptionsId().contains(option1.getId()))
+                    .collect(Collectors.toList());
 
             if (this.getOption() != null) {
-                this.getOption().getQuestionAnswers().remove(this);
+                this.getOption().forEach(option1 -> option1.getQuestionAnswers().remove(this));
             }
 
-            this.setOption(opt);
+            opt.forEach(this::setOption);
         } else {
             this.setOption(null);
         }
@@ -64,14 +65,15 @@ public class MultipleChoiceAnswer extends AnswerDetails {
 
     @Override
     public boolean isCorrect() {
-        return getOption() != null && getOption().isCorrect();
+        return getOption() != null && getOption().size() == getOption().stream()
+                .filter(Option::isCorrect).count();
     }
 
 
     public void remove() {
-        if (option != null) {
-            option.getQuestionAnswers().remove(this);
-            option = null;
+        if (options != null) {
+            options.forEach(option1 -> option1.getQuestionAnswers().remove(this));
+            options = null;
         }
     }
 
@@ -87,7 +89,10 @@ public class MultipleChoiceAnswer extends AnswerDetails {
 
     @Override
     public String getAnswerRepresentation() {
-        return this.getOption() != null ? MultipleChoiceQuestion.convertSequenceToLetter(this.getOption().getSequence()) : "-";
+        var result = this.options.stream()
+                .map(x -> MultipleChoiceQuestion.convertSequenceToLetter(x.getSequence()))
+                .collect(Collectors.joining("|"));
+        return !result.isEmpty() ? result : "-";
     }
 
     @Override
