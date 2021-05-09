@@ -10,5 +10,6 @@ import { Component, PropSync, Vue } from 'vue-property-decorator';
 export default class OpenAnswerView extends Vue {
   @PropSync('questionDetails', { type: OpenAnswerQuestionDetails })
   sQuestionDetails!: OpenAnswerQuestionDetails;
+  //converter suggestion para markdown como no resto das questões
 }
 </script>
