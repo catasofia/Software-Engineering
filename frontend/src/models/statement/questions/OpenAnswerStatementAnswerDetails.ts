@@ -2,17 +2,24 @@ import StatementAnswerDetails from '@/models/statement/questions/StatementAnswer
 import { QuestionTypes } from '@/services/QuestionHelpers';
 
 export default class OpenAnswerStatementAnswerDetails extends StatementAnswerDetails {
+  public answer!: string;
+
   constructor(jsonObj?: OpenAnswerStatementAnswerDetails) {
     super(QuestionTypes.OpenAnswer);
+    if (jsonObj) {
+      this.answer = jsonObj.answer;
+    }
   }
 
   isAnswerCorrect(
     correctAnswerDetails: OpenAnswerStatementAnswerDetails
   ): boolean {
-    return true;
+    return (
+      !!correctAnswerDetails && this.answer === correctAnswerDetails.answer
+    );
   }
 
   isQuestionAnswered(): boolean {
-    return false;
+    return this.answer != null;
   }
 }

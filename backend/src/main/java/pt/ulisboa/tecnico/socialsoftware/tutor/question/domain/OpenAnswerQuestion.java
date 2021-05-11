@@ -1,9 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.AnswerDetailsDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.CorrectAnswerDetailsDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.StatementAnswerDetailsDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.StatementQuestionDetailsDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.*;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
@@ -50,22 +47,22 @@ public class OpenAnswerQuestion extends QuestionDetails {
 
     @Override
     public CorrectAnswerDetailsDto getCorrectAnswerDetailsDto() {
-        return null;
+        return new OpenAnswerCorrectAnswerDto(this);
     }
 
     @Override
     public StatementQuestionDetailsDto getStatementQuestionDetailsDto() {
-        return null;
+        return new OpenAnswerStatementQuestionDetailsDto(this);
     }
 
     @Override
     public StatementAnswerDetailsDto getEmptyStatementAnswerDetailsDto() {
-        return null;
+        return new OpenAnswerStatementAnswerDetailsDto();
     }
 
     @Override
     public AnswerDetailsDto getEmptyAnswerDetailsDto() {
-        return null;
+        return new OpenAnswerAnswerDto();
     }
 
     @Override
@@ -84,7 +81,7 @@ public class OpenAnswerQuestion extends QuestionDetails {
 
     @Override
     public String getCorrectAnswerRepresentation() {
-        return null;
+        return getSuggestion();
     }
 
     @Override

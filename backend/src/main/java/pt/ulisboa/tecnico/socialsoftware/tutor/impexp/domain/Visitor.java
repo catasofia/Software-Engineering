@@ -71,4 +71,5 @@ public interface Visitor {
 
     default void visitItemCombinationSlot(ItemCombinationSlot itemCombinationSlot) {}
 
+    default void visitAnswerDetails(OpenAnswerAnswer openAnswerAnswer) {}
 }
