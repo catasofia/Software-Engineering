@@ -2,9 +2,9 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.answer.webservice
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
+import groovyx.net.http.RESTClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
-import pt.ulisboa.tecnico.socialsoftware.tutor.BeanConfiguration
+import org.springframework.boot.web.server.LocalServerPort
 import pt.ulisboa.tecnico.socialsoftware.tutor.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.OpenAnswerStatementAnswerDetailsDto
@@ -20,6 +20,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.auth.domain.AuthUser
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OpenAnswerQuestionQuizIT extends SpockTest {
+    @LocalServerPort
+    private int port
 
     def user
     def quizQuestion
@@ -27,11 +29,17 @@ class OpenAnswerQuestionQuizIT extends SpockTest {
     def quiz
 
     def setup() {
+        restClient = new RESTClient("http://localhost:" + port)
+
         createExternalCourseAndExecution()
 
-        user = new User(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL, User.Role.STUDENT, false, AuthUser.Type.TECNICO)
+        user = new User(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL, User.Role.STUDENT, true, AuthUser.Type.TECNICO)
+        user.authUser.setPassword(passwordEncoder.encode(USER_1_PASSWORD))
         user.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(user)
         userRepository.save(user)
+
+        createdUserLogin(USER_1_USERNAME, USER_1_PASSWORD)
 
         quiz = new Quiz()
         quiz.setKey(1)
@@ -89,10 +97,13 @@ class OpenAnswerQuestionQuizIT extends SpockTest {
         then: "check the response status"
         response != null
         response.status == 200
-
     }
 
+    def cleanup() {
+        userRepository.deleteAll()
+        questionRepository.deleteAll()
 
-    @TestConfiguration
-    static class LocalBeanConfiguration extends BeanConfiguration {}
+        courseExecutionRepository.deleteAll()
+        courseRepository.deleteAll()
+    }
 }
