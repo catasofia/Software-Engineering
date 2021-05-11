@@ -99,6 +99,38 @@ class OpenAnswerQuestionQuizIT extends SpockTest {
         response.status == 200
     }
 
+    def "show results of quiz to an open answer question"() {
+        given:  'a completed quiz'
+        quizAnswer.completed = true
+
+        and: 'an answer'
+        def statementQuizDto = new StatementQuizDto()
+        statementQuizDto.id = quiz.getId()
+        statementQuizDto.quizAnswerId = quizAnswer.getId()
+
+        def statementAnswerDto = new StatementAnswerDto()
+        def openAnswerQuestionDto = new OpenAnswerStatementAnswerDetailsDto()
+        openAnswerQuestionDto.setAnswer(SUGGESTION_1_CONTENT)
+
+        statementAnswerDto.setAnswerDetails(openAnswerQuestionDto)
+        statementAnswerDto.setSequence(0)
+        statementAnswerDto.setTimeTaken(100)
+        statementAnswerDto.setQuestionAnswerId(quizAnswer.getQuestionAnswers().get(0).getId())
+
+        statementQuizDto.getAnswers().add(statementAnswerDto)
+        answerService.concludeQuiz(statementQuizDto)
+
+        when: 'a request is posted'
+        def response = restClient.get(
+                path: "/executions/" + externalCourseExecution.getId() + "/quizzes/solved/",
+                requestContentType: "application/json"
+        )
+
+        then: "check the response status"
+        response != null
+        response.status == 200
+    }
+
     def cleanup() {
         userRepository.deleteAll()
         questionRepository.deleteAll()
