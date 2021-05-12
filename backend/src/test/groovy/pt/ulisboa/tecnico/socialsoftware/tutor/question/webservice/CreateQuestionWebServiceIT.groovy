@@ -80,9 +80,9 @@ class CreateQuestionWebServiceIT extends SpockTest {
 
         when:
         response = restClient.post(
-                path: '/courses/' + externalCourse.getId() + '/questions',
-                body: JsonOutput.toJson(questionDto),
-                requestContentType: 'application/json'
+            path: '/questions/courses/' + externalCourse.getId(),
+            body: JsonOutput.toJson(questionDto),
+            requestContentType: 'application/json'
         )
 
         then: "check the response status"
@@ -163,9 +163,9 @@ class CreateQuestionWebServiceIT extends SpockTest {
 
         when:
         response = restClient.post(
-                path: '/courses/' + externalCourseExecution.getId() + '/questions',
-                body: JsonOutput.toJson(questionDto),
-                requestContentType: 'application/json'
+            path: '/questions/courses/' + externalCourse.getId(),
+            body: JsonOutput.toJson(questionDto),
+            requestContentType: 'application/json'
         )
 
         then: "expect a error"
