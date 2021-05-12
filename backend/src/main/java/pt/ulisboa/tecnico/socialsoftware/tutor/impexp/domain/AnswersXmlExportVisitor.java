@@ -110,7 +110,7 @@ public class AnswersXmlExportVisitor implements Visitor {
     public void visitAnswerDetails(MultipleChoiceAnswer answer) {
         this.currentQuestionAnswer.setAttribute("type", Question.QuestionTypes.MULTIPLE_CHOICE_QUESTION);
         
-        for (Option option: answer.getOption()) {
+        for (Option option: answer.getOptions()) {
             Element optionElement = new Element("option");
             optionElement.setAttribute(QUESTION_KEY, String.valueOf(answer.getQuestionAnswer().getQuestion().getKey()));
             optionElement.setAttribute(SEQUENCE, String.valueOf(option.getSequence()));

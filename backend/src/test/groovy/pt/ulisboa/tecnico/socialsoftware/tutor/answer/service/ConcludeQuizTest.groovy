@@ -154,7 +154,7 @@ class ConcludeQuizTest extends SpockTest {
         statementQuizDto.quizAnswerId = quizAnswer.getId()
         def statementAnswerDto = new StatementAnswerDto()
         def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
-        multipleChoiceAnswerDto.setOptionId(optionOk.getId())
+        multipleChoiceAnswerDto.setOptionId([optionOk.getId()])
         statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
         statementAnswerDto.setSequence(0)
         statementAnswerDto.setTimeTaken(100)
@@ -172,7 +172,7 @@ class ConcludeQuizTest extends SpockTest {
         quizAnswer.getQuestionAnswers().contains(questionAnswer)
         questionAnswer.getQuizQuestion() == quizQuestion
         quizQuestion.getQuestionAnswers().contains(questionAnswer)
-        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOption().get(0) == optionOk
+        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOptions().get(0) == optionOk
         optionOk.getQuestionAnswers().contains(questionAnswer.getAnswerDetails())
         and: 'the return value is OK'
         correctAnswers.size() == 1
@@ -243,7 +243,7 @@ class ConcludeQuizTest extends SpockTest {
         statementQuizDto.quizAnswerId = quizAnswer.getId()
         def statementAnswerDto = new StatementAnswerDto()
         def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
-        multipleChoiceAnswerDto.setOptionId(optionOk.getId())
+        multipleChoiceAnswerDto.setOptionId([optionOk.getId()])
         statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
         statementAnswerDto.setSequence(0)
         statementAnswerDto.setTimeTaken(100)

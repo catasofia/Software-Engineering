@@ -96,8 +96,10 @@ class ConcludeMultipleChoiceQuizTest extends SpockTest {
         statementQuizDto.quizAnswerId = quizAnswer.getId()
         def statementAnswerDto = new StatementAnswerDto()
         def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
-        multipleChoiceAnswerDto.setOptionId(optionOk.getId())
-        multipleChoiceAnswerDto.setOptionId(optionKK.getId())
+        def options = new ArrayList<>()
+        options.add(optionOk.getId())
+        options.add(optionKK.getId())
+        multipleChoiceAnswerDto.setOptionId(options)
         statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
         statementAnswerDto.setSequence(0)
         statementAnswerDto.setTimeTaken(100)
@@ -115,8 +117,8 @@ class ConcludeMultipleChoiceQuizTest extends SpockTest {
         quizAnswer.getQuestionAnswers().contains(questionAnswer)
         questionAnswer.getQuizQuestion() == quizQuestion
         quizQuestion.getQuestionAnswers().contains(questionAnswer)
-        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOption().get(0) == optionOk
-        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOption().get(1) == optionKK
+        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOptions().get(0) == optionOk
+        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOptions().get(1) == optionKK
         optionOk.getQuestionAnswers().contains(questionAnswer.getAnswerDetails())
         optionKK.getQuestionAnswers().contains(questionAnswer.getAnswerDetails())
         and: 'the return value is OK'
@@ -137,8 +139,10 @@ class ConcludeMultipleChoiceQuizTest extends SpockTest {
 
         def statementAnswerDto = new StatementAnswerDto()
         def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
-        multipleChoiceAnswerDto.setOptionId(optionOk.getId())
-        multipleChoiceAnswerDto.setOptionId(optionKK.getId())
+        def options = new ArrayList<>()
+        options.add(optionOk.getId())
+        options.add(optionKK.getId())
+        multipleChoiceAnswerDto.setOptionId(options)
         statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
         statementAnswerDto.setSequence(0)
         statementAnswerDto.setTimeTaken(100)

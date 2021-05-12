@@ -35,7 +35,7 @@ public class MultipleChoiceAnswer extends AnswerDetails {
         this.setOption(option);
     }
 
-    public List<Option> getOption() {
+    public List<Option> getOptions() {
         return options.stream().sorted(Comparator.comparingInt(Option::getSequence)).collect(Collectors.toList());
     }
 
@@ -47,14 +47,14 @@ public class MultipleChoiceAnswer extends AnswerDetails {
             option.addQuestionAnswer(this);
     }
 
-    public void setOption(MultipleChoiceQuestion question, MultipleChoiceStatementAnswerDetailsDto multipleChoiceStatementAnswerDetailsDto) {
+    public void setOptions(MultipleChoiceQuestion question, MultipleChoiceStatementAnswerDetailsDto multipleChoiceStatementAnswerDetailsDto) {
         if (multipleChoiceStatementAnswerDetailsDto.getOptionsId() != null) {
             List<Option> opt = question.getOptions().stream()
                     .filter(option1 -> multipleChoiceStatementAnswerDetailsDto.getOptionsId().contains(option1.getId()))
                     .collect(Collectors.toList());
 
-            if (this.getOption() != null) {
-                this.getOption().forEach(option1 -> option1.getQuestionAnswers().remove(this));
+            if (this.getOptions() != null) {
+                this.getOptions().forEach(option1 -> option1.getQuestionAnswers().remove(this));
             }
 
             opt.forEach(this::setOption);
@@ -65,7 +65,7 @@ public class MultipleChoiceAnswer extends AnswerDetails {
 
     @Override
     public boolean isCorrect() {
-        return getOption() != null && getOption().size() == getOption().stream()
+        return getOptions() != null && getOptions().size() == getOptions().stream()
                 .filter(Option::isCorrect).count();
     }
 
@@ -84,7 +84,7 @@ public class MultipleChoiceAnswer extends AnswerDetails {
 
     @Override
     public boolean isAnswered() {
-        return this.getOption() != null;
+        return this.getOptions() != null;
     }
 
     @Override

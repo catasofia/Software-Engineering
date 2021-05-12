@@ -13,8 +13,8 @@ public class MultipleChoiceAnswerDto extends AnswerDetailsDto {
     }
 
     public MultipleChoiceAnswerDto(MultipleChoiceAnswer answer) {
-        if (answer.getOption() != null)
-            this.option = answer.getOption().stream().map(OptionDto::new).collect(Collectors.toList());
+        if (answer.getOptions() != null)
+            this.option = answer.getOptions().stream().map(OptionDto::new).collect(Collectors.toList());
     }
 
     public List<OptionDto> getOption() {

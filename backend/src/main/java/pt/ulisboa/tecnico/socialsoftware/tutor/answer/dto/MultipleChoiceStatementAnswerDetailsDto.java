@@ -21,8 +21,8 @@ public class MultipleChoiceStatementAnswerDetailsDto extends StatementAnswerDeta
     }
 
     public MultipleChoiceStatementAnswerDetailsDto(MultipleChoiceAnswer questionAnswer) {
-        if (!questionAnswer.getOption().isEmpty()) {
-            this.optionsId = questionAnswer.getOption().stream()
+        if (!questionAnswer.getOptions().isEmpty()) {
+            this.optionsId = questionAnswer.getOptions().stream()
                     .map(Option::getId).collect(Collectors.toList());
         }
     }
@@ -31,13 +31,10 @@ public class MultipleChoiceStatementAnswerDetailsDto extends StatementAnswerDeta
         return optionsId;
     }
 
-    public void setOptionId(Integer optionId) {
-        this.optionsId.add(optionId);
+    public void setOptionId(List<Integer> optionId) {
+        this.optionsId = optionId;
     }
 
-    public void setOptionsId(List<Integer> optionsId) {
-        this.optionsId = optionsId;
-    }
 
     @Transient
     private MultipleChoiceAnswer createdMultipleChoiceAnswer;
@@ -61,7 +58,7 @@ public class MultipleChoiceStatementAnswerDetailsDto extends StatementAnswerDeta
 
     @Override
     public void update(MultipleChoiceQuestion question) {
-        createdMultipleChoiceAnswer.setOption(question, this);
+        createdMultipleChoiceAnswer.setOptions(question, this);
     }
 
     @Override

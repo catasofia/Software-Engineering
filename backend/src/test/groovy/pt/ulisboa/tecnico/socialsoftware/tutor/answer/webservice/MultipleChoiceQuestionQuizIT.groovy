@@ -105,8 +105,10 @@ class MultipleChoiceQuestionQuizIT extends SpockTest {
 
         def statementAnswerDto = new StatementAnswerDto()
         def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
-        multipleChoiceAnswerDto.setOptionId(optionOk.getId())
-        multipleChoiceAnswerDto.setOptionId(optionKK.getId())
+        List<Integer> options = new ArrayList<>()
+        options.add(optionOk.getId())
+        options.add(optionKK.getId())
+        multipleChoiceAnswerDto.setOptionId(options)
 
         statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
         statementAnswerDto.setSequence(0)
@@ -116,7 +118,7 @@ class MultipleChoiceQuestionQuizIT extends SpockTest {
 
         when:
         def response = restClient.post(
-                path: "/quizzes/" + quiz.getId() + "/submit",
+                path: "/answers/" + quiz.getId() + "/submit",
                 body: JsonOutput.toJson(statementAnswerDto),
                 requestContentType: "application/json"
         )
