@@ -29,7 +29,7 @@ public class OpenAnswerStatementAnswerDetailsDto extends StatementAnswerDetailsD
 
     @Override
     public AnswerDetails getAnswerDetails(QuestionAnswer questionAnswer) {
-        createdOpenAnswerAnswer = new OpenAnswerAnswer(questionAnswer);
+        createdOpenAnswerAnswer = new OpenAnswerAnswer(questionAnswer, answer);
         questionAnswer.getQuestion().getQuestionDetails().update(this);
         return createdOpenAnswerAnswer;
     }
@@ -38,12 +38,6 @@ public class OpenAnswerStatementAnswerDetailsDto extends StatementAnswerDetailsD
     public boolean emptyAnswer() {
         return getAnswer() == null;
     }
-
-    @Override
-    public void update(OpenAnswerQuestion question) {
-        createdOpenAnswerAnswer.setAnswer(question.getSuggestion());
-    }
-
 
     @Override
     public QuestionAnswerItem getQuestionAnswerItem(String username, int quizId, StatementAnswerDto statementAnswerDto) {

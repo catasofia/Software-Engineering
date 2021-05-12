@@ -50,12 +50,14 @@ import Image from '@/models/management/Image';
 import MultipleChoiceAnswer from '@/components/multiple-choice/MultipleChoiceAnswer.vue';
 import CodeFillInAnswerResult from '@/components/code-fill-in/CodeFillInAnswerResult.vue';
 import CodeOrderAnswerResult from '@/components/code-order/CodeOrderAnswerResult.vue';
+import OpenAnswerResult from '@/components/open-answer/OpenAnswerResult.vue';
 
 @Component({
   components: {
     multiple_choice: MultipleChoiceAnswer,
     code_fill_in: CodeFillInAnswerResult,
     code_order: CodeOrderAnswerResult,
+    open_answer: OpenAnswerResult,
   },
 })
 export default class ResultComponent extends Vue {
