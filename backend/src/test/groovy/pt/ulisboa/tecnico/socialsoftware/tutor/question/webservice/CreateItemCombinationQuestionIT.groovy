@@ -107,7 +107,7 @@ class CreateItemCombinationQuestionIT extends SpockTest {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter()
 
         def response = restClient.post(
-                path: "/courses/" + externalCourse.getId() + "/questions",
+                path: "/questions/courses/" + externalCourse.getId(),
                 body: ow.writeValueAsString(questionDto),
                 requestContentType: "application/json"
         )
@@ -147,7 +147,7 @@ class CreateItemCombinationQuestionIT extends SpockTest {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter()
 
         restClient.post(
-                path: "/courses/" + externalCourse.getId() + "/questions",
+                path: "/questions/courses/" + externalCourse.getId(),
                 body: ow.writeValueAsString(questionDto),
                 requestContentType: "application/json"
         )
