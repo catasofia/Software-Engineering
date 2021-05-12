@@ -80,7 +80,7 @@ class CreateQuestionWebServiceIT extends SpockTest {
 
         when:
         response = restClient.post(
-                path: '/courses/' + externalCourseExecution.getId() + '/questions',
+                path: '/questions/courses/' + externalCourse.getId(),
                 body: JsonOutput.toJson(questionDto),
                 requestContentType: 'application/json'
         )
@@ -163,7 +163,7 @@ class CreateQuestionWebServiceIT extends SpockTest {
 
         when:
         response = restClient.post(
-                path: '/courses/' + externalCourseExecution.getId() + '/questions',
+                path: '/questions/courses/' + externalCourse.getId(),
                 body: JsonOutput.toJson(questionDto),
                 requestContentType: 'application/json'
         )
