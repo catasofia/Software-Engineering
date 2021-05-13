@@ -3,19 +3,23 @@ import AnswerDetails from '@/models/management/questions/AnswerDetails';
 import { QuestionTypes, convertToLetter } from '@/services/QuestionHelpers';
 
 export default class MultipleChoiceAnswerType extends AnswerDetails {
-  option!: Option;
+  option: Option[] = [];
 
   constructor(jsonObj?: MultipleChoiceAnswerType) {
     super(QuestionTypes.MultipleChoice);
     if (jsonObj) {
-      this.option = new Option(jsonObj.option);
+      this.option = jsonObj.option.map((option: Option) => new Option(option));
     }
   }
 
   isCorrect(): boolean {
-    return this.option.correct;
+    return this.option.length == this.option.filter((x) => x.correct).length;
   }
   answerRepresentation(): string {
-    return convertToLetter(this.option.sequence);
+    return (
+      this.option
+        .map((x) => '' + (convertToLetter(x.sequence) || 0))
+        .join(' | ') || '-'
+    );
   }
 }

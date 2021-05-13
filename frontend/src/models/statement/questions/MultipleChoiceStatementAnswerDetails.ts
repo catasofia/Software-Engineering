@@ -3,25 +3,33 @@ import { QuestionTypes } from '@/services/QuestionHelpers';
 import MultipleChoiceStatementCorrectAnswerDetails from '@/models/statement/questions/MultipleChoiceStatementCorrectAnswerDetails';
 
 export default class MultipleChoiceStatementAnswerDetails extends StatementAnswerDetails {
-  public optionId!: number[];
+  public optionsId!: number[];
 
   constructor(jsonObj?: MultipleChoiceStatementAnswerDetails) {
     super(QuestionTypes.MultipleChoice);
     if (jsonObj) {
-      this.optionId = jsonObj.optionId || [];
+      this.optionsId = jsonObj.optionsId || [];
     }
   }
 
   isQuestionAnswered(): boolean {
-    return this.optionId != null;
+    return this.optionsId != null;
   }
 
   isAnswerCorrect(
     correctAnswerDetails: MultipleChoiceStatementCorrectAnswerDetails
   ): boolean {
-    return (
-      !!correctAnswerDetails &&
-      this.optionId === correctAnswerDetails.correctOptionId
-    );
+    if (!!correctAnswerDetails) {
+      if (
+        correctAnswerDetails.correctOptionsId.length == this.optionsId.length
+      ) {
+        for (let i = 0; i < correctAnswerDetails.correctOptionsId.length; ++i) {
+          if (correctAnswerDetails.correctOptionsId[i] !== this.optionsId[i])
+            return false;
+        }
+        return true;
+      }
+    }
+    return false;
   }
 }
