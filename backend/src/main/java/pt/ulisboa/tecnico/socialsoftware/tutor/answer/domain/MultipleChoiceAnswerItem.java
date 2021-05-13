@@ -6,33 +6,38 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.StatementAnswerDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.QuestionDetails;
 
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @DiscriminatorValue(Question.QuestionTypes.MULTIPLE_CHOICE_QUESTION)
 public class MultipleChoiceAnswerItem extends QuestionAnswerItem {
 
-    private Integer optionId;
+    @ElementCollection
+    private List<Integer> optionsId;
 
     public MultipleChoiceAnswerItem() {
     }
 
     public MultipleChoiceAnswerItem(String username, int quizId, StatementAnswerDto answer, MultipleChoiceStatementAnswerDetailsDto detailsDto) {
         super(username, quizId, answer);
-        this.optionId = detailsDto.getOptionId();
+        this.optionsId = detailsDto.getOptionsId();
     }
 
     @Override
     public String getAnswerRepresentation(QuestionDetails questionDetails) {
-        return this.getOptionId() != null ? questionDetails.getAnswerRepresentation(Arrays.asList(optionId)) : "-";
+        return questionDetails.getAnswerRepresentation(optionsId);
     }
 
-    public Integer getOptionId() {
-        return optionId;
+    public List<Integer> getOptionId() {
+        return optionsId;
     }
 
-    public void setOptionId(Integer optionId) {
-        this.optionId = optionId;
+    public void setOptionId(List<Integer> optionsId) {
+        this.optionsId = optionsId;
     }
 }

@@ -3,12 +3,12 @@ import { QuestionTypes } from '@/services/QuestionHelpers';
 import MultipleChoiceStatementCorrectAnswerDetails from '@/models/statement/questions/MultipleChoiceStatementCorrectAnswerDetails';
 
 export default class MultipleChoiceStatementAnswerDetails extends StatementAnswerDetails {
-  public optionId: number | null = null;
+  public optionId!: number[];
 
   constructor(jsonObj?: MultipleChoiceStatementAnswerDetails) {
     super(QuestionTypes.MultipleChoice);
     if (jsonObj) {
-      this.optionId = jsonObj.optionId;
+      this.optionId = jsonObj.optionId || [];
     }
   }
 

@@ -36,6 +36,20 @@ Used on:
         class="option-content"
         v-html="convertMarkDown(questionDetails.options[index].content)"
       />
+      <span
+        v-if="
+          answerDetails.optionId.length > 0 &&
+          answerDetails.optionId.find(
+            (x) => x === questionDetails.options[index].optionId
+          )
+        "
+        class="option-relevance"
+        v-html="
+          answerDetails.optionId.indexOf(
+            questionDetails.options[index].optionId
+          ) + 1
+        "
+      />
     </li>
   </ul>
 </template>
@@ -65,21 +79,24 @@ export default class MultipleChoiceAnswer extends Vue {
     if (this.isReadonly) {
       if (
         !!this.correctAnswerDetails &&
-        this.correctAnswerDetails.correctOptionId ===
-          this.questionDetails.options[index].optionId
+        this.correctAnswerDetails.correctOptionId.find(
+          (x) => x === this.questionDetails.options[index].optionId
+        )
       ) {
         return 'correct';
       } else if (
-        this.answerDetails.optionId ===
-        this.questionDetails.options[index].optionId
+        this.answerDetails.optionId.find(
+          (x) => x === this.questionDetails.options[index].optionId
+        )
       ) {
         return 'wrong';
       } else {
         return '';
       }
     } else {
-      return this.answerDetails.optionId ===
-        this.questionDetails.options[index].optionId
+      return this.answerDetails.optionId.find(
+        (x) => x === this.questionDetails.options[index].optionId
+      )
         ? 'selected'
         : '';
     }
@@ -87,10 +104,14 @@ export default class MultipleChoiceAnswer extends Vue {
 
   @Emit('question-answer-update')
   selectOption(optionId: number) {
-    if (this.answerDetails.optionId === optionId) {
-      this.answerDetails.optionId = null;
+    if (this.answerDetails.optionId.find((x) => x === optionId)) {
+      this.answerDetails.optionId.splice(
+        this.answerDetails.optionId.indexOf(optionId),
+        this.answerDetails.optionId.length -
+          this.answerDetails.optionId.indexOf(optionId)
+      );
     } else {
-      this.answerDetails.optionId = optionId;
+      this.answerDetails.optionId.push(optionId);
     }
   }
 
@@ -112,6 +133,11 @@ export default class MultipleChoiceAnswer extends Vue {
       background-color: #333333 !important;
       color: rgb(255, 255, 255) !important;
     }
+
+    .option-relevance {
+      background-color: #333333 !important;
+      color: rgb(255, 255, 255) !important;
+    }
   }
 }
 
@@ -123,6 +149,11 @@ export default class MultipleChoiceAnswer extends Vue {
     }
 
     .option-letter {
+      background-color: #299455 !important;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .option-relevance {
       background-color: #299455 !important;
       color: rgb(255, 255, 255) !important;
     }
@@ -140,6 +171,11 @@ export default class MultipleChoiceAnswer extends Vue {
       background-color: #cf2323 !important;
       color: rgb(255, 255, 255) !important;
     }
+
+    .option-relevance {
+      background-color: #cf2323 !important;
+      color: rgb(255, 255, 255) !important;
+    }
   }
   .correct {
     .option-content {
@@ -148,6 +184,11 @@ export default class MultipleChoiceAnswer extends Vue {
     }
 
     .option-letter {
+      background-color: #333333 !important;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .option-relevance {
       background-color: #333333 !important;
       color: rgb(255, 255, 255) !important;
     }

@@ -101,7 +101,7 @@ class GetSolvedQuizzesTest extends SpockTest {
         solvedQuizDto.statementQuiz.getAnswers().size() == 1
         def answer = solvedQuizDto.statementQuiz.getAnswers().get(0)
         answer.getSequence() == 0
-        answer.getAnswerDetails().getOptionId() == option.getId()
+        answer.getAnswerDetails().getOptionsId().get(0) == option.getId()
         solvedQuizDto.getCorrectAnswers().size() == 1
         def correct = solvedQuizDto.getCorrectAnswers().get(0)
         correct.getSequence() == 0
