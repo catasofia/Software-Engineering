@@ -118,9 +118,45 @@ class MultipleChoiceQuestionQuizIT extends SpockTest {
 
         when:
         def response = restClient.post(
-                path: "/answers/" + quiz.getId() + "/submit",
-                body: JsonOutput.toJson(statementAnswerDto),
-                requestContentType: "application/json"
+            path: "/answers/" + quiz.getId() + "/submit",
+            body: JsonOutput.toJson(statementAnswerDto),
+            requestContentType: "application/json"
+        )
+
+        then: "check the response status"
+        response != null
+        response.status == 200
+    }
+
+    def "show results of quiz to a multiple choice answer question"() {
+        given:  'a completed quiz'
+        quizAnswer.completed = true
+
+        and: 'an answer'
+        def statementQuizDto = new StatementQuizDto()
+        statementQuizDto.id = quiz.getId()
+        statementQuizDto.quizAnswerId = quizAnswer.getId()
+
+        def statementAnswerDto = new StatementAnswerDto()
+        def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
+
+        List<Integer> options = new ArrayList<>()
+        options.add(optionOk.getId())
+        options.add(optionKK.getId())
+        multipleChoiceAnswerDto.setOptionId(options)
+
+        statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
+        statementAnswerDto.setSequence(0)
+        statementAnswerDto.setTimeTaken(100)
+        statementAnswerDto.setQuestionAnswerId(quizAnswer.getQuestionAnswers().get(0).getId())
+
+        statementQuizDto.getAnswers().add(statementAnswerDto)
+        answerService.concludeQuiz(statementQuizDto)
+
+        when: 'a request is posted'
+        def response = restClient.get(
+            path: "/answers/" + externalCourseExecution.getId() + "/quizzes/solved/",
+            requestContentType: "application/json"
         )
 
         then: "check the response status"
