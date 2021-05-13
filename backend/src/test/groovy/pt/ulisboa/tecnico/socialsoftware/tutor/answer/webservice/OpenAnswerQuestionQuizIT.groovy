@@ -89,7 +89,7 @@ class OpenAnswerQuestionQuizIT extends SpockTest {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter()
 
         def response = restClient.post(
-                path: "/quizzes/" + quiz.getId() + "/submit",
+                path: "/answers/" + quiz.getId() + "/submit",
                 body: ow.writeValueAsString(statementAnswerDto),
                 requestContentType: "application/json"
         )
@@ -122,7 +122,7 @@ class OpenAnswerQuestionQuizIT extends SpockTest {
 
         when: 'a request is posted'
         def response = restClient.get(
-                path: "/executions/" + externalCourseExecution.getId() + "/quizzes/solved/",
+                path: "/answers/" + externalCourseExecution.getId() + "/quizzes/solved/",
                 requestContentType: "application/json"
         )
 
