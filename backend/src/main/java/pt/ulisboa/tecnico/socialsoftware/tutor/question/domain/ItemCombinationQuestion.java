@@ -65,10 +65,10 @@ public class ItemCombinationQuestion extends QuestionDetails{
         boolean allEmpty = true;
         boolean sameSet = true;
         for(ItemCombinationSlotDto item: columnOne){
-            if (!(item.getCorrectCombination().isEmpty())){
+            if (!(item.getCorrectCombinations().isEmpty())){
                 allEmpty = false;
             }
-            for (ItemCombinationSlotDto combination: item.getCorrectCombination()){
+            for (ItemCombinationSlotDto combination: item.getCorrectCombinations()){
                 for(ItemCombinationSlotDto item2: columnOne){
                     if(combination.getInternId() == item2.getInternId()){
                         sameSet = false;
@@ -78,10 +78,10 @@ public class ItemCombinationQuestion extends QuestionDetails{
         }
 
         for(ItemCombinationSlotDto item: columnTwo){
-            if (!(item.getCorrectCombination().isEmpty())){
+            if (!(item.getCorrectCombinations().isEmpty())){
                 allEmpty = false;
             }
-            for (ItemCombinationSlotDto combination: item.getCorrectCombination()){
+            for (ItemCombinationSlotDto combination: item.getCorrectCombinations()){
                 for(ItemCombinationSlotDto item2: columnTwo){
                     if(combination.getInternId() == item2.getInternId()){
                         sameSet = false;
@@ -98,10 +98,11 @@ public class ItemCombinationQuestion extends QuestionDetails{
             throw new TutorException(COMBINATION_IN_SAME_SET);
         }
 
-        HashMap<String, Set<ItemCombinationSlotDto>> combinations= new HashMap<String, Set<ItemCombinationSlotDto>>();
+        Map<String, Set<ItemCombinationSlotDto>> combinations= new HashMap<String, Set<ItemCombinationSlotDto>>();
 
         for(var itemCombinationSlotDto : columnTwo) {
             itemCombinationSlotDto.setColumn('b');
+            itemCombinationSlotDto.setId(null);
             if (itemCombinationSlotDto.getId() == null) {
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
@@ -121,7 +122,8 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
         for(var itemCombinationSlotDto : columnOne){
             itemCombinationSlotDto.setColumn('a');
-            combinations.put(itemCombinationSlotDto.getContent(), itemCombinationSlotDto.getCorrectCombination());
+            itemCombinationSlotDto.setId(null);
+            combinations.put(itemCombinationSlotDto.getContent(), itemCombinationSlotDto.getCorrectCombinations());
             if(itemCombinationSlotDto.getId() == null){
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);

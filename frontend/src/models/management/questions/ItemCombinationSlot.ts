@@ -3,7 +3,7 @@ export default class ItemCombinationSlot {
   content: string = '';
   internId!: number;
   column: string = '';
-  correctCombination: ItemCombinationSlot[] = [];
+  correctCombinations: ItemCombinationSlot[] = [];
 
   constructor(jsonObj?: Partial<ItemCombinationSlot>) {
     if (jsonObj) {

@@ -3,8 +3,8 @@ import ItemCombinationSlot from '@/models/management/questions/ItemCombinationSl
 import { QuestionTypes } from '@/services/QuestionHelpers';
 
 export default class ItemCombinationQuestionDetails extends QuestionDetails {
-  columnOne: ItemCombinationSlot[] = [];
-  columnTwo: ItemCombinationSlot[] = [];
+  columnOne: ItemCombinationSlot[] = [new ItemCombinationSlot({internId: 1})];
+  columnTwo: ItemCombinationSlot[] = [new ItemCombinationSlot({internId: 2})];
 
   constructor(jsonObj?: ItemCombinationQuestionDetails) {
     super(QuestionTypes.ItemCombination);

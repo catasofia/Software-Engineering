@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.question.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.ItemCombinationSlot;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.stream.Collectors;
 import java.util.HashSet;
@@ -21,7 +20,7 @@ public class ItemCombinationSlotDto implements Serializable{
     public ItemCombinationSlotDto(ItemCombinationSlot itemCombinationSlot){
         this.id = itemCombinationSlot.getId();
         this.content = itemCombinationSlot.getContent();
-        this.correctCombinations = itemCombinationSlot.getCorrectCombinations().stream().map(s -> new ItemCombinationSlotDto()).collect(Collectors.toSet());
+        this.correctCombinations = itemCombinationSlot.getCorrectCombinations().stream().map(s -> new ItemCombinationSlotDto(s)).collect(Collectors.toSet());
         this.internId = itemCombinationSlot.getInternId();
         this.column = itemCombinationSlot.getColumn();
     }
@@ -58,7 +57,7 @@ public class ItemCombinationSlotDto implements Serializable{
         this.content = content;
     }
 
-    public Set<ItemCombinationSlotDto> getCorrectCombination() {
+    public Set<ItemCombinationSlotDto> getCorrectCombinations() {
         return correctCombinations;
     }
 
