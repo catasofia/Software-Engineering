@@ -31,6 +31,7 @@ class MultipleChoiceQuestionQuizIT extends SpockTest {
     def optionKK
     def quizAnswer
     def quiz
+    def question
 
     def setup() {
         restClient = new RESTClient("http://localhost:" + port)
@@ -53,7 +54,7 @@ class MultipleChoiceQuestionQuizIT extends SpockTest {
         quiz.setAvailableDate(DateHandler.now())
         quizRepository.save(quiz)
 
-        def question = new Question()
+        question = new Question()
         question.setKey(1)
         question.setTitle(QUESTION_1_TITLE)
         question.setCourse(externalCourse)
@@ -160,6 +161,45 @@ class MultipleChoiceQuestionQuizIT extends SpockTest {
         )
 
         then: "check the response status"
+        response != null
+        response.status == 200
+    }
+
+    def "show answers to completed quiz"() {
+        given:  'a completed quiz'
+        quizAnswer.completed = true
+
+        and: 'an answer'
+        def statementQuizDto = new StatementQuizDto()
+        statementQuizDto.id = quiz.getId()
+        statementQuizDto.quizAnswerId = quizAnswer.getId()
+
+        def statementAnswerDto = new StatementAnswerDto()
+        def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
+
+        List<Integer> options = new ArrayList<>()
+        options.add(optionOk.getId())
+        options.add(optionKK.getId())
+        multipleChoiceAnswerDto.setOptionId(options)
+
+        statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
+        statementAnswerDto.setSequence(0)
+        statementAnswerDto.setTimeTaken(100)
+        statementAnswerDto.setQuestionAnswerId(quizAnswer.getQuestionAnswers().get(0).getId())
+
+        statementQuizDto.getAnswers().add(statementAnswerDto)
+        answerService.concludeQuiz(statementQuizDto)
+
+        def correctAnswers = answerService.concludeQuiz(statementQuizDto)
+
+        when: 'a request is posted'
+
+        def response = restClient.get(
+                path: "/answers/" + quiz.getId() + "/question/" + question.getId(),
+                requestContentType: "application/json"
+        )
+
+        then:
         response != null
         response.status == 200
     }
