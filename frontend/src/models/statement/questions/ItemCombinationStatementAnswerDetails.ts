@@ -3,7 +3,7 @@ import StatementCorrectAnswerDetails from '@/models/statement/questions/Statemen
 import { QuestionTypes } from '@/services/QuestionHelpers';
 import ItemCombinationSlotAnswerStatement from '@/models/statement/questions/ItemCombinationSlotAnswerStatement';
 
-export default class ItemCombinationStatementAnswerDetails extends StatementAnswerDetails{
+export default class ItemCombinationStatementAnswerDetails extends StatementAnswerDetails {
   public answeredSlots!: ItemCombinationSlotAnswerStatement[];
 
   constructor(jsonObj?: ItemCombinationStatementAnswerDetails) {
@@ -13,7 +13,9 @@ export default class ItemCombinationStatementAnswerDetails extends StatementAnsw
     }
   }
 
-  isAnswerCorrect(correctAnswerDetails: StatementCorrectAnswerDetails): boolean {
+  isAnswerCorrect(
+    correctAnswerDetails: StatementCorrectAnswerDetails
+  ): boolean {
     return true;
   }
 

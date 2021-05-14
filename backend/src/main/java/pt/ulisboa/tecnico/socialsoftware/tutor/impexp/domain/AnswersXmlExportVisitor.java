@@ -164,4 +164,15 @@ public class AnswersXmlExportVisitor implements Visitor {
             this.currentElement.addContent(spotContainerElement);
         }
     }
+
+    @Override
+    public void visitAnswerDetails(ItemCombinationAnswer answer) {
+        this.currentQuestionAnswer.setAttribute("type", Question.QuestionTypes.ITEM_COMBINATION_QUESTION);
+        if (answer.isAnswered()){
+            Element spotContainerElement = new Element("itemCombination");
+            spotContainerElement.setAttribute("answer", String.valueOf(answer.getItemCombinationSlots()));
+
+            this.currentElement.addContent(spotContainerElement);
+        }
+    }
 }

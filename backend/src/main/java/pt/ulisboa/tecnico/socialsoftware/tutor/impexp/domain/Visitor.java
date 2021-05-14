@@ -67,10 +67,11 @@ public interface Visitor {
 
     default void visitQuestionDetails(OpenAnswerQuestion question) {}
 
+    default void visitAnswerDetails(OpenAnswerAnswer openAnswerAnswer) {}
+
     default void visitQuestionDetails(ItemCombinationQuestion question) {}
 
     default void visitItemCombinationSlot(ItemCombinationSlot itemCombinationSlot) {}
 
     default void visitAnswerDetails(ItemCombinationAnswer itemCombinationAnswer) {}
-
 }

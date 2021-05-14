@@ -22,7 +22,7 @@
         <v-textarea
           v-model="item.content"
           :label="`Item ${item.internId}`"
-          :data-cy="`Item ${item.internId}`"
+          :data-cy="`Item${item.internId}`"
           rows="1"
           auto-grow
           class="mt-0"
@@ -40,11 +40,8 @@
           return-object
         >
           <template slot="selection" slot-scope="item">
-            <v-chip style="height: 24px" 
-            :data-cy="`Item ${item.internId}`"
->{{
-
-              'Item ' + Number(+item.internId)
+            <v-chip style="height: 24px">{{
+              'Item ' + Number(+item.item.internId)
             }}</v-chip>
           </template>
 

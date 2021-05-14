@@ -10,7 +10,8 @@ export default class ItemCombinationStatementQuestionDetails extends StatementQu
     if (jsonObj) {
       this.combinations = jsonObj.combinations
         ? jsonObj.combinations.map(
-          (item: ItemCombinationSlotStatement) => new ItemCombinationSlotStatement(item)
+            (item: ItemCombinationSlotStatement) =>
+              new ItemCombinationSlotStatement(item)
           )
         : this.combinations;
     }
