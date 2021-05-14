@@ -145,9 +145,8 @@ Cypress.Commands.add('cleanOpenAnswerQuestionsByName', questionName => {
               DELETE FROM questions WHERE id IN (SELECT question_id FROM toDelete);`);
 });
 
-
 Cypress.Commands.add('resetDatabase', () => {
   dbCommand(`DELETE FROM answer_details;
                       DELETE FROM question_answers;
-                     DELETE FROM quiz_questions;`);
+                     DELETE FROM quiz_questions;`)
 });
