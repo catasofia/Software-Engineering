@@ -7,6 +7,7 @@ export default class ItemCombinationStatementQuestionDetails extends StatementQu
 
   constructor(jsonObj?: ItemCombinationStatementQuestionDetails) {
     super(QuestionTypes.ItemCombination);
+
     if (jsonObj) {
       this.combinations = jsonObj.combinations
         ? jsonObj.combinations.map(

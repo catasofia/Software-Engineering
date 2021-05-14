@@ -1,38 +1,15 @@
 <template>
   <div class="item-combination-answer">
-    <v-row
-        v-for="(item, index) in sQuestionDetails.columnOne"
-        :key="'a' + index"
-        data-cy="questionItemsInputA"
-        align="center"
-        class="mx-0 mt-2"
-    >
-      <template slot="selection" slot-scope="item">
-        <v-chip style="height: 24px">{{
-            'Item ' + Number(+item.item.internId)
-          }}</v-chip>
-      </template>
-    <template v-slot:item="{ item, attrs, on }">
-      <v-list-item v-on="on" v-bind="attrs" #default="{ active }">
-        <v-list-item-action>
-          <v-checkbox :input-value="active"></v-checkbox>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-row no-gutters align="center">
-              <span>{{ 'Item ' + Number(+item.internId) }}</span>
-            </v-row>
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </template>
-      <v-row
-          v-for="(item, index) in sQuestionDetails.columnTwo"
-          :key="'b' + index"
-          data-cy="questionItemsInputA"
-          align="center"
-          class="mx-0 mt-2"
-      >
+    <v-row justify="start" class="mt-2">
+      <v-col cols="12" style="text-align: left">
+        <h2>Coluna A</h2>
+      </v-col>
+    </v-row>
+    <v-row class="mt-12">
+      <v-col cols="12" style="text-align: left">
+        <h2>Coluna B</h2>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
