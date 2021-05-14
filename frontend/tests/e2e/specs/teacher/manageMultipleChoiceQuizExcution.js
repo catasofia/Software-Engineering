@@ -1,7 +1,7 @@
 describe('Manage Multiple Choice Quiz Walk-through', () => {
   
   after(() => {
-    cy.resetDatabase();
+    cy.resetDatabaseMultipleChoice();
   });
 
   beforeEach(() => {
