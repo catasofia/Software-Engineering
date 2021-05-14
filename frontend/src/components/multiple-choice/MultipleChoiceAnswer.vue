@@ -17,15 +17,18 @@ Used on:
       <span
         v-if="
           isReadonly &&
-          correctAnswerDetails.correctOptionId ===
+          correctAnswerDetails.correctOptionsId.indexOf(
             questionDetails.options[index].optionId
+          ) > -1
         "
         class="fas fa-check option-letter"
       />
       <span
         v-else-if="
           isReadonly &&
-          answerDetails.optionId === questionDetails.options[index].optionId
+          answerDetails.optionsId.indexOf(
+            questionDetails.options[index].optionId
+          ) > -1
         "
         class="fas fa-times option-letter"
       />
@@ -35,6 +38,20 @@ Used on:
       <span
         class="option-content"
         v-html="convertMarkDown(questionDetails.options[index].content)"
+      />
+      <span
+        v-if="
+          answerDetails.optionsId.length > 0 &&
+          answerDetails.optionsId.indexOf(
+            questionDetails.options[index].optionId
+          ) > -1
+        "
+        class="option-relevance"
+        v-html="
+          answerDetails.optionsId.indexOf(
+            questionDetails.options[index].optionId
+          ) + 1
+        "
       />
     </li>
   </ul>
@@ -65,21 +82,24 @@ export default class MultipleChoiceAnswer extends Vue {
     if (this.isReadonly) {
       if (
         !!this.correctAnswerDetails &&
-        this.correctAnswerDetails.correctOptionId ===
+        this.correctAnswerDetails.correctOptionsId.indexOf(
           this.questionDetails.options[index].optionId
+        ) > -1
       ) {
         return 'correct';
       } else if (
-        this.answerDetails.optionId ===
-        this.questionDetails.options[index].optionId
+        this.answerDetails.optionsId.indexOf(
+          this.questionDetails.options[index].optionId
+        ) > -1
       ) {
         return 'wrong';
       } else {
         return '';
       }
     } else {
-      return this.answerDetails.optionId ===
+      return this.answerDetails.optionsId.indexOf(
         this.questionDetails.options[index].optionId
+      ) > -1
         ? 'selected'
         : '';
     }
@@ -87,10 +107,14 @@ export default class MultipleChoiceAnswer extends Vue {
 
   @Emit('question-answer-update')
   selectOption(optionId: number) {
-    if (this.answerDetails.optionId === optionId) {
-      this.answerDetails.optionId = null;
+    if (this.answerDetails.optionsId.find((x) => x === optionId)) {
+      this.answerDetails.optionsId.splice(
+        this.answerDetails.optionsId.indexOf(optionId),
+        this.answerDetails.optionsId.length -
+          this.answerDetails.optionsId.indexOf(optionId)
+      );
     } else {
-      this.answerDetails.optionId = optionId;
+      this.answerDetails.optionsId.push(optionId);
     }
   }
 
@@ -112,6 +136,11 @@ export default class MultipleChoiceAnswer extends Vue {
       background-color: #333333 !important;
       color: rgb(255, 255, 255) !important;
     }
+
+    .option-relevance {
+      background-color: #333333 !important;
+      color: rgb(255, 255, 255) !important;
+    }
   }
 }
 
@@ -123,6 +152,11 @@ export default class MultipleChoiceAnswer extends Vue {
     }
 
     .option-letter {
+      background-color: #299455 !important;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .option-relevance {
       background-color: #299455 !important;
       color: rgb(255, 255, 255) !important;
     }
@@ -140,6 +174,11 @@ export default class MultipleChoiceAnswer extends Vue {
       background-color: #cf2323 !important;
       color: rgb(255, 255, 255) !important;
     }
+
+    .option-relevance {
+      background-color: #cf2323 !important;
+      color: rgb(255, 255, 255) !important;
+    }
   }
   .correct {
     .option-content {
@@ -148,6 +187,11 @@ export default class MultipleChoiceAnswer extends Vue {
     }
 
     .option-letter {
+      background-color: #333333 !important;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .option-relevance {
       background-color: #333333 !important;
       color: rgb(255, 255, 255) !important;
     }

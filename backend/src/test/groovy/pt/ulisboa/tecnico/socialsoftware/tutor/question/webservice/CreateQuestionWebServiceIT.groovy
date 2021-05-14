@@ -27,7 +27,7 @@ class CreateQuestionWebServiceIT extends SpockTest {
 
     def setup() {
         restClient = new RESTClient("http://localhost:" + port)
-        
+
         createExternalCourseAndExecution()
 
         teacher = new User(USER_1_NAME, USER_1_EMAIL, USER_1_EMAIL,
@@ -43,7 +43,7 @@ class CreateQuestionWebServiceIT extends SpockTest {
     def "create question with multiple correct options for course execution"() {
         given: "four options"
         def options = new ArrayList<OptionDto>()
-        
+
         def optionDto = new OptionDto()
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
@@ -80,15 +80,15 @@ class CreateQuestionWebServiceIT extends SpockTest {
 
         when:
         response = restClient.post(
-                path: '/courses/' + externalCourseExecution.getId() + '/questions',
-                body: JsonOutput.toJson(questionDto),
-                requestContentType: 'application/json'
+            path: '/questions/courses/' + externalCourse.getId(),
+            body: JsonOutput.toJson(questionDto),
+            requestContentType: 'application/json'
         )
 
         then: "check the response status"
         response != null
         response.status == 200
-        
+
         and: "check if it's the correct question"
         def question = response.data
         question.id != null
@@ -127,7 +127,7 @@ class CreateQuestionWebServiceIT extends SpockTest {
         student.addCourse(externalCourseExecution)
         externalCourseExecution.addUser(student)
         userRepository.save(student)
-        
+
         createdUserLogin(USER_2_EMAIL, USER_2_PASSWORD)
 
         and: "three options"
@@ -163,20 +163,20 @@ class CreateQuestionWebServiceIT extends SpockTest {
 
         when:
         response = restClient.post(
-                path: '/courses/' + externalCourseExecution.getId() + '/questions',
-                body: JsonOutput.toJson(questionDto),
-                requestContentType: 'application/json'
+            path: '/questions/courses/' + externalCourse.getId(),
+            body: JsonOutput.toJson(questionDto),
+            requestContentType: 'application/json'
         )
 
         then: "expect a error"
         response == null
-        
+
         and: "check exception"
         def error = thrown(HttpResponseException)
         error.response.status == HttpStatus.SC_FORBIDDEN
 
         cleanup:
-        userRepository.deleteById(student.getId())  
+        userRepository.deleteById(student.getId())
     }
 
     def cleanup() {

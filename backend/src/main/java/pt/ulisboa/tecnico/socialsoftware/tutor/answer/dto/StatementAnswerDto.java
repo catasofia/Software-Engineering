@@ -27,7 +27,6 @@ public class StatementAnswerDto implements Serializable {
         this.quizQuestionId = questionAnswer.getQuizQuestion().getId();
 
         this.answerDetails = questionAnswer.getStatementAnswerDetailsDto();
-
         if (questionAnswer.getDiscussion() != null){
             this.userDiscussion = new DiscussionDto(questionAnswer.getDiscussion(),false);
         }
@@ -101,7 +100,7 @@ public class StatementAnswerDto implements Serializable {
                 ", questionAnswerId=" + questionAnswerId +
                 ", quizQuestionId=" + quizQuestionId +
                 ", timeToSubmission=" + timeToSubmission +
-                ", answerDetails=" + answerDetails +
+                ", answerDetails=" + answerDetails.toString() +
                 '}';
     }
 

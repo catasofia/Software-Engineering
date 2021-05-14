@@ -5,7 +5,7 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.*;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.*;
 
 import java.util.List;
 
@@ -109,10 +109,11 @@ public class AnswersXmlExportVisitor implements Visitor {
     @Override
     public void visitAnswerDetails(MultipleChoiceAnswer answer) {
         this.currentQuestionAnswer.setAttribute("type", Question.QuestionTypes.MULTIPLE_CHOICE_QUESTION);
-        if (answer.getOption() != null) {
+        
+        for (Option option: answer.getOptions()) {
             Element optionElement = new Element("option");
             optionElement.setAttribute(QUESTION_KEY, String.valueOf(answer.getQuestionAnswer().getQuestion().getKey()));
-            optionElement.setAttribute(SEQUENCE, String.valueOf(answer.getOption().getSequence()));
+            optionElement.setAttribute(SEQUENCE, String.valueOf(option.getSequence()));
             this.currentElement.addContent(optionElement);
         }
     }
@@ -148,6 +149,17 @@ public class AnswersXmlExportVisitor implements Visitor {
                 spotElement.setAttribute("optionSequence", String.valueOf(spot.getSequence()));
                 spotContainerElement.addContent(spotElement);
             }
+
+            this.currentElement.addContent(spotContainerElement);
+        }
+    }
+
+    @Override
+    public void visitAnswerDetails(OpenAnswerAnswer answer) {
+        this.currentQuestionAnswer.setAttribute("type", Question.QuestionTypes.OPEN_ANSWER_QUESTION);
+        if (answer.isAnswered()){
+            Element spotContainerElement = new Element("openAnswer");
+            spotContainerElement.setAttribute("answer", answer.getAnswer());
 
             this.currentElement.addContent(spotContainerElement);
         }

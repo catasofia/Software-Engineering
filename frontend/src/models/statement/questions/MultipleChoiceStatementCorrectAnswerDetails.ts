@@ -2,12 +2,12 @@ import StatementCorrectAnswerDetails from '@/models/statement/questions/Statemen
 import { QuestionTypes } from '@/services/QuestionHelpers';
 
 export default class MultipleChoiceStatementCorrectAnswerDetails extends StatementCorrectAnswerDetails {
-  public correctOptionId: number | null = null;
+  public correctOptionsId!: number[];
 
   constructor(jsonObj?: MultipleChoiceStatementCorrectAnswerDetails) {
     super(QuestionTypes.MultipleChoice);
     if (jsonObj) {
-      this.correctOptionId = jsonObj.correctOptionId;
+      this.correctOptionsId = jsonObj.correctOptionsId || [];
     }
   }
 }
