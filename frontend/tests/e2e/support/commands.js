@@ -423,6 +423,28 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
+  'createQuestionWith2Correct',
+  (title, question, option1, option2, option3, option4, relevance1, relevance2) => {
+    cy.get('[data-cy="managementMenuButton"]').click();
+    cy.get('[data-cy="questionsTeacherMenuButton"]').click();
+
+    //creates question1
+    cy.get('[data-cy="newQuestionButton"]').click();
+    cy.get('[data-cy="questionTitleTextArea"]').type(title);
+    cy.get('[data-cy="questionQuestionTextArea"]').type(question);
+    cy.get('[data-cy="Option1"]').type(option1);
+    cy.get('[data-cy="Option2"]').type(option2);
+    cy.get('[data-cy="Switch2"]').click({ force: true });
+    cy.get('[data-cy="Relevance2"]').type(relevance1);
+    cy.get('[data-cy="Option3"]').type(option3);
+    cy.get('[data-cy="Option4"]').type(option4);
+    cy.get('[data-cy="Switch4"]').click({ force: true });
+    cy.get('[data-cy="Relevance4"]').type(relevance2);
+    cy.get('[data-cy="saveQuestionButton"]').click();
+  }
+);
+
+Cypress.Commands.add(
   'createQuizzWith2Questions',
   (quizTitle, questionTitle, questionTitle2) => {
     cy.get('[data-cy="managementMenuButton"]').click();
