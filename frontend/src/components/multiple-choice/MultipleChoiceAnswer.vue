@@ -17,15 +17,18 @@ Used on:
       <span
         v-if="
           isReadonly &&
-          correctAnswerDetails.correctOptionId ===
+          correctAnswerDetails.correctOptionsId.indexOf(
             questionDetails.options[index].optionId
+          ) > -1
         "
         class="fas fa-check option-letter"
       />
       <span
         v-else-if="
           isReadonly &&
-          answerDetails.optionId === questionDetails.options[index].optionId
+          answerDetails.optionsId.indexOf(
+            questionDetails.options[index].optionId
+          ) > -1
         "
         class="fas fa-times option-letter"
       />
@@ -38,14 +41,14 @@ Used on:
       />
       <span
         v-if="
-          answerDetails.optionId.length > 0 &&
-          answerDetails.optionId.find(
-            (x) => x === questionDetails.options[index].optionId
-          )
+          answerDetails.optionsId.length > 0 &&
+          answerDetails.optionsId.indexOf(
+            questionDetails.options[index].optionId
+          ) > -1
         "
         class="option-relevance"
         v-html="
-          answerDetails.optionId.indexOf(
+          answerDetails.optionsId.indexOf(
             questionDetails.options[index].optionId
           ) + 1
         "
@@ -79,24 +82,24 @@ export default class MultipleChoiceAnswer extends Vue {
     if (this.isReadonly) {
       if (
         !!this.correctAnswerDetails &&
-        this.correctAnswerDetails.correctOptionId.find(
-          (x) => x === this.questionDetails.options[index].optionId
-        )
+        this.correctAnswerDetails.correctOptionsId.indexOf(
+          this.questionDetails.options[index].optionId
+        ) > -1
       ) {
         return 'correct';
       } else if (
-        this.answerDetails.optionId.find(
-          (x) => x === this.questionDetails.options[index].optionId
-        )
+        this.answerDetails.optionsId.indexOf(
+          this.questionDetails.options[index].optionId
+        ) > -1
       ) {
         return 'wrong';
       } else {
         return '';
       }
     } else {
-      return this.answerDetails.optionId.find(
-        (x) => x === this.questionDetails.options[index].optionId
-      )
+      return this.answerDetails.optionsId.indexOf(
+        this.questionDetails.options[index].optionId
+      ) > -1
         ? 'selected'
         : '';
     }
@@ -104,14 +107,14 @@ export default class MultipleChoiceAnswer extends Vue {
 
   @Emit('question-answer-update')
   selectOption(optionId: number) {
-    if (this.answerDetails.optionId.find((x) => x === optionId)) {
-      this.answerDetails.optionId.splice(
-        this.answerDetails.optionId.indexOf(optionId),
-        this.answerDetails.optionId.length -
-          this.answerDetails.optionId.indexOf(optionId)
+    if (this.answerDetails.optionsId.find((x) => x === optionId)) {
+      this.answerDetails.optionsId.splice(
+        this.answerDetails.optionsId.indexOf(optionId),
+        this.answerDetails.optionsId.length -
+          this.answerDetails.optionsId.indexOf(optionId)
       );
     } else {
-      this.answerDetails.optionId.push(optionId);
+      this.answerDetails.optionsId.push(optionId);
     }
   }
 
