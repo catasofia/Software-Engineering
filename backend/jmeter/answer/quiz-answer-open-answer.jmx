@@ -677,7 +677,7 @@ vars.put(&quot;questions&quot;, result.toString());</stringProp>
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
 	&quot;answerDetails&quot;: {&#xd;
-		&quot;answer&quot;: &quot;SUGGESTION&quot;&#xd;
+		&quot;answer&quot;: &quot;SUGGESTION&quot;,&#xd;
 		&quot;type&quot;: &quot;open_answer&quot;&#xd;
 	},&#xd;
 	&quot;timeTaken&quot;:1278,&#xd;
