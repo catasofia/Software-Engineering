@@ -28,8 +28,8 @@ describe('Manage Open Answer Questions Walk-through', () => {
 
   beforeEach(() => {
     cy.demoTeacherLogin();
-    cy.route('GET', '/courses/*/questions').as('getQuestions');
-    cy.route('GET', '/courses/*/topics').as('getTopics');
+    cy.route('GET', '/questions/courses/*').as('getQuestions');
+    cy.route('GET', '/topicscourses/*').as('getTopics');
     cy.get('[data-cy="managementMenuButton"]').click();
     cy.get('[data-cy="questionsTeacherMenuButton"]').click();
 
@@ -69,7 +69,7 @@ describe('Manage Open Answer Questions Walk-through', () => {
 
     cy.get('[data-cy="questionSuggestionTextArea"]').type('Cypress Suggestion Example', {force: true});
 
-    cy.route('POST', '/courses/*/questions/').as('postQuestion');
+    cy.route('POST', '/questions/courses/*').as('postQuestion');
 
     cy.get('button').contains('Save').click();
 
@@ -201,7 +201,7 @@ describe('Manage Open Answer Questions Walk-through', () => {
       .clear({ force: true })
       .type('Cypress Suggestion Example - Edited');
 
-    cy.route('POST', '/courses/*/questions/').as('postQuestion');
+    cy.route('POST', '/questions/courses/*').as('postQuestion');
 
     cy.get('button').contains('Save').click();
 
