@@ -29,7 +29,7 @@ describe('Manage Open Answer Questions Walk-through', () => {
   beforeEach(() => {
     cy.demoTeacherLogin();
     cy.route('GET', '/questions/courses/*').as('getQuestions');
-    cy.route('GET', '/topicscourses/*').as('getTopics');
+    cy.route('GET', '/topics/courses/*').as('getTopics');
     cy.get('[data-cy="managementMenuButton"]').click();
     cy.get('[data-cy="questionsTeacherMenuButton"]').click();
 
