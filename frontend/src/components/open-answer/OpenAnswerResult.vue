@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card>Answer: {{ answerDetails.answer }}</v-card>
+    <v-card data-cy="quizAnswerArea">Answer: {{ answerDetails.answer }}</v-card>
     <v-card>Correct Answer: {{ questionDetails.answer }}</v-card>
   </div>
 </template>
