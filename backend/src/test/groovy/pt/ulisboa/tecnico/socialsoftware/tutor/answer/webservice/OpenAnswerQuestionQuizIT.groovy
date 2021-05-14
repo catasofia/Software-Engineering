@@ -44,7 +44,7 @@ class OpenAnswerQuestionQuizIT extends SpockTest {
 
         quiz = new Quiz()
         quiz.setKey(1)
-        quiz.setTitle("Quiz Title")
+        quiz.setTitle(QUIZ_TITLE)
         quiz.setType(Quiz.QuizType.PROPOSED.toString())
         quiz.setCourseExecution(externalCourseExecution)
         quiz.setAvailableDate(DateHandler.now())
@@ -52,7 +52,8 @@ class OpenAnswerQuestionQuizIT extends SpockTest {
 
         question = new Question()
         question.setKey(1)
-        question.setTitle("Question Title")
+        question.setTitle(QUESTION_1_TITLE)
+        question.setContent(QUESTION_1_CONTENT)
         question.setCourse(externalCourse)
 
         def questionDetails = new OpenAnswerQuestion()
@@ -166,6 +167,63 @@ class OpenAnswerQuestionQuizIT extends SpockTest {
         response != null
         response.status == 200
     }
+
+
+    def "export quiz with open answer question"() {
+        given:  'a completed quiz'
+        quizAnswer.completed = true
+
+        and: 'an answer'
+        def statementQuizDto = new StatementQuizDto()
+        statementQuizDto.id = quiz.getId()
+        statementQuizDto.quizAnswerId = quizAnswer.getId()
+
+        def statementAnswerDto = new StatementAnswerDto()
+        def openAnswerQuestionDto = new OpenAnswerStatementAnswerDetailsDto()
+        openAnswerQuestionDto.setAnswer(SUGGESTION_1_CONTENT)
+
+        statementAnswerDto.setAnswerDetails(openAnswerQuestionDto)
+        statementAnswerDto.setSequence(0)
+        statementAnswerDto.setTimeTaken(100)
+        statementAnswerDto.setQuestionAnswerId(quizAnswer.getQuestionAnswers().get(0).getId())
+
+        statementQuizDto.getAnswers().add(statementAnswerDto)
+        answerService.concludeQuiz(statementQuizDto)
+
+        def correctAnswers = answerService.concludeQuiz(statementQuizDto)
+
+
+        and: 'teacher login'
+
+        user = new User(USER_2_NAME, USER_2_USERNAME, USER_2_EMAIL, User.Role.TEACHER, true, AuthUser.Type.TECNICO)
+        user.authUser.setPassword(passwordEncoder.encode(USER_2_PASSWORD))
+        user.addCourse(externalCourseExecution)
+        externalCourseExecution.addUser(user)
+        userRepository.save(user)
+
+        createdUserLogin(USER_2_USERNAME, USER_2_PASSWORD)
+
+        and: 'prepare request response'
+        restClient.handler.failure = { resp, reader ->
+            [response:resp, reader:reader]
+        }
+        restClient.handler.success = { resp, reader ->
+            [response:resp, reader:reader]
+        }
+        
+        when: 'a request is posted'
+
+        def map = restClient.get(
+                path: "/quizzes/" + quiz.getId() + "/export",
+                requestContentType: "application/json"
+        )
+
+        then: "the response status is OK"
+        assert map['response'].status == 200
+        assert map['reader'] != null
+    }
+
+
 
     def cleanup() {
         userRepository.deleteAll()
