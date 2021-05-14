@@ -29,7 +29,7 @@
         <v-text-field
           v-model="option.relevance"
           :label="`Relevance ${index + 1}`"
-          data-cy="optionRelevanceField"
+          :data-cy="`Relevance${index + 1}`"
         />
       </v-col>
       <v-col v-if="sQuestionDetails.options.length > 2">

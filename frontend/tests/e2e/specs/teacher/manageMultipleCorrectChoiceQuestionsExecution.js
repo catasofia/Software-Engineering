@@ -59,8 +59,8 @@ describe('Manage Multiple Correct Choice Questions Walk-through', () => {
   beforeEach(() => {
     cy.demoTeacherLogin();
     cy.server();
-    cy.route('GET', '/courses/*/questions').as('getQuestions');
-    cy.route('GET', '/courses/*/topics').as('getTopics');
+    cy.route('GET', '/questions/courses/*').as('getQuestions');
+    cy.route('GET', '/topics/courses/*').as('getTopics');
     cy.get('[data-cy="managementMenuButton"]').click();
     cy.get('[data-cy="questionsTeacherMenuButton"]').click();
 
@@ -95,16 +95,16 @@ describe('Manage Multiple Correct Choice Questions Walk-through', () => {
         cy.get($el).within(($ls) => {
           if (index === 1) {
             cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
-            cy.get(`[data-cy="optionRelevanceField"]`).type('1');
+            cy.get(`[data-cy="Relevance${index + 1}"]`).type('1');
           } else if (index === 3) {
             cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
-            cy.get(`[data-cy="optionRelevanceField"]`).type('2');
+            cy.get(`[data-cy="Relevance${index + 1}"]`).type('2');
           }
           cy.get(`[data-cy="Option${index + 1}"]`).type('Option ' + index);
         });
       });
 
-    cy.route('POST', '/courses/*/questions/').as('postQuestion');
+    cy.route('POST', '/questions/courses/*').as('postQuestion');
 
     cy.get('button').contains('Save').click();
 
@@ -235,7 +235,7 @@ describe('Manage Multiple Correct Choice Questions Walk-through', () => {
         });
       });
 
-    cy.route('POST', '/courses/*/questions/').as('postQuestion');
+    cy.route('POST', '/questions/courses/*').as('postQuestion');
 
     cy.get('button').contains('Save').click();
 
@@ -294,16 +294,16 @@ describe('Manage Multiple Correct Choice Questions Walk-through', () => {
         cy.get($el).within(($ls) => {
           if (index === 5) {
             cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
-            cy.get(`[data-cy="optionRelevanceField"]`).type('1');
+            cy.get(`[data-cy="Relevance${index + 1}"]`).type('1');
           } else if (index === 9) {
             cy.get(`[data-cy="Switch${index + 1}"]`).check({ force: true });
-            cy.get(`[data-cy="optionRelevanceField"]`).type('2');
+            cy.get(`[data-cy="Relevance${index + 1}"]`).type('2');
           }
           cy.get(`[data-cy="Option${index + 1}"]`).type('Option10 ' + index);
         });
       });
 
-    cy.route('POST', '/courses/*/questions/').as('postQuestion');
+    cy.route('POST', '/questions/courses/*').as('postQuestion');
 
     cy.get('button').contains('Save').click();
 

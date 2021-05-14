@@ -318,13 +318,8 @@
 	&quot;sequence&quot;:null,&#xd;
 	&quot;questionDetailsDto&quot;:&#xd;
 	{&#xd;
-	&quot;options&quot;:[&#xd;
-		{&quot;id&quot;:null,&quot;content&quot;:&quot;Option A&quot;,&quot;correct&quot;:true},&#xd;
-		{&quot;id&quot;:null,&quot;content&quot;:&quot;Option B&quot;,&quot;correct&quot;:false},&#xd;
-		{&quot;id&quot;:null,&quot;content&quot;:&quot;Option C&quot;,&quot;correct&quot;:false},&#xd;
-		{&quot;id&quot;:null,&quot;content&quot;:&quot;Option D&quot;,&quot;correct&quot;:false}&#xd;
-	],&#xd;
-	&quot;type&quot;: &quot;multiple_choice&quot;&#xd;
+	&quot;suggestion&quot; : &quot;SUGGESTION&quot;,&#xd;
+	&quot;type&quot;: &quot;open_answer&quot;&#xd;
 	},&#xd;
 	&quot;topics&quot;:[],&#xd;
 	&quot;creationDate&quot;:&quot;-&quot;&#xd;
@@ -682,8 +677,8 @@ vars.put(&quot;questions&quot;, result.toString());</stringProp>
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
 	&quot;answerDetails&quot;: {&#xd;
-		&quot;optionsId&quot;:[${option_id_1}],&#xd;
-		&quot;type&quot;: &quot;multiple_choice&quot;&#xd;
+		&quot;answer&quot;: &quot;SUGGESTION&quot;,&#xd;
+		&quot;type&quot;: &quot;open_answer&quot;&#xd;
 	},&#xd;
 	&quot;timeTaken&quot;:1278,&#xd;
 	&quot;questionAnswerId&quot;:${__V(question_answer_id_${question_number})},&#xd;
