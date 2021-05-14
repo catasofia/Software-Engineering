@@ -50,12 +50,6 @@ describe('Manage Item Combination Questions Walk-through', () => {
 
         cy.get('span.headline').should('contain', 'New Question');
 
-        cy.get('[data-cy="questionTypeInput"]')
-            .type('item_combination', { force: true })
-            .click({ force: true });
-
-        cy.wait(1000);
-
         cy.get(
             '[data-cy="questionTitleTextArea"]'
         ).type('Cypress Question Example - 01', { force: true });
@@ -66,16 +60,22 @@ describe('Manage Item Combination Questions Walk-through', () => {
             }
         );
 
+        cy.get('[data-cy="questionTypeInput"]')
+            .type('item_combination', { force: true })
+            .click({ force: true });
+
+        cy.wait(1000);
         
+        cy.get('[data-cy="addToColumnOne"]').click({ force: true });
+        cy.get('[data-cy="addToColumnTwo"]').click({ force: true });
         cy.get('[data-cy="addToColumnTwo"]').click({ force: true });
 
 
         cy.get('[data-cy="questionItemsInputB"]')
         .should('have.length', 2)
         .each(($el, index, $list) => {
-          console.log($el, index);
             cy.get($el).within(($ls) => {
-                cy.get(`[data-cy="Item ${index+2}"]`).type('Item ' + index + 2, { force: true });
+                cy.get(`[data-cy="Item${item.internId}"]`).type('Item ' + index , { force: true });
             });
         });
 
@@ -83,9 +83,8 @@ describe('Manage Item Combination Questions Walk-through', () => {
         .should('have.length', 1)
         .each(($el, index, $list) => {
             cy.get($el).within(($ls) => {
-              cy.get(`[data-cy="Item ${index+1}"]`).type('Item ' + index + 1, { force:true });
-              cy.get('[data-cy="combinations"]').click({force: true});
-              cy.get(`[:data-cy="Item ${2}"]`).check({force:true});
+              cy.get('[data-cy="Item${item.internId}"]').type('Item ' + index, { force:true });
+              cy.get('[data-cy="Combinations"]').check('Item 2')
             });
           });
 
