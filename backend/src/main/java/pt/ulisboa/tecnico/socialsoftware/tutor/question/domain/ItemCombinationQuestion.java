@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
-
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.*;
@@ -10,13 +9,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.Updator;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ItemCombinationQuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ItemCombinationSlotDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDetailsDto;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.*;
-
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
-
 
 @Entity
 @DiscriminatorValue(Question.QuestionTypes.ITEM_COMBINATION_QUESTION)
@@ -128,7 +124,6 @@ public class ItemCombinationQuestion extends QuestionDetails{
                 ItemCombinationSlot itemCombinationSlot = new ItemCombinationSlot(itemCombinationSlotDto);
                 itemCombinationSlot.setQuestionDetails(this);
                 this.items.add(itemCombinationSlot);
-
             }
             else{
                 ItemCombinationSlot itemCombinationSlot = getItems()
@@ -138,17 +133,13 @@ public class ItemCombinationQuestion extends QuestionDetails{
                         .orElseThrow(() -> new TutorException(ITEM_COMBINATION_SLOT_NOT_FOUND, itemCombinationSlotDto.getId()));
 
                 itemCombinationSlot.setContent(itemCombinationSlotDto.getContent());
-
             }
-
         }
-
         for(String content: combinations.keySet()){
             for(var comb: combinations.get(content)){
                 ItemCombinationSlot aux = getItem(comb.getContent());
                 getItem(content).setCorrectCombinations(aux);
             }
-
         }
     }
 
@@ -173,22 +164,22 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public CorrectAnswerDetailsDto getCorrectAnswerDetailsDto() {
-        return null;
+        return new ItemCombinationCorrectAnswerDto(this);
     }
 
     @Override
     public StatementQuestionDetailsDto getStatementQuestionDetailsDto() {
-        return null;
+        return new ItemCombinationStatementQuestionDetailsDto(this);
     }
 
     @Override
     public StatementAnswerDetailsDto getEmptyStatementAnswerDetailsDto() {
-        return null;
+        return new ItemCombinationStatementAnswerDetailsDto();
     }
 
     @Override
     public AnswerDetailsDto getEmptyAnswerDetailsDto() {
-        return null;
+        return new ItemCombinationAnswerDto();
     }
 
     @Override
@@ -207,18 +198,16 @@ public class ItemCombinationQuestion extends QuestionDetails{
 
     @Override
     public String getCorrectAnswerRepresentation() {
-        String correctOptions = "";
+        String correctItems = "";
 
         for(ItemCombinationSlot item: items){
             for (ItemCombinationSlot combination: item.getCorrectCombinations()){
-                correctOptions = correctOptions + item.getContent().toString() + " combines with " + combination.getContent().toString();
+                correctItems = correctItems + item.getContent() + " combines with " + combination.getContent();
             }
-            correctOptions = correctOptions + " \n ";
+            correctItems = correctItems + " \n ";
         }
-        System.out.println(correctOptions);
-        return correctOptions;
+        return correctItems;
     }
-
 
     @Override
     public void update(Updator updator) {
@@ -231,7 +220,6 @@ public class ItemCombinationQuestion extends QuestionDetails{
     }
 
     public void visitItemCombinationSlot(Visitor visitor) {
-
         for (var slot: this.getItems()) {
             slot.accept(visitor);
         }
@@ -241,5 +229,7 @@ public class ItemCombinationQuestion extends QuestionDetails{
     public String getAnswerRepresentation(List<Integer> selectedIds) {
         return null;
     }
+
+
 }
 

@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.ItemCombinationAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ItemCombinationSlotDto;
@@ -29,9 +28,15 @@ public class ItemCombinationSlot implements DomainEntity{
     @Column(columnDefinition = "CHAR")
     private char itemsColumn;
 
+    @Column(columnDefinition = "boolean default false", nullable = false)
+    private boolean correct;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_details_id")
     private ItemCombinationQuestion questionDetails;
+
+    @ManyToMany()
+    private final Set<ItemCombinationAnswer> questionAnswers = new HashSet<>();
 
     public ItemCombinationSlot(){}
 
@@ -39,6 +44,7 @@ public class ItemCombinationSlot implements DomainEntity{
         this.content = itemCombinationSlotDto.getContent();
         this.internId = itemCombinationSlotDto.getInternId();
         this.itemsColumn = itemCombinationSlotDto.getColumn();
+        this.correct = true;
     }
 
     public Integer getId() {
@@ -94,8 +100,20 @@ public class ItemCombinationSlot implements DomainEntity{
         return questionDetails;
     }
 
+    public boolean isCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
+    }
+
     public void setQuestionDetails(ItemCombinationQuestion questionDetails) {
         this.questionDetails = questionDetails;
+    }
+
+    public Set<ItemCombinationAnswer> getQuestionAnswers() {
+        return questionAnswers;
     }
 
     @Override
